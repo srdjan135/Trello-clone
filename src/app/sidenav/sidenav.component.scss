@@ -1,0 +1,11 @@
+@use "src/variables" as *;
+
+mat-list-item:hover {
+  cursor: pointer;
+  color: $primary;
+  background-color: $primary-hover;
+
+  div {
+    color: $primary;
+  }
+}
