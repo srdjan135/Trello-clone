@@ -1,1 +1,10 @@
-<p>layout works!</p>
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened>
+    <app-sidenav></app-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
