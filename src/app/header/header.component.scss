@@ -1,0 +1,73 @@
+@use "src/variables" as *;
+
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .logo {
+    display: flex;
+    gap: 1rem;
+
+    mat-icon {
+      transform: rotate(180deg);
+      color: $primary;
+    }
+  }
+
+  .search {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    mat-form-field {
+      width: 90%;
+    }
+
+    mat-form-field ::ng-deep .mat-mdc-form-field-bottom-align {
+      display: none !important;
+    }
+
+    mat-form-field ::ng-deep .mat-mdc-form-field-infix {
+      padding: 0;
+      min-height: 45px;
+      display: flex;
+      align-items: center;
+    }
+
+    mat-form-field
+      ::ng-deep
+      .mat-mdc-text-field-wrapper
+      .mat-mdc-form-field-flex
+      .mat-mdc-floating-label {
+      top: 22px;
+    }
+
+    mat-form-field ::ng-deep .mdc-floating-label--float-above {
+      transform: translateY(-30px) scale(0.75) !important;
+    }
+
+    button {
+      border-radius: 0.5rem;
+    }
+  }
+
+  .header-end {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    div {
+      width: 30px;
+      height: 30px;
+      font-size: 14px;
+      background-color: $primary;
+      color: $white;
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      margin: 5px;
+    }
+  }
+}

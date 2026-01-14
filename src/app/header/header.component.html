@@ -1,1 +1,19 @@
-<p>header works!</p>
+<mat-toolbar>
+  <div class="logo">
+    <mat-icon>assessment</mat-icon>
+    <h1>Trello</h1>
+  </div>
+  <div class="search">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput placeholder="Search boards..." />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+    <button mat-flat-button>Create</button>
+  </div>
+  <div class="header-end">
+    <button mat-icon-button><mat-icon>notifications_none</mat-icon></button>
+    <button mat-icon-button><mat-icon>help_outline</mat-icon></button>
+    <div>{{ userInitials }}</div>
+  </div>
+</mat-toolbar>
