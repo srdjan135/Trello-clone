@@ -1,0 +1,16 @@
+export const templates = [
+  'Business',
+  'Design',
+  'Education',
+  'Engineering',
+  'Marketing',
+  'HR & Operations',
+  'Personal',
+  'Productivity',
+  'Product Management',
+  'Project Management',
+  'Remote work',
+  'Sales',
+  'Support',
+  'Team Management',
+];

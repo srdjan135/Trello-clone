@@ -1,11 +1,75 @@
 @use "src/variables" as *;
 
-mat-list-item:hover {
-  cursor: pointer;
-  color: $primary;
-  background-color: $primary-hover;
+aside {
+  mat-list-item,
+  mat-expansion-panel {
+    margin: 5px 0;
+  }
 
-  div {
+  mat-list-item:hover,
+  .mat-expansion-panel:not(.mat-expanded)
+    .mat-expansion-panel-header:not([aria-disabled="true"]):hover {
+    cursor: pointer;
     color: $primary;
+    background-color: $primary-hover;
+    border-radius: 12px;
+
+    span {
+      color: $primary;
+    }
+
+    mat-icon {
+      color: $primary;
+    }
+
+    ::ng-deep .mat-expansion-indicator svg {
+      fill: $primary;
+    }
+  }
+
+  .mat-expansion-panel:not([class*="mat-elevation-z"]) {
+    box-shadow: none;
+  }
+
+  .mat-expansion-panel-header {
+    padding: 0 24px 0 16px;
+    font-weight: 400;
+
+    mat-icon {
+      color: #44474e;
+    }
+
+    ::ng-deep .mat-content {
+      gap: 1rem;
+    }
+  }
+
+  .mat-expansion-panel.mat-expanded {
+    background-color: $primary-hover;
+
+    .mat-expansion-panel-header {
+      color: $primary;
+    }
+
+    ::ng-deep .mat-expansion-indicator svg {
+      fill: $primary;
+    }
+
+    mat-icon {
+      color: $primary;
+    }
+  }
+
+  mat-divider {
+    margin-bottom: 2rem;
+  }
+
+  h5 {
+    margin: 0;
+    padding: 0 12px;
+    font: initial;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Roboto", sans-serif;
   }
 }
