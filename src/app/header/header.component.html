@@ -12,8 +12,83 @@
     <button mat-flat-button>Create</button>
   </div>
   <div class="header-end">
-    <button mat-icon-button><mat-icon>notifications_none</mat-icon></button>
-    <button mat-icon-button><mat-icon>help_outline</mat-icon></button>
-    <div>{{ userInitials }}</div>
+    <button
+      mat-icon-button
+      matTooltip="Notifications"
+      [matMenuTriggerFor]="notificationsMenu"
+    >
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Help" [matMenuTriggerFor]="helpMenu">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+    <div class="avatar" matTooltip="Account" [matMenuTriggerFor]="accountMenu">
+      {{ userInitials }}
+    </div>
   </div>
 </mat-toolbar>
+
+<mat-menu #notificationsMenu="matMenu">
+  <h1>Notifications</h1>
+  <mat-divider></mat-divider>
+  <div></div>
+</mat-menu>
+
+<mat-menu #helpMenu="matMenu" class="help-menu">
+  <h3>Need help?</h3>
+  <p>
+    Here you can manage tasks, move them between columns and track progress.
+  </p>
+
+  <mat-divider></mat-divider>
+
+  <button mat-menu-item>
+    <mat-icon>play_circle_outline</mat-icon>
+    <span>Quick tour</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon>help_outline</mat-icon>
+    <span>How it works</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon>contact_support</mat-icon>
+    <span>Contact support</span>
+  </button>
+</mat-menu>
+
+<mat-menu #accountMenu="matMenu">
+  <div class="wrapper">
+    <h3>Account</h3>
+    <div class="account">
+      <div class="avatar">{{ userInitials }}</div>
+      <div>
+        <p>{{ username }}</p>
+        <p>{{ email }}</p>
+      </div>
+    </div>
+    <button mat-menu-item>
+      <span>Switch accounts</span>
+    </button>
+    <button mat-menu-item>
+      <span>Manage account</span>
+    </button>
+    <mat-divider></mat-divider>
+    <h3>Trello</h3>
+    <button mat-menu-item>
+      <span>Settings</span>
+    </button>
+    <button mat-menu-item>
+      <span>Themes</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item>
+      <span>Create Workspace</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item>
+      <span>Logout</span>
+    </button>
+  </div>
+</mat-menu>

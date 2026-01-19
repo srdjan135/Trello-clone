@@ -57,17 +57,83 @@ mat-toolbar {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.ng-tns-c1923052698-2 {
+  width: 400px;
+  height: 400px;
+  max-width: none;
+  overflow: hidden;
+
+  & .mat-mdc-menu-content {
+    padding: 1.5rem 1rem;
+    height: 100%;
+
+    h1 {
+      font: inherit;
+      font-size: 25px;
+      font-weight: 400;
+    }
 
     div {
-      width: 30px;
-      height: 30px;
-      font-size: 14px;
-      background-color: $primary;
-      color: $white;
-      border-radius: 50%;
-      text-align: center;
-      cursor: pointer;
-      margin: 5px;
+      height: 75%;
+    }
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.ng-tns-c1923052698-3 {
+  width: 300px;
+  max-width: none;
+
+  & .mat-mdc-menu-content {
+    padding: 1.5rem 1rem;
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.ng-tns-c1923052698-4 {
+  width: 250px;
+  max-width: none;
+
+  & .mat-mdc-menu-content {
+    padding: 1.5rem 1rem;
+
+    .wrapper {
+      .mat-mdc-menu-item {
+        min-height: 40px;
+      }
+
+      h3 {
+        font: inherit;
+        font-size: 13px;
+        font-weight: 653;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+
+      .account {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+
+        .avatar {
+          width: 40px;
+          height: 40px;
+          cursor: default;
+        }
+
+        div p {
+          margin: 0;
+        }
+
+        div p:first-child {
+          margin-top: 5px;
+        }
+
+        div p:last-child {
+          font-weight: 200;
+        }
+      }
     }
   }
 }

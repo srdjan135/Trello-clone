@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 html,
 body {
   height: 100%;
@@ -5,4 +7,18 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $primary;
+  color: $white;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 5px;
 }
