@@ -1,18 +1,32 @@
-<form>
+<form (submit)="onSubmit(signupForm)" #signupForm="ngForm">
   <h2>Create Account</h2>
   <mat-form-field appearance="outline">
     <mat-label>Username</mat-label>
-    <input matInput />
+    <input
+      matInput
+      type="text"
+      name="username"
+      ngModel
+      required
+      minlength="3"
+    />
     <mat-icon matSuffix>person_outline</mat-icon>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>E-mail</mat-label>
-    <input matInput />
+    <input matInput type="email" name="email" ngModel required email />
     <mat-icon matSuffix>mail_outline</mat-icon>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Password</mat-label>
-    <input matInput [type]="hide() ? 'password' : 'text'" />
+    <input
+      matInput
+      [type]="hide() ? 'password' : 'text'"
+      name="password"
+      ngModel
+      required
+      minlength="5"
+    />
     <button
       type="button"
       mat-icon-button
@@ -24,5 +38,5 @@
       <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
   </mat-form-field>
-  <button mat-flat-button>Sign up</button>
+  <button type="submit" mat-flat-button>Sign up</button>
 </form>
