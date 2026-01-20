@@ -9,6 +9,7 @@ import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -34,7 +35,13 @@ export class SignUpComponent {
     event.stopPropagation();
   }
 
+  constructor(private authService: AuthService) {}
+
   onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+
     const username = form.value.username;
     const email = form.value.email;
     const password = form.value.password;
@@ -43,5 +50,9 @@ export class SignUpComponent {
     userData.append('username', username);
     userData.append('email', email);
     userData.append('password', password);
+
+    this.authService.signUp(userData).subscribe((res) => {
+      console.log(res);
+    });
   }
 }

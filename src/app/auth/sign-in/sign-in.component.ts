@@ -9,6 +9,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -34,12 +35,22 @@ export class SignInComponent {
     event.stopPropagation();
   }
 
+  constructor(private authService: AuthService) {}
+
   onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+
     const email = form.value.email;
     const password = form.value.password;
 
     const userData = new FormData();
     userData.append('email', email);
     userData.append('password', password);
+
+    this.authService.signIn(userData).subscribe((res) => {
+      console.log(res);
+    });
   }
 }

@@ -9,7 +9,7 @@ exports.signUp = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const emailExist = await User.exist({ email });
+    const emailExist = await User.exists({ email });
 
     if (emailExist) {
       return res.status(400).json({ message: "E-mail already exist" });
@@ -20,7 +20,7 @@ exports.signUp = async (req, res) => {
     const user = await User.create({
       username,
       email,
-      hashedPassword,
+      password: hashedPassword,
     });
 
     const token = jwt.sign(
@@ -35,7 +35,7 @@ exports.signUp = async (req, res) => {
       userId: user._id,
     });
   } catch (err) {
-    res.status(500).json({ message: "Sign up filed!" });
+    res.status(500).json({ message: "Sign up filed!", err });
   }
 };
 
