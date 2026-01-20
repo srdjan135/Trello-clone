@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+
+    h2 {
+      text-align: center;
+    }
+  }
+}

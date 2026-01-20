@@ -1,1 +1,23 @@
-<p>sign-in works!</p>
+<form>
+  <h2>Sign In</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>E-mail</mat-label>
+    <input matInput />
+    <mat-icon matSuffix>mail_outline</mat-icon>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput [type]="hide() ? 'password' : 'text'" />
+    <button
+      type="button"
+      mat-icon-button
+      matSuffix
+      (click)="clickEvent($event)"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()"
+    >
+      <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+    </button>
+  </mat-form-field>
+  <button mat-flat-button>Sign in</button>
+</form>
