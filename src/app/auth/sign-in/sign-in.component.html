@@ -2,8 +2,27 @@
   <h2>Sign In</h2>
   <mat-form-field appearance="outline">
     <mat-label>E-mail</mat-label>
-    <input matInput type="email" name="email" ngModel required email />
+    <input
+      matInput
+      type="email"
+      name="email"
+      ngModel
+      required
+      email
+      #email="ngModel"
+    />
     <mat-icon matSuffix>mail_outline</mat-icon>
+    <mat-error *ngIf="email.hasError('required')">
+      E-mail is required!
+    </mat-error>
+
+    <mat-error *ngIf="email.hasError('email')">
+      Enter a valid e-mail!
+    </mat-error>
+
+    <mat-error *ngIf="email.errors?.['backend']">
+      {{ email.errors?.["backend"] }}
+    </mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Password</mat-label>
@@ -14,6 +33,7 @@
       ngModel
       required
       minlength="5"
+      #password="ngModel"
     />
     <button
       type="button"
@@ -25,6 +45,21 @@
     >
       <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
+    <mat-error *ngIf="password.hasError('required')">
+      Password is required!
+    </mat-error>
+
+    <mat-error *ngIf="password.hasError('minlength')">
+      Password must contain
+      {{ password.errors?.["minlength"].requiredLength }} characters or more!
+    </mat-error>
+
+    <mat-error *ngIf="password.errors?.['backend']">
+      {{ password.errors?.["backend"] }}
+    </mat-error>
   </mat-form-field>
-  <button type="submit" mat-flat-button>Sign in</button>
+  <button type="submit" mat-flat-button [disabled]="signinForm.invalid">
+    Sign in
+  </button>
+  <p>You don't have account? <a routerLink="/signup">Sign up here.</a></p>
 </form>

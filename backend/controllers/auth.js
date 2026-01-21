@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { body, Validator } = require("express-validator");
 const User = require("../models/user");
 
 const TOKEN_EXPIRES_IN = 3600;
@@ -42,20 +41,30 @@ exports.signUp = async (req, res) => {
 exports.signIn = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
-  }
-
   try {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        errors: [
+          {
+            field: "email",
+            message: "User with this email does not exist",
+          },
+        ],
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        errors: [
+          {
+            field: "password",
+            message: "Incorrect password",
+          },
+        ],
+      });
     }
 
     const token = jwt.sign(

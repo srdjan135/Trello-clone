@@ -9,13 +9,47 @@
       ngModel
       required
       minlength="3"
+      #username="ngModel"
     />
     <mat-icon matSuffix>person_outline</mat-icon>
+
+    <mat-error *ngIf="username.hasError('required')">
+      Username is required!
+    </mat-error>
+
+    <mat-error *ngIf="username.hasError('minlength')">
+      Username must contain
+      {{ username.errors?.["minlength"].requiredLength }} characters or more!
+    </mat-error>
+
+    <mat-error *ngIf="username.errors?.['backend']">
+      {{ username.errors?.["backend"] }}
+    </mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>E-mail</mat-label>
-    <input matInput type="email" name="email" ngModel required email />
+    <input
+      matInput
+      type="email"
+      name="email"
+      ngModel
+      required
+      email
+      #email="ngModel"
+    />
     <mat-icon matSuffix>mail_outline</mat-icon>
+
+    <mat-error *ngIf="email.hasError('required')">
+      E-mail is required!
+    </mat-error>
+
+    <mat-error *ngIf="email.hasError('email')">
+      Enter a valid e-mail!
+    </mat-error>
+
+    <mat-error *ngIf="email.errors?.['backend']">
+      {{ email.errors?.["backend"] }}
+    </mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Password</mat-label>
@@ -26,6 +60,7 @@
       ngModel
       required
       minlength="5"
+      #password="ngModel"
     />
     <button
       type="button"
@@ -37,6 +72,22 @@
     >
       <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
+
+    <mat-error *ngIf="password.hasError('required')">
+      Password is required!
+    </mat-error>
+
+    <mat-error *ngIf="password.hasError('minlength')">
+      Password must contain
+      {{ password.errors?.["minlength"].requiredLength }} characters or more!
+    </mat-error>
+
+    <mat-error *ngIf="password.errors?.['backend']">
+      {{ password.errors?.["backend"] }}
+    </mat-error>
   </mat-form-field>
-  <button type="submit" mat-flat-button>Sign up</button>
+  <button type="submit" mat-flat-button [disabled]="signupForm.invalid">
+    Sign up
+  </button>
+  <p>You already have account? <a routerLink="/signin">Sign in here.</a></p>
 </form>
