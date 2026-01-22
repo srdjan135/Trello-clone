@@ -25,7 +25,7 @@ export class WorkspacesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.api.workspaces().subscribe((res) => {
+    this.api.getWorkspaces().subscribe((res) => {
       this.workspaces = res.workspaces;
       this.cdr.markForCheck();
     });

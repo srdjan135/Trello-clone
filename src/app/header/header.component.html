@@ -23,7 +23,7 @@
       <mat-icon>help_outline</mat-icon>
     </button>
     <div class="avatar" matTooltip="Account" [matMenuTriggerFor]="accountMenu">
-      {{ userInitials }}
+      {{ userInitial }}
     </div>
   </div>
 </mat-toolbar>
@@ -61,13 +61,16 @@
 <mat-menu #accountMenu="matMenu">
   <div class="wrapper">
     <h3>Account</h3>
-    <div class="account">
-      <div class="avatar">{{ userInitials }}</div>
-      <div>
-        <p>{{ username }}</p>
-        <p>{{ email }}</p>
+    @if (user) {
+      <div class="account">
+        <div class="avatar">{{ userInitial }}</div>
+        <div>
+          <p>{{ user.username }}</p>
+          <p>{{ user.email }}</p>
+        </div>
       </div>
-    </div>
+    }
+
     <button mat-menu-item>
       <span>Switch accounts</span>
     </button>
@@ -87,7 +90,7 @@
       <span>Create Workspace</span>
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="logout()">
       <span>Logout</span>
     </button>
   </div>

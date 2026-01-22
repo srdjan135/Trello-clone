@@ -27,7 +27,11 @@ export class ApiService {
     }>(`${this.API_URL}/signin`, userData);
   }
 
-  workspaces() {
+  getUser() {
+    return this.http.get<{ user: User }>(`${this.API_URL}/user`);
+  }
+
+  getWorkspaces() {
     return this.http.get<{ workspaces: Workspace[] }>(
       `${this.API_URL}/workspaces`,
     );

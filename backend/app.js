@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 //import routes
 const authRoutes = require("./routes/auth");
 const workspaceRoutes = require("./routes/workspace");
+const userRoutes = require("./routes/user");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 //ROUTES
 app.use("/api", authRoutes);
 app.use("/api", workspaceRoutes);
+app.use("/api", userRoutes);
 
 const PORT = 3000;
 mongoose

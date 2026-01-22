@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatLabel } from '@angular/material/form-field';
@@ -10,6 +15,9 @@ import { MatMenu } from '@angular/material/menu';
 import { MatMenuItem } from '@angular/material/menu';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
+import { User } from '../models/user.model';
+import { ApiService } from '../shared/services/api.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -31,9 +39,27 @@ import { MatDivider } from '@angular/material/divider';
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent {
-  userInitials = 'P';
-  username = 'Pele';
-  email = 'pelepelovic9@gmail.com';
+export class HeaderComponent implements OnInit {
+  user!: User;
+  userInitial!: string;
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private api: ApiService,
+    private auth: AuthService,
+  ) {}
+
+  ngOnInit(): void {
+    this.api.getUser().subscribe((res) => {
+      this.user = res.user;
+      this.userInitial = this.user.username.split('')[0];
+      this.cdr.markForCheck();
+    });
+  }
+
+  logout() {
+    this.auth.logout();
+  }
 }
