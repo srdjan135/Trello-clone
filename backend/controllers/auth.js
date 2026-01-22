@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const Workspace = require("../models/workspace");
 
 const TOKEN_EXPIRES_IN = 3600;
 
@@ -20,6 +21,18 @@ exports.signUp = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      workspaces: [],
+    });
+
+    const workspace = await Workspace.create({
+      name: "Default",
+      members: [user._id],
+      isPrivate: true,
+      description: "This is the default trello workspace!",
+    });
+
+    await User.findByIdAndUpdate(user._id, {
+      $addToSet: { workspaces: workspace._id },
     });
 
     const token = jwt.sign(

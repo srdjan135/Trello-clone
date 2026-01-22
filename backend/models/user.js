@@ -6,6 +6,13 @@ const userSchema = mongoose.Schema(
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true, select: false },
     password: { type: String, required: true },
+    workspaces: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Workspace",
+        required: true,
+      },
+    ],
   },
   { timestamps: true, default: false },
 );
