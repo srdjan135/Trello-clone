@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Workspace } from '../../models/workspace';
@@ -9,6 +9,7 @@ import { Workspace } from '../../models/workspace';
   imports: [MatButton, MatIcon],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceComponent {
   @Input({ required: true }) workspace!: Workspace;

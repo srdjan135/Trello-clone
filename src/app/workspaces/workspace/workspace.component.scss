@@ -1,0 +1,18 @@
+:host {
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+    }
+
+    div {
+      button {
+        border-radius: 8px;
+        margin: 0 0.5rem;
+      }
+    }
+  }
+}

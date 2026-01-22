@@ -9,4 +9,13 @@ mat-sidenav-container {
   mat-sidenav {
     padding: 3rem 0 0.5rem 0;
   }
+
+  mat-sidenav-content {
+    padding-top: 3rem;
+
+    main {
+      display: flex;
+      justify-content: center;
+    }
+  }
 }

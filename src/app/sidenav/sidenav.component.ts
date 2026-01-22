@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { MatList, MatListItemTitle } from '@angular/material/list';
 import { MatListItem } from '@angular/material/list';
 import { MatListItemIcon } from '@angular/material/list';
@@ -9,6 +14,7 @@ import { MatDivider } from '@angular/material/divider';
 import { templates } from './templates';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Workspace } from '../models/workspace';
+import { ApiService } from '../shared/services/api.service';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
@@ -26,8 +32,21 @@ import { Workspace } from '../models/workspace';
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavComponent {
+export class SidenavComponent implements OnInit {
   boardTemplates: string[] = templates;
   workspaces: Workspace[] = [];
+
+  constructor(
+    private api: ApiService,
+    private cdr: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.api.workspaces().subscribe((res) => {
+      this.workspaces = res.workspaces;
+      this.cdr.markForCheck();
+    });
+  }
 }

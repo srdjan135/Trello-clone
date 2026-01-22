@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user.model';
+import { Workspace } from '../../models/workspace';
 
 @Injectable({
   providedIn: 'root',
@@ -24,5 +25,11 @@ export class ApiService {
       expiresIn: number;
       user?: User;
     }>(`${this.API_URL}/signin`, userData);
+  }
+
+  workspaces() {
+    return this.http.get<{ workspaces: Workspace[] }>(
+      `${this.API_URL}/workspaces`,
+    );
   }
 }
