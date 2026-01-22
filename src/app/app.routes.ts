@@ -5,7 +5,14 @@ import { AuthGuard } from './shared/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'boards',
+    pathMatch: 'full',
+  },
+  {
+    path: 'boards',
     component: LayoutComponent,
     canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./layout/layout.routes').then((m) => m.layoutRoutes),
   },
 ];

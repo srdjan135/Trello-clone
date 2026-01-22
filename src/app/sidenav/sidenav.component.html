@@ -1,6 +1,11 @@
 <aside class="sidebar">
   <mat-list>
-    <mat-list-item mat-list-item>
+    <mat-list-item
+      mat-list-item
+      routerLink="/boards"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       <mat-icon matListItemIcon>assessment</mat-icon>
       <span matListItemTitle>Boards</span>
     </mat-list-item>
@@ -22,27 +27,29 @@
     <mat-divider></mat-divider>
 
     <h5>Workspaces</h5>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-icon>dashboard</mat-icon>
-        <span class="title">Workspace</span>
-        <span class="spacer"></span>
-      </mat-expansion-panel-header>
+    @for (workspace of workspaces; track workspace._id) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-icon>dashboard</mat-icon>
+          <span class="title">{{ workspace.name }} Workspace</span>
+          <span class="spacer"></span>
+        </mat-expansion-panel-header>
 
-      <mat-list>
-        <mat-list-item mat-list-item>
-          <mat-icon matListItemIcon>assessment</mat-icon>
-          <span matListItemTitle>Boards</span>
-        </mat-list-item>
-        <mat-list-item mat-list-item>
-          <mat-icon matListItemIcon>people</mat-icon>
-          <span matListItemTitle>Members</span>
-        </mat-list-item>
-        <mat-list-item mat-list-item>
-          <mat-icon matListItemIcon>settings</mat-icon>
-          <span matListItemTitle>Settings</span>
-        </mat-list-item>
-      </mat-list>
-    </mat-expansion-panel>
+        <mat-list>
+          <mat-list-item mat-list-item>
+            <mat-icon matListItemIcon>assessment</mat-icon>
+            <span matListItemTitle>Boards</span>
+          </mat-list-item>
+          <mat-list-item mat-list-item>
+            <mat-icon matListItemIcon>people</mat-icon>
+            <span matListItemTitle>Members</span>
+          </mat-list-item>
+          <mat-list-item mat-list-item>
+            <mat-icon matListItemIcon>settings</mat-icon>
+            <span matListItemTitle>Settings</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    }
   </mat-list>
 </aside>

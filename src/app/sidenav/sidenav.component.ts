@@ -7,6 +7,8 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatExpansionPanelHeader } from '@angular/material/expansion';
 import { MatDivider } from '@angular/material/divider';
 import { templates } from './templates';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Workspace } from '../models/workspace';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
@@ -19,10 +21,13 @@ import { templates } from './templates';
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatDivider,
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent {
   boardTemplates: string[] = templates;
+  workspaces: Workspace[] = [];
 }
