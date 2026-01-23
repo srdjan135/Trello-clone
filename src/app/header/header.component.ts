@@ -18,7 +18,10 @@ import { MatDivider } from '@angular/material/divider';
 import { User } from '../models/user.model';
 import { ApiService } from '../shared/services/api.service';
 import { AuthService } from '../shared/services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
 
+import { ModalComponent } from '../shared/components/modal/modal.component';
+import { CreateWorkspaceComponent } from '../workspaces/create-workspace/create-workspace.component';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -49,6 +52,7 @@ export class HeaderComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private api: ApiService,
     private auth: AuthService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +60,20 @@ export class HeaderComponent implements OnInit {
       this.user = res.user;
       this.userInitial = this.user.username.split('')[0];
       this.cdr.markForCheck();
+    });
+  }
+
+  openForm() {
+    this.dialog.open(ModalComponent, {
+      width: '70%',
+      maxWidth: '100vw',
+      height: '60%',
+      data: {
+        title: 'Create Workspace',
+        subtitle:
+          'Boost your productivity by making it easier for everyone to access boards in one location',
+        component: CreateWorkspaceComponent,
+      },
     });
   }
 

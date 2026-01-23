@@ -1,0 +1,26 @@
+<form #workspaceForm="ngForm">
+  <mat-form-field appearance="outline">
+    <mat-label>Workspace Name</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="Workspace Name"
+      name="name"
+      ngModel
+      required
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Workspace Description</mat-label>
+    <textarea
+      matInput
+      type="text"
+      placeholder="Workspace Description"
+      rows="5"
+      name="description"
+      ngModel
+      required
+    ></textarea>
+  </mat-form-field>
+  <button mat-flat-button [disabled]="workspaceForm.invalid">Continue</button>
+</form>

@@ -9,6 +9,20 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+span,
+p {
+  color: $text-main;
+}
+
+button[mat-flat-button] > span {
+  color: $white;
+}
+
 .avatar {
   width: 30px;
   height: 30px;

@@ -65,7 +65,6 @@ export class AuthService {
       this.token = authInformation.token;
       this.isAuthenticated = true;
       this.setAuthTime(expiresIn / 1000);
-      console.log(authInformation);
     }
   }
 

@@ -1,0 +1,14 @@
+<div class="wrapper">
+  <h2 mat-dialog-title *ngIf="dialogData.title">
+    {{ dialogData.title }}
+  </h2>
+  <p>{{ dialogData.subtitle }}</p>
+
+  <mat-dialog-content>
+    <ng-container *ngComponentOutlet="dialogData.component"> </ng-container>
+  </mat-dialog-content>
+</div>
+<div class="ws-bg">
+  <img src="/assets/create-workspace-img.svg" alt="create-board" />
+</div>
+<button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
