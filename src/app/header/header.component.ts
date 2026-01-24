@@ -63,7 +63,7 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  openForm() {
+  openFormModal() {
     this.dialog.open(ModalComponent, {
       width: '70%',
       maxWidth: '100vw',

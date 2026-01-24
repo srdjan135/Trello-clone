@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   OnInit,
 } from '@angular/core';
 import { MatList, MatListItemTitle } from '@angular/material/list';
@@ -14,7 +15,9 @@ import { MatDivider } from '@angular/material/divider';
 import { templates } from './templates';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Workspace } from '../models/workspace';
-import { ApiService } from '../shared/services/api.service';
+import { switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WorkspaceService } from '../shared/services/workspace.service';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
@@ -39,14 +42,21 @@ export class SidenavComponent implements OnInit {
   workspaces: Workspace[] = [];
 
   constructor(
-    private api: ApiService,
+    private workspaceService: WorkspaceService,
     private cdr: ChangeDetectorRef,
+    private destroyRef: DestroyRef,
   ) {}
 
   ngOnInit(): void {
-    this.api.getWorkspaces().subscribe((res) => {
-      this.workspaces = res.workspaces;
-      this.cdr.markForCheck();
-    });
+    this.workspaceService
+      .getWorkspaces()
+      .pipe(
+        switchMap(() => this.workspaceService.workspaces),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((res) => {
+        this.workspaces = res;
+        this.cdr.markForCheck();
+      });
   }
 }

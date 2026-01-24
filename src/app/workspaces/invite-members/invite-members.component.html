@@ -1,0 +1,26 @@
+<form (submit)="onSubmit(inviteForm)" #inviteForm="ngForm">
+  <div>
+    <button mat-button>
+      <mat-icon>link</mat-icon>
+      Invite With Link
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Workspace members</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="example@gmail.com"
+      name="members"
+      ngModel
+      required
+    />
+  </mat-form-field>
+  <button mat-flat-button type="submit" [disabled]="inviteForm.invalid">
+    Invite
+  </button>
+  <div>
+    <a (click)="close()">I'll do this later</a>
+  </div>
+</form>

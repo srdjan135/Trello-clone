@@ -2,11 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   OnInit,
 } from '@angular/core';
 import { Workspace } from '../models/workspace';
 import { WorkspaceComponent } from './workspace/workspace.component';
-import { ApiService } from '../shared/services/api.service';
+import { switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WorkspaceService } from '../shared/services/workspace.service';
 
 @Component({
   selector: 'app-workspaces',
@@ -20,14 +23,21 @@ export class WorkspacesComponent implements OnInit {
   workspaces: Workspace[] = [];
 
   constructor(
-    private api: ApiService,
+    private workspaceService: WorkspaceService,
     private cdr: ChangeDetectorRef,
+    private destroyRef: DestroyRef,
   ) {}
 
-  ngOnInit(): void {
-    this.api.getWorkspaces().subscribe((res) => {
-      this.workspaces = res.workspaces;
-      this.cdr.markForCheck();
-    });
+  ngOnInit() {
+    this.workspaceService
+      .getWorkspaces()
+      .pipe(
+        switchMap(() => this.workspaceService.workspaces),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((res) => {
+        this.workspaces = res;
+        this.cdr.markForCheck();
+      });
   }
 }

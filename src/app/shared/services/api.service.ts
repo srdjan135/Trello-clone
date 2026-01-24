@@ -36,4 +36,11 @@ export class ApiService {
       `${this.API_URL}/workspaces`,
     );
   }
+
+  createWorkspace(data: { name: string; description: string }) {
+    return this.http.post<{ workspace: Workspace }>(
+      `${this.API_URL}/workspaces`,
+      data,
+    );
+  }
 }
