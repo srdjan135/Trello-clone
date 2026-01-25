@@ -45,11 +45,20 @@ export class ApiService {
     );
   }
 
+  getBoards(workspaceId: string) {
+    return this.http.get<{ boards: Board[] }>(
+      `${this.API_URL}/${workspaceId}/boards`,
+    );
+  }
+
   createBoard(data: {
     title: string;
     background: string;
     workspaceId: string;
   }) {
-    return this.http.post<{ board: Board }>(`${this.API_URL}/boards`, data);
+    return this.http.post<{ board: Board }>(
+      `${this.API_URL}/${data.workspaceId}/boards`,
+      data,
+    );
   }
 }

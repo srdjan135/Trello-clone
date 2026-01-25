@@ -8,7 +8,7 @@ exports.getWorkspaces = async (req, res) => {
     const workspaces = await Workspace.find({ members: userId });
 
     if (!workspaces) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Workspaces not found" });
     }
 
     res.status(200).json({ workspaces });

@@ -1,13 +1,20 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatRipple } from '@angular/material/core';
-import { Workspace } from '../../../models/workspace';
+import { Workspace } from '../../../../models/workspace';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { bgColorImages, bgImages } from './images';
-import { ApiService } from '../../../shared/services/api.service';
+import { ApiService } from '../../../../shared/services/api.service';
+import { Board } from '../../../../models/board.model';
 
 @Component({
   selector: 'app-create-board',
@@ -29,6 +36,7 @@ import { ApiService } from '../../../shared/services/api.service';
 })
 export class CreateBoardComponent {
   @Input({ required: true }) workspace!: Workspace;
+  @Output() newBoard = new EventEmitter<Board>();
   show: boolean = false;
   bgColorImages: string[] = bgColorImages;
   bgImages: string[] = bgImages;
@@ -43,6 +51,8 @@ export class CreateBoardComponent {
         background: this.selectedBg,
         workspaceId: this.workspace._id,
       })
-      .subscribe();
+      .subscribe((res) => {
+        this.newBoard.emit(res.board);
+      });
   }
 }

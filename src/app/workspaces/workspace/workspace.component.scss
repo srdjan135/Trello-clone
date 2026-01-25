@@ -1,6 +1,6 @@
 :host {
   display: block;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 
   .wrapper {
     display: flex;
@@ -17,10 +17,5 @@
         margin: 0 0.5rem;
       }
     }
-  }
-
-  app-create-board {
-    display: block;
-    margin-top: 1rem;
   }
 }

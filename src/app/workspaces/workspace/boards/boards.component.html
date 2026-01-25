@@ -1,0 +1,14 @@
+@for (board of boards; track board._id) {
+  <div class="board-card">
+    <div
+      class="bg"
+      [style.backgroundImage]="'url(' + board.background + ')'"
+    ></div>
+    <p>{{ board.title }}</p>
+  </div>
+}
+
+<app-create-board
+  [workspace]="workspace"
+  (newBoard)="updateBoardsList($event)"
+></app-create-board>
