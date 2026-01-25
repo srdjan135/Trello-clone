@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user.model';
 import { Workspace } from '../../models/workspace';
+import { Board } from '../../models/board.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,5 +43,9 @@ export class ApiService {
       `${this.API_URL}/workspaces`,
       data,
     );
+  }
+
+  createBoard(data: { title: string }) {
+    return this.http.post<{ board: Board }>(`${this.API_URL}/boards`, data);
   }
 }

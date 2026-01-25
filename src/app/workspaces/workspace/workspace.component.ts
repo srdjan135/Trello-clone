@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Workspace } from '../../models/workspace';
+import { CreateBoardComponent } from './create-board/create-board.component';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [MatButton, MatIcon],
+  imports: [MatButton, MatIcon, CreateBoardComponent],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

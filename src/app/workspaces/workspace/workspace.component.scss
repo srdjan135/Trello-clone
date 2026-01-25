@@ -1,4 +1,7 @@
 :host {
+  display: block;
+  margin-bottom: 1.5rem;
+
   .wrapper {
     display: flex;
     justify-content: space-between;
@@ -14,5 +17,10 @@
         margin: 0 0.5rem;
       }
     }
+  }
+
+  app-create-board {
+    display: block;
+    margin-top: 1rem;
   }
 }

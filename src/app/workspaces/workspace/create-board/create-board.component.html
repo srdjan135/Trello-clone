@@ -1,0 +1,71 @@
+<div class="wrapper">
+  <div matRipple (click)="show = !show" class="rippleDiv">
+    <span>Create new board</span>
+  </div>
+
+  @if (show) {
+    <div class="menu">
+      <h5>Create board</h5>
+      <div
+        class="selectedBg"
+        [style.backgroundImage]="'url(' + selectedBg + ')'"
+      >
+        <img src="/assets/create-board-img.svg" alt="create board image" />
+      </div>
+
+      <form (submit)="onSubmit(boardForm)" #boardForm="ngForm">
+        <h5 class="bg">Backgrounds</h5>
+        <div class="bg-wrapper">
+          @for (image of bgImages; track image) {
+            <div
+              class="box bg-image-box"
+              (click)="selectedBg = image"
+              [class.selected]="selectedBg === image"
+              [style.backgroundImage]="'url(' + image + ')'"
+            >
+              @if (selectedBg === image) {
+                <mat-icon class="check">check</mat-icon>
+              }
+            </div>
+          }
+        </div>
+        <div class="bg-wrapper">
+          @for (image of bgColorImages; track image) {
+            <div
+              class="box bg-box"
+              (click)="selectedBg = image"
+              [class.selected]="selectedBg === image"
+              [style.backgroundImage]="'url(' + image + ')'"
+            >
+              @if (selectedBg === image) {
+                <mat-icon class="check">check</mat-icon>
+              }
+            </div>
+          }
+        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Board Title</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Board Title"
+            name="title"
+            ngModel
+            required
+            #title="ngModel"
+          />
+          @if (title.hasError("required")) {
+            <mat-error>Title is required!</mat-error>
+          }
+        </mat-form-field>
+
+        <button type="submit" mat-flat-button [disabled]="boardForm.invalid">
+          Create
+        </button>
+      </form>
+      <button mat-icon-button (click)="show = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+</div>
