@@ -37,6 +37,12 @@ export class CreateBoardComponent {
   constructor(private api: ApiService) {}
 
   onSubmit(form: NgForm) {
-    this.api.createBoard({ title: form.value.title }).subscribe();
+    this.api
+      .createBoard({
+        title: form.value.title,
+        background: this.selectedBg,
+        workspaceId: this.workspace._id,
+      })
+      .subscribe();
   }
 }

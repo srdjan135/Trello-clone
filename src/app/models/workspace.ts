@@ -1,3 +1,4 @@
+import { Board } from './board.model';
 import { User } from './user.model';
 
 export interface Workspace {
@@ -6,4 +7,5 @@ export interface Workspace {
   members: User[];
   isPrivate: boolean;
   description?: string;
+  boards?: Board[];
 }

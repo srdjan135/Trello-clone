@@ -12,6 +12,7 @@ const workspaceSchema = mongoose.Schema(
     ],
     isPrivate: { type: Boolean, required: true, default: true },
     description: { type: String },
+    boards: [{ type: mongoose.Schema.Types.ObjectId, ref: "Board" }],
   },
   { timestamps: true, default: false },
 );

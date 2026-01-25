@@ -45,7 +45,11 @@ export class ApiService {
     );
   }
 
-  createBoard(data: { title: string }) {
+  createBoard(data: {
+    title: string;
+    background: string;
+    workspaceId: string;
+  }) {
     return this.http.post<{ board: Board }>(`${this.API_URL}/boards`, data);
   }
 }
