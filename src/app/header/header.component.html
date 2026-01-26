@@ -1,5 +1,10 @@
 <mat-toolbar>
-  <div class="logo">
+  <div
+    class="logo"
+    routerLink="/boards"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
     <mat-icon>assessment</mat-icon>
     <h1>Trello</h1>
   </div>
@@ -28,7 +33,7 @@
   </div>
 </mat-toolbar>
 
-<mat-menu #notificationsMenu="matMenu">
+<mat-menu #notificationsMenu="matMenu" class="notifications">
   <h1>Notifications</h1>
   <mat-divider></mat-divider>
   <div></div>
@@ -58,7 +63,7 @@
   </button>
 </mat-menu>
 
-<mat-menu #accountMenu="matMenu">
+<mat-menu #accountMenu="matMenu" class="account-settings">
   <div class="wrapper">
     <h3>Account</h3>
     @if (user) {

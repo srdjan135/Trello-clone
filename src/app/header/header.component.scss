@@ -4,10 +4,12 @@ mat-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 55px;
 
   .logo {
     display: flex;
     gap: 1rem;
+    cursor: pointer;
 
     mat-icon {
       transform: rotate(180deg);
@@ -25,13 +27,17 @@ mat-toolbar {
       width: 90%;
     }
 
+    mat-form-feild ::ng-deep .mat-mdc-text-field-wrapper {
+      max-height: 40px;
+    }
+
     mat-form-field ::ng-deep .mat-mdc-form-field-bottom-align {
       display: none !important;
     }
 
     mat-form-field ::ng-deep .mat-mdc-form-field-infix {
       padding: 0;
-      min-height: 45px;
+      min-height: 40px;
       display: flex;
       align-items: center;
     }
@@ -41,11 +47,11 @@ mat-toolbar {
       .mat-mdc-text-field-wrapper
       .mat-mdc-form-field-flex
       .mat-mdc-floating-label {
-      top: 22px;
+      top: 19px;
     }
 
     mat-form-field ::ng-deep .mdc-floating-label--float-above {
-      transform: translateY(-30px) scale(0.75) !important;
+      transform: translateY(-27px) scale(0.75) !important;
     }
 
     button {
@@ -60,7 +66,7 @@ mat-toolbar {
   }
 }
 
-::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.ng-tns-c1923052698-2 {
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.notifications {
   width: 400px;
   height: 400px;
   max-width: none;
@@ -82,7 +88,7 @@ mat-toolbar {
   }
 }
 
-::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.ng-tns-c1923052698-3 {
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.help-menu {
   width: 300px;
   max-width: none;
 
@@ -91,7 +97,7 @@ mat-toolbar {
   }
 }
 
-::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.ng-tns-c1923052698-4 {
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.account-settings {
   width: 250px;
   max-width: none;
 

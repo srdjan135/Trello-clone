@@ -1,9 +1,9 @@
 <div class="wrapper">
-  <div matRipple (click)="show = !show" class="rippleDiv">
+  <div matRipple (click)="openMenu()" class="rippleDiv" #menuTrigger>
     <span>Create new board</span>
   </div>
 
-  @if (show) {
+  <ng-template #menuTemplate let-data>
     <div class="menu">
       <h5>Create board</h5>
       <div
@@ -63,9 +63,11 @@
           Create
         </button>
       </form>
-      <button mat-icon-button (click)="show = false">
+      <button mat-icon-button (click)="close()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
-  }
+  </ng-template>
+
+  <ng-container #menuVcr></ng-container>
 </div>

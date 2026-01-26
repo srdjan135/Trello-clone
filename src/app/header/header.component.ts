@@ -22,6 +22,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { CreateWorkspaceComponent } from '../workspaces/create-workspace/create-workspace.component';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -39,6 +40,8 @@ import { CreateWorkspaceComponent } from '../workspaces/create-workspace/create-
     MatMenuItem,
     MatMenuTrigger,
     MatDivider,
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
