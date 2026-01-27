@@ -1,7 +1,6 @@
 <aside class="sidebar">
   <mat-list>
     <mat-list-item
-      mat-list-item
       routerLink="/boards"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
@@ -19,7 +18,7 @@
 
       <mat-list>
         @for (template of boardTemplates; track template) {
-          <mat-list-item mat-list-item>{{ template }}</mat-list-item>
+          <mat-list-item>{{ template }}</mat-list-item>
         }
       </mat-list>
     </mat-expansion-panel>
@@ -28,7 +27,7 @@
 
     <h5>Workspaces</h5>
     @for (workspace of workspaces; track workspace._id) {
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="isWorkspaceActive(workspace._id)">
         <mat-expansion-panel-header>
           <mat-icon>dashboard</mat-icon>
           <span class="title">{{ workspace.name }} Workspace</span>
@@ -36,15 +35,18 @@
         </mat-expansion-panel-header>
 
         <mat-list>
-          <mat-list-item mat-list-item>
+          <mat-list-item
+            [routerLink]="['/', workspace._id, 'boards']"
+            routerLinkActive="active"
+          >
             <mat-icon matListItemIcon>assessment</mat-icon>
             <span matListItemTitle>Boards</span>
           </mat-list-item>
-          <mat-list-item mat-list-item>
+          <mat-list-item>
             <mat-icon matListItemIcon>people</mat-icon>
             <span matListItemTitle>Members</span>
           </mat-list-item>
-          <mat-list-item mat-list-item>
+          <mat-list-item>
             <mat-icon matListItemIcon>settings</mat-icon>
             <span matListItemTitle>Settings</span>
           </mat-list-item>

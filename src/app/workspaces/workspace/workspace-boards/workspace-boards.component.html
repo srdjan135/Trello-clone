@@ -1,0 +1,23 @@
+@if (workspace) {
+  <h5>{{ workspace.name }} Workspace Boards</h5>
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Sort By</mat-label>
+      <mat-select [formControl]="sortControl">
+        <mat-option value="az">Alphabetically A–Z</mat-option>
+        <mat-option value="za">Alphabetically Z–A</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Search Boards</mat-label>
+      <input type="search" matInput [formControl]="searchControl" />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </div>
+  <app-boards
+    [workspace]="workspace"
+    [sort]="sortControl.value!"
+    [search]="searchControl.value!"
+  ></app-boards>
+}

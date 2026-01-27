@@ -13,7 +13,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatExpansionPanelHeader } from '@angular/material/expansion';
 import { MatDivider } from '@angular/material/divider';
 import { templates } from './templates';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Workspace } from '../models/workspace';
 import { switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -45,6 +45,7 @@ export class SidenavComponent implements OnInit {
     private workspaceService: WorkspaceService,
     private cdr: ChangeDetectorRef,
     private destroyRef: DestroyRef,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -58,5 +59,9 @@ export class SidenavComponent implements OnInit {
         this.workspaces = res;
         this.cdr.markForCheck();
       });
+  }
+
+  isWorkspaceActive(workspaceId: string) {
+    return this.router.url.includes(`${workspaceId}`);
   }
 }

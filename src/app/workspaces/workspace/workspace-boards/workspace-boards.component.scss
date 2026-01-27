@@ -1,0 +1,12 @@
+:host {
+  width: 85%;
+
+  div {
+    display: flex;
+    gap: 1rem;
+
+    input[type="search"]::-webkit-search-cancel-button {
+      cursor: pointer;
+    }
+  }
+}

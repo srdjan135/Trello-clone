@@ -1,7 +1,11 @@
 <div class="wrapper">
   <h3>{{ workspace.name }} Workspace</h3>
   <div>
-    <button mat-raised-button>
+    <button
+      mat-raised-button
+      [routerLink]="['/', workspace._id, 'boards']"
+      routerLinkActive="active"
+    >
       <mat-icon>assessment</mat-icon>
       Boards
     </button>

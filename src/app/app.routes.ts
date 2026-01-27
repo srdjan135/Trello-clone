@@ -9,7 +9,7 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'boards',
+    path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
     loadChildren: () =>
