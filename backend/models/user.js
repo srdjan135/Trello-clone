@@ -13,6 +13,9 @@ const userSchema = mongoose.Schema(
         required: true,
       },
     ],
+    notifications: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
+    ],
   },
   { timestamps: true, default: false },
 );

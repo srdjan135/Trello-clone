@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Workspace = require("../models/workspace");
 
 exports.getUser = async (req, res) => {
   const userId = req.userData.userId;
@@ -16,4 +17,26 @@ exports.getUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch user!" });
   }
+};
+
+exports.searchUsers = async (req, res) => {
+  const q = req.query.q;
+  const currentUserId = req.userData.userId;
+  const workspaceId = req.query.workspaceId;
+
+  if (!q) {
+    return res.status(200).json({ users: [] });
+  }
+
+  const workspace = await Workspace.findById(workspaceId).select("members");
+
+  const users = await User.find({
+    _id: {
+      $ne: currentUserId,
+      $nin: workspace.members,
+    },
+    username: { $regex: q, $options: "i" },
+  }).select("_id username");
+
+  res.status(200).json({ users });
 };

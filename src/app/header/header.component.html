@@ -21,8 +21,13 @@
       mat-icon-button
       matTooltip="Notifications"
       [matMenuTriggerFor]="notificationsMenu"
+      (click)="readNotifications()"
     >
-      <mat-icon>notifications_none</mat-icon>
+      <mat-icon
+        [matBadge]="unreadNotifications"
+        [matBadgeHidden]="unreadNotifications === 0"
+        >notifications_none</mat-icon
+      >
     </button>
     <button mat-icon-button matTooltip="Help" [matMenuTriggerFor]="helpMenu">
       <mat-icon>help_outline</mat-icon>
@@ -34,9 +39,67 @@
 </mat-toolbar>
 
 <mat-menu #notificationsMenu="matMenu" class="notifications">
-  <h1>Notifications</h1>
-  <mat-divider></mat-divider>
-  <div></div>
+  <ng-template matMenuContent>
+    <h1>Notifications</h1>
+    <mat-divider></mat-divider>
+
+    @for (notification of notifications; track notification._id) {
+      <div class="notification-message">
+        <span>{{ notification.message }}</span>
+
+        @if (notification.type === "WORKSPACE_INVITE") {
+          <div>
+            <button
+              mat-icon-button
+              matTooltip="Decline"
+              (click)="
+                declineInvite(notification._id, notification.data.workspaceId)
+              "
+              clickStopPropagation
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+
+            <button
+              mat-icon-button
+              matTooltip="Accept"
+              (click)="
+                acceptInvite(notification._id, notification.data.workspaceId)
+              "
+              clickStopPropagation
+            >
+              <mat-icon>check</mat-icon>
+            </button>
+          </div>
+        }
+
+        <button
+          mat-icon-button
+          matTooltip="Actions"
+          [matMenuTriggerFor]="actionsMenu"
+          [matMenuTriggerData]="{ notification: notification }"
+          clickStopPropagation
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+    } @empty {
+      <div>No notifications yet!</div>
+    }
+  </ng-template>
+</mat-menu>
+
+<mat-menu #actionsMenu="matMenu">
+  <ng-template matMenuContent let-notification="notification">
+    <button
+      mat-menu-item
+      (click)="deleteNotification(notification?._id)"
+      clickStopPropagation
+    >
+      <span>Delete</span>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </ng-template>
 </mat-menu>
 
 <mat-menu #helpMenu="matMenu" class="help-menu">

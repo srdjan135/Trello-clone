@@ -9,7 +9,11 @@
       <mat-icon>assessment</mat-icon>
       Boards
     </button>
-    <button mat-raised-button>
+    <button
+      mat-raised-button
+      [routerLink]="['/', workspace._id, 'members']"
+      routerLinkActive="active"
+    >
       <mat-icon>person</mat-icon>
       Members
     </button>

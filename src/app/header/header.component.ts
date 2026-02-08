@@ -11,9 +11,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MatMenu } from '@angular/material/menu';
-import { MatMenuItem } from '@angular/material/menu';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
 import { User } from '../models/user.model';
 import { ApiService } from '../shared/services/api.service';
@@ -23,6 +21,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { CreateWorkspaceComponent } from '../workspaces/create-workspace/create-workspace.component';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Notification } from '../models/notification';
+import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
+import { MatBadge } from '@angular/material/badge';
+
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -36,12 +38,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     MatInput,
     MatToolbar,
     MatTooltip,
-    MatMenu,
-    MatMenuItem,
-    MatMenuTrigger,
+    MatMenuModule,
     MatDivider,
     RouterLink,
     RouterLinkActive,
+    ClickStopPropagationDirective,
+    MatBadge,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -50,6 +52,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class HeaderComponent implements OnInit {
   user!: User;
   userInitial!: string;
+  notifications: Notification[] = [];
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -62,6 +65,10 @@ export class HeaderComponent implements OnInit {
     this.api.getUser().subscribe((res) => {
       this.user = res.user;
       this.userInitial = this.user.username.split('')[0];
+      this.cdr.markForCheck();
+    });
+    this.api.getNotifications().subscribe((res) => {
+      this.notifications = res.notifications;
       this.cdr.markForCheck();
     });
   }
@@ -82,5 +89,51 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.auth.logout();
+  }
+
+  get unreadNotifications() {
+    return this.notifications.filter((n) => !n.read).length;
+  }
+
+  readNotifications() {
+    this.api.readNotifications(this.user._id).subscribe(() => {
+      this.notifications = this.notifications.map((n) => ({
+        ...n,
+        read: true,
+      }));
+
+      this.cdr.markForCheck();
+    });
+  }
+
+  declineInvite(notificationId: string, workspaceId: string | undefined) {
+    this.api
+      .declineInviteToWorkspace(notificationId, workspaceId)
+      .subscribe(() => {
+        this.notifications = this.notifications.filter(
+          (n) => n._id !== notificationId,
+        );
+        this.cdr.markForCheck();
+      });
+  }
+
+  acceptInvite(notificationId: string, workspaceId: string | undefined) {
+    this.api
+      .acceptInviteToWorkspace(this.user._id, workspaceId, notificationId)
+      .subscribe(() => {
+        this.notifications = this.notifications.filter(
+          (n) => n._id !== notificationId,
+        );
+        this.cdr.markForCheck();
+      });
+  }
+
+  deleteNotification(notificationId: string) {
+    this.api.deleteNotification(notificationId).subscribe(() => {
+      this.notifications = this.notifications.filter(
+        (n) => n._id !== notificationId,
+      );
+      this.cdr.markForCheck();
+    });
   }
 }

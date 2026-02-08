@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user.model';
 import { Workspace } from '../../models/workspace';
 import { Board } from '../../models/board.model';
+import { Notification } from '../../models/notification';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +33,29 @@ export class ApiService {
     return this.http.get<{ user: User }>(`${this.API_URL}/user`);
   }
 
+  searchUsers(query: string, workspaceId: string) {
+    return this.http.get<{ users: User[] }>(`${this.API_URL}/users/search`, {
+      params: {
+        q: query,
+        workspaceId,
+      },
+    });
+  }
+
+  getNotifications() {
+    return this.http.get<{ notifications: Notification[] }>(
+      `${this.API_URL}/notifications`,
+    );
+  }
+
+  deleteNotification(notificationId: string) {
+    return this.http.delete(`${this.API_URL}/${notificationId}`);
+  }
+
+  readNotifications(userId: string) {
+    return this.http.put(`${this.API_URL}/${userId}/notifications`, {});
+  }
+
   getWorkspaces() {
     return this.http.get<{ workspaces: Workspace[] }>(
       `${this.API_URL}/workspaces`,
@@ -43,6 +67,43 @@ export class ApiService {
       `${this.API_URL}/workspaces`,
       data,
     );
+  }
+
+  getWorkspaceMembers(workspaceId: string) {
+    return this.http.get<{ members: User[] }>(
+      `${this.API_URL}/${workspaceId}/members`,
+    );
+  }
+
+  inviteWorkspaceMembers(
+    allAddedMembers: { users: Record<string, User> },
+    workspaceId: string,
+  ) {
+    return this.http.post(`${this.API_URL}/workspace/${workspaceId}/invite`, {
+      allAddedMembers,
+      workspaceId,
+    });
+  }
+
+  acceptInviteToWorkspace(
+    memberId: string,
+    workspaceId: string | undefined,
+    notificationId: string,
+  ) {
+    return this.http.post(`${this.API_URL}/workspace/${workspaceId}/accept`, {
+      memberId,
+      workspaceId,
+      notificationId,
+    });
+  }
+
+  declineInviteToWorkspace(
+    notificationId: string,
+    workspaceId: string | undefined,
+  ) {
+    return this.http.post(`${this.API_URL}/workspace/${workspaceId}/decline`, {
+      notificationId,
+    });
   }
 
   getBoards(workspaceId: string) {

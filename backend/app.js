@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const workspaceRoutes = require("./routes/workspace");
 const boardRoutes = require("./routes/board");
+const notificationRoutes = require("./routes/notification");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", workspaceRoutes);
 app.use("/api", boardRoutes);
+app.use("/api", notificationRoutes);
 
 const PORT = 3000;
 mongoose

@@ -1,0 +1,125 @@
+@use "src/variables" as *;
+
+:host {
+  width: 85%;
+
+  .header-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h5 {
+      margin: 0;
+
+      span:last-child {
+        display: inline-block;
+        line-height: normal;
+        border-radius: 1rem;
+        background-color: $primary;
+        color: $white;
+        padding: 5px;
+        font-size: 16px;
+      }
+    }
+
+    button {
+      border-radius: 8px;
+    }
+  }
+
+  .content-wrapper {
+    display: flex;
+    gap: 3rem;
+
+    mat-list {
+      width: 25%;
+
+      mat-list-item {
+        width: 100%;
+
+        &:hover,
+        &.active {
+          cursor: pointer;
+          color: $primary;
+          background-color: $primary-hover;
+          border-radius: 12px;
+
+          span {
+            color: $primary;
+          }
+        }
+      }
+
+      mat-divider {
+        margin: 0.5rem 0;
+      }
+    }
+
+    .wrapper {
+      width: 75%;
+
+      div {
+        border-bottom: 1px solid $bg-main;
+        margin-bottom: 1rem;
+
+        .inner-wrapper {
+          border-bottom: none;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          p {
+            width: 60%;
+          }
+
+          button {
+            border-radius: 8px;
+          }
+        }
+      }
+
+      .members {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding-bottom: 1rem;
+
+        div:first-of-type {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          border-bottom: none;
+          margin: 0;
+        }
+
+        .avatar,
+        .member-info,
+        .actions {
+          border-bottom: none;
+          margin: 0;
+        }
+
+        .avatar,
+        .member-info p,
+        .member-info h5 {
+          margin: 0;
+        }
+
+        .actions {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .member-info h5 {
+          font-size: 18px;
+          font-weight: 500;
+          line-height: normal;
+        }
+      }
+    }
+  }
+}

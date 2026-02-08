@@ -82,8 +82,24 @@ mat-toolbar {
       font-weight: 400;
     }
 
-    div {
-      height: 75%;
+    div.notification-message {
+      padding: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      div {
+        display: flex;
+        align-items: center;
+      }
+
+      & > div button:first-of-type mat-icon {
+        color: $error;
+      }
+
+      & > div button:last-of-type mat-icon {
+        color: $success;
+      }
     }
   }
 }

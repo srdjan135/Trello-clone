@@ -1,0 +1,81 @@
+@if (workspace) {
+  <div class="header-wrapper">
+    <h5>
+      Collaboration <span>{{ workspace.members.length + "/10" }}</span>
+    </h5>
+    <button mat-flat-button (click)="inviteModal()">
+      <mat-icon>group_add</mat-icon>
+      Invite Workspace members
+    </button>
+  </div>
+  <div class="content-wrapper">
+    <mat-list>
+      <mat-list-item
+        [routerLink]="['/', workspaceId, 'members']"
+        routerLinkActive="active"
+      >
+        <span matListItemTitle
+          >Workspace members ({{ workspace.members.length }})</span
+        >
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item
+        [routerLink]="['/', workspaceId, 'members/requests']"
+        routerLinkActive="active"
+      >
+        <span matListItemTitle>Join requests (0)</span>
+      </mat-list-item>
+    </mat-list>
+    <div class="wrapper">
+      <div>
+        <h5>Workspace members ({{ workspace.members.length }})</h5>
+        <p>
+          Workspace members can view and join all Workspace visible boards and
+          create new boards in the Workspace.
+        </p>
+      </div>
+      <div>
+        <h5>Invite members to join you</h5>
+        <div class="inner-wrapper">
+          <p>
+            Anyone with an invite link can join this free Workspace. You can
+            also disable and create a new invite link for this Workspace at any
+            time. Pending invitations count toward the 10 collaborator limit.
+          </p>
+          <button mat-button>
+            <mat-icon>link</mat-icon>
+            Invite with link
+          </button>
+        </div>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Search by name</mat-label>
+          <input type="search" matInput />
+        </mat-form-field>
+      </div>
+
+      @for (member of workspaceMembers; track member._id) {
+        <div class="members">
+          <div>
+            <div class="avatar">{{ member.username?.charAt(0) || "" }}</div>
+            <div class="member-info">
+              <h5>{{ member.username }}</h5>
+              <p>{{ member.email }}</p>
+            </div>
+          </div>
+          <div class="actions">
+            <button mat-button>
+              View boards ({{ workspace.boards?.length }})
+            </button>
+            <button mat-button>Admin</button>
+            <button mat-button>
+              <mat-icon>close</mat-icon>
+              Leave Workspace
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -9,6 +9,7 @@ import { InviteMembersComponent } from '../invite-members/invite-members.compone
 import { ApiService } from '../../shared/services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkspaceService } from '../../shared/services/workspace.service';
+import { SharedService } from '../../shared/services/shared.service';
 
 @Component({
   selector: 'app-create-workspace',
@@ -21,8 +22,8 @@ import { WorkspaceService } from '../../shared/services/workspace.service';
 export class CreateWorkspaceComponent {
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
-    private dialog: MatDialog,
     private api: ApiService,
+    private sharedService: SharedService,
     private workspaceService: WorkspaceService,
     private snackBar: MatSnackBar,
   ) {}
@@ -37,22 +38,12 @@ export class CreateWorkspaceComponent {
         this.workspaceService.updateWorkspacesList(res.workspace);
         this.showMessage('Workspace was created successfully!');
         this.dialogRef.close();
-        this.openInviteModal();
+        this.inviteModal();
       });
   }
 
-  openInviteModal() {
-    this.dialog.open(ModalComponent, {
-      width: '60%',
-      maxWidth: '100vw',
-      height: '55%',
-      data: {
-        title: 'Invite your team',
-        subtitle:
-          'Invite up to 9 more people using a link or by entering their name or email.',
-        component: InviteMembersComponent,
-      },
-    });
+  inviteModal() {
+    this.sharedService.openInviteModal();
   }
 
   private showMessage(message: string) {

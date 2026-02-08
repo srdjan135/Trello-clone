@@ -1,25 +1,48 @@
-<form (submit)="onSubmit(inviteForm)" #inviteForm="ngForm">
+<form (ngSubmit)="onSubmit()">
   <div>
-    <button mat-button>
+    <button type="button" mat-button>
       <mat-icon>link</mat-icon>
       Invite With Link
     </button>
   </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Workspace members</mat-label>
-    <input
-      matInput
-      type="text"
-      placeholder="example@gmail.com"
-      name="members"
-      ngModel
-      required
-    />
+  <mat-form-field class="example-chip-list" appearance="outline">
+    <mat-label>Invite members</mat-label>
+
+    <mat-chip-grid #chipGrid>
+      @for (member of members; track member._id) {
+        <mat-chip-row (removed)="remove(member)">
+          {{ member.username }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      }
+
+      <input
+        [formControl]="userCtrl"
+        (keydown.enter)="$event.preventDefault()"
+        [matChipInputFor]="chipGrid"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        [matChipInputAddOnBlur]="addOnBlur"
+        (matChipInputTokenEnd)="add($event)"
+        [matAutocomplete]="auto"
+        placeholder="Add user..."
+      />
+    </mat-chip-grid>
+
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="selected($event)"
+    >
+      @for (user of filteredUsers; track user._id) {
+        <mat-option [value]="user">
+          {{ user.username }}
+        </mat-option>
+      }
+    </mat-autocomplete>
   </mat-form-field>
-  <button mat-flat-button type="submit" [disabled]="inviteForm.invalid">
-    Invite
-  </button>
+  <button mat-flat-button type="submit">Invite</button>
   <div>
     <a (click)="close()">I'll do this later</a>
   </div>

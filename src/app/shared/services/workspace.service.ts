@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { Workspace } from '../../models/workspace';
 import { ApiService } from './api.service';
 
@@ -9,6 +9,13 @@ import { ApiService } from './api.service';
 export class WorkspaceService {
   private workspaces$ = new BehaviorSubject<Workspace[]>([]);
   workspaces = this.workspaces$.asObservable();
+
+  private workspaceMembersRemainingNumber$ = new Subject<number>();
+  workspaceMembersRemainingNumber =
+    this.workspaceMembersRemainingNumber$.asObservable();
+
+  private workspaceId$ = new Subject<string>();
+  workspaceId = this.workspaceId$.asObservable();
 
   constructor(private api: ApiService) {}
 

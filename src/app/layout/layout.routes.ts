@@ -23,6 +23,14 @@ export const layoutRoutes: Routes = [
           ),
         canActivate: [AuthGuard],
       },
+      {
+        path: ':workspaceId/members',
+        loadComponent: () =>
+          import('../workspaces/workspace/members/members.component').then(
+            (m) => m.MembersComponent,
+          ),
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];
