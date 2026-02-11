@@ -1,6 +1,7 @@
 const Workspace = require("../models/workspace");
 const User = require("../models/user");
 const Notification = require("../models/notification");
+const WorkspaceMember = require("../models/workspaceMember");
 
 exports.getWorkspaces = async (req, res) => {
   const userId = req.userData.userId;
@@ -15,22 +16,6 @@ exports.getWorkspaces = async (req, res) => {
     res.status(200).json({ workspaces });
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch workspaces!" });
-  }
-};
-
-exports.getWorkspaceMembers = async (req, res) => {
-  const { workspaceId } = req.params;
-
-  try {
-    const workspace = await Workspace.findById(workspaceId).populate("members");
-
-    if (!workspace) {
-      return res.status(404).json({ message: "Workspace not found!" });
-    }
-
-    res.status(200).json({ members: workspace.members });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch members!" });
   }
 };
 
@@ -106,6 +91,11 @@ exports.acceptInviteToWorkspace = async (req, res) => {
       },
     });
 
+    await WorkspaceMember.create({
+      workspace: workspaceId,
+      user: userId,
+    });
+
     res.status(200).json({});
   } catch (err) {
     res.status(500).json({ message: "Failed to invite members" });
@@ -126,6 +116,12 @@ exports.postWorkspace = async (req, res) => {
 
     await User.findByIdAndUpdate(userId, {
       $push: { workspaces: workspace._id },
+    });
+
+    await WorkspaceMember.create({
+      workspace: workspace._id,
+      user: userId,
+      role: "admin",
     });
 
     res.status(201).json({

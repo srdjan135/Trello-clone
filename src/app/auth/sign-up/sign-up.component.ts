@@ -57,9 +57,7 @@ export class SignUpComponent {
     userData.append('password', password);
 
     this.authService.signUp(userData).subscribe({
-      next: (res) => {
-        console.log('Login success', res);
-      },
+      next: () => {},
       error: (error) => {
         if (error.error?.errors) {
           error.error.errors.forEach((err: any) => {

@@ -171,6 +171,17 @@ export class InviteMembersComponent implements OnDestroy {
       });
   }
 
+  copyInviteLink() {
+    this.api.createInviteWithLink(this.workspaceId).subscribe((res) => {
+      navigator.clipboard.writeText(res.inviteLink);
+      this.snackBar.open('Invite link copied', 'Close', {
+        duration: 2000,
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
+    });
+  }
+
   close() {
     this.dialogRef.close();
   }

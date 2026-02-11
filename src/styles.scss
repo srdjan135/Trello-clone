@@ -9,6 +9,12 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+body:has(.invite-wrapper) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 h1,
 h2,
 h3,

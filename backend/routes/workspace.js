@@ -2,7 +2,6 @@ const express = require("express");
 const checkAuth = require("../middlewares/check-auth");
 const {
   getWorkspaces,
-  getWorkspaceMembers,
   inviteWorkspaceMembers,
   declineInviteToWorkspace,
   acceptInviteToWorkspace,
@@ -12,7 +11,6 @@ const {
 const router = express.Router();
 
 router.get("/workspaces", checkAuth, getWorkspaces);
-router.get("/:workspaceId/members", checkAuth, getWorkspaceMembers);
 router.post("/workspaces", checkAuth, postWorkspace);
 router.post(
   "/workspace/:workspaceId/invite",

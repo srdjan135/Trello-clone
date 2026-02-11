@@ -8,6 +8,8 @@ const userRoutes = require("./routes/user");
 const workspaceRoutes = require("./routes/workspace");
 const boardRoutes = require("./routes/board");
 const notificationRoutes = require("./routes/notification");
+const inviteRoutes = require("./routes/invite");
+const workspaceMemberRoutes = require("./routes/workspaceMember");
 
 const app = express();
 
@@ -38,6 +40,8 @@ app.use("/api", userRoutes);
 app.use("/api", workspaceRoutes);
 app.use("/api", boardRoutes);
 app.use("/api", notificationRoutes);
+app.use("/api", inviteRoutes);
+app.use("/api", workspaceMemberRoutes);
 
 const PORT = 3000;
 mongoose

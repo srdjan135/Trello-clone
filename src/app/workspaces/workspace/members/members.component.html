@@ -3,10 +3,12 @@
     <h5>
       Collaboration <span>{{ workspace.members.length + "/10" }}</span>
     </h5>
-    <button mat-flat-button (click)="inviteModal()">
-      <mat-icon>group_add</mat-icon>
-      Invite Workspace members
-    </button>
+    @if (isAdmin) {
+      <button mat-flat-button (click)="inviteModal()">
+        <mat-icon>group_add</mat-icon>
+        Invite Workspace members
+      </button>
+    }
   </div>
   <div class="content-wrapper">
     <mat-list>
@@ -35,47 +37,112 @@
         </p>
       </div>
       <div>
-        <h5>Invite members to join you</h5>
-        <div class="inner-wrapper">
-          <p>
-            Anyone with an invite link can join this free Workspace. You can
-            also disable and create a new invite link for this Workspace at any
-            time. Pending invitations count toward the 10 collaborator limit.
-          </p>
-          <button mat-button>
-            <mat-icon>link</mat-icon>
-            Invite with link
-          </button>
-        </div>
+        <h5>Workspace will be deleted</h5>
+        <p>
+          The workspace will be deleted if the last admin leaves the workspace.
+        </p>
       </div>
+      @if (isAdmin) {
+        <div>
+          <h5>Invite members to join you</h5>
+          <div class="inner-wrapper">
+            <p>
+              Anyone with an invite link can join this free Workspace. You can
+              also disable and create a new invite link for this Workspace at
+              any time. Pending invitations count toward the 10 collaborator
+              limit.
+            </p>
+            <button mat-button (click)="copyInviteLink()">
+              <mat-icon>link</mat-icon>
+              Invite with link
+            </button>
+          </div>
+        </div>
+      }
       <div>
         <mat-form-field appearance="outline">
           <mat-label>Search by name</mat-label>
-          <input type="search" matInput />
+          <input
+            type="search"
+            matInput
+            [formControl]="searchWorkspaceMembersByName"
+          />
         </mat-form-field>
       </div>
 
-      @for (member of workspaceMembers; track member._id) {
+      @for (member of filteredWorkspaceMembers; track member._id) {
         <div class="members">
           <div>
-            <div class="avatar">{{ member.username?.charAt(0) || "" }}</div>
+            <div class="avatar">
+              {{ member.user.username?.charAt(0) || "" }}
+            </div>
             <div class="member-info">
-              <h5>{{ member.username }}</h5>
-              <p>{{ member.email }}</p>
+              <h5>{{ member.user.username }}</h5>
+              <p>{{ member.user.email }}</p>
             </div>
           </div>
           <div class="actions">
-            <button mat-button>
+            <button mat-button [matMenuTriggerFor]="viewBoardsMenu">
               View boards ({{ workspace.boards?.length }})
             </button>
-            <button mat-button>Admin</button>
-            <button mat-button>
-              <mat-icon>close</mat-icon>
-              Leave Workspace
+            <button
+              mat-button
+              [matMenuTriggerFor]="roleMenu"
+              [matMenuTriggerData]="{ member }"
+              [disabled]="!isAdmin"
+            >
+              {{ member.role }}
             </button>
+
+            @if (isAdmin) {
+              <button mat-button (click)="removeMemberFromWorkspace(member)">
+                <mat-icon>close</mat-icon>
+                {{
+                  member.role === "admin"
+                    ? "Leave Workspace"
+                    : "Remove from workspace"
+                }}
+              </button>
+            }
+
+            @if (!isAdmin && member.user._id === currentUser._id) {
+              <button mat-button (click)="removeMemberFromWorkspace(member)">
+                <mat-icon>close</mat-icon>
+                Leave Workspace
+              </button>
+            }
           </div>
         </div>
       }
     </div>
   </div>
 }
+
+<mat-menu #viewBoardsMenu="matMenu" class="viewMenu">
+  <h6>Workspace Boards</h6>
+  <button mat-icon-button matTooltip="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+  @for (board of boards; track board._id) {
+    <div class="wrapper">
+      <div
+        class="bg"
+        [style.backgroundImage]="'url(' + board.background + ')'"
+      ></div>
+      <p>{{ board.title }}</p>
+    </div>
+  } @empty {
+    <p>There are currently no boards</p>
+  }
+</mat-menu>
+
+<mat-menu #roleMenu="matMenu">
+  <ng-template matMenuContent let-member="member">
+    <button mat-menu-item (click)="setWorkspaceMemberRole(member, 'admin')">
+      Admin
+    </button>
+    <button mat-menu-item (click)="setWorkspaceMemberRole(member, 'member')">
+      Member
+    </button>
+  </ng-template>
+</mat-menu>

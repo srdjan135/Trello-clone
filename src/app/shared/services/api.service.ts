@@ -5,6 +5,7 @@ import { User } from '../../models/user.model';
 import { Workspace } from '../../models/workspace';
 import { Board } from '../../models/board.model';
 import { Notification } from '../../models/notification';
+import { WorkspaceMember } from '../../models/workspaceMember';
 
 @Injectable({
   providedIn: 'root',
@@ -70,9 +71,22 @@ export class ApiService {
   }
 
   getWorkspaceMembers(workspaceId: string) {
-    return this.http.get<{ members: User[] }>(
-      `${this.API_URL}/${workspaceId}/members`,
+    return this.http.get<WorkspaceMember[]>(
+      `${this.API_URL}/workspaceMembers/${workspaceId}`,
     );
+  }
+
+  setWorkspaceMemberRole(member: WorkspaceMember, role: string) {
+    return this.http.put(`${this.API_URL}/workspaceMembers/${member._id}`, {
+      member,
+      role,
+    });
+  }
+
+  removeWorkspaceMember(member: WorkspaceMember, workspaceId: string) {
+    return this.http.delete(`${this.API_URL}/workspaceMembers/${member._id}`, {
+      params: { workspaceId },
+    });
   }
 
   inviteWorkspaceMembers(
@@ -104,6 +118,23 @@ export class ApiService {
     return this.http.post(`${this.API_URL}/workspace/${workspaceId}/decline`, {
       notificationId,
     });
+  }
+
+  validateInviteWithLink(token: string) {
+    return this.http.get<{ workspaceId: string }>(
+      `${this.API_URL}/invite/${token}`,
+    );
+  }
+
+  acceptInviteWithLink(token: string) {
+    return this.http.post(`${this.API_URL}/invite/${token}/accept`, {});
+  }
+
+  createInviteWithLink(workspaceId: string) {
+    return this.http.post<{ inviteLink: string }>(
+      `${this.API_URL}/workspaces/${workspaceId}/invite`,
+      {},
+    );
   }
 
   getBoards(workspaceId: string) {
