@@ -70,6 +70,24 @@ export class ApiService {
     );
   }
 
+  updateWorkspace(
+    formData: {
+      name: string;
+      description: string;
+      isPrivate: boolean;
+    },
+    workspaceId: string,
+  ) {
+    return this.http.put<{ updatedWorkspace: Workspace }>(
+      `${this.API_URL}/workspaces/${workspaceId}`,
+      formData,
+    );
+  }
+
+  deleteWorkspace(workspaceId: string) {
+    return this.http.delete(`${this.API_URL}/workspaces/${workspaceId}`);
+  }
+
   getWorkspaceMembers(workspaceId: string) {
     return this.http.get<WorkspaceMember[]>(
       `${this.API_URL}/workspaceMembers/${workspaceId}`,
@@ -87,6 +105,12 @@ export class ApiService {
     return this.http.delete(`${this.API_URL}/workspaceMembers/${member._id}`, {
       params: { workspaceId },
     });
+  }
+
+  getMyRole(workspaceId: string) {
+    return this.http.get<{ role: string }>(
+      `${this.API_URL}/workspaces/${workspaceId}/role`,
+    );
   }
 
   inviteWorkspaceMembers(

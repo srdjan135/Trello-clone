@@ -1,0 +1,123 @@
+@use "src/variables" as *;
+
+.main-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  & > mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: $primary;
+  }
+
+  .wrapper {
+    display: flex;
+    gap: 0.7rem;
+
+    h5 {
+      margin: 0;
+    }
+
+    button {
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .isPrivate {
+    display: flex;
+    gap: 5px;
+    margin: 0;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.description {
+  margin-top: 1rem;
+}
+
+.delete-workspace {
+  color: $error;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 3rem;
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.deleteMenu {
+  padding: 0.5rem 1rem;
+  max-width: 350px;
+
+  h5 {
+    font-size: 16px;
+    text-align: center;
+    line-height: normal;
+  }
+
+  button[mat-icon-button] {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  p {
+    margin-top: 1rem;
+    font-size: 18px;
+  }
+
+  ul {
+    color: $text-main;
+    padding-left: 1.5rem;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button[mat-raised-button] {
+    width: 100%;
+    border-radius: 8px;
+    background-color: $error;
+  }
+
+  button[mat-raised-button]:disabled {
+    pointer-events: auto !important;
+    cursor: not-allowed !important;
+    background-color: rgb(235, 185, 185);
+  }
+
+  button[mat-raised-button].mat-mdc-button-disabled:hover {
+    background-color: rgb(235, 185, 185) !important;
+    box-shadow: none !important;
+  }
+
+  button[mat-raised-button].mat-mdc-button-disabled
+    .mat-mdc-button-persistent-ripple,
+  button[mat-raised-button].mat-mdc-button-disabled .mdc-button__ripple {
+    display: none !important;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  .actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      border-radius: 8px;
+    }
+  }
+}

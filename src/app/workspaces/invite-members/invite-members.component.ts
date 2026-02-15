@@ -95,7 +95,7 @@ export class InviteMembersComponent implements OnDestroy {
         this.maxMembers = res;
       });
     this.subscription2 = this.workspaceService.workspaceId.subscribe((res) => {
-      this.workspaceId = res;
+      this.workspaceId = res!;
     });
   }
 

@@ -49,10 +49,15 @@
             <mat-icon matListItemIcon>people</mat-icon>
             <span matListItemTitle>Members</span>
           </mat-list-item>
-          <mat-list-item>
-            <mat-icon matListItemIcon>settings</mat-icon>
-            <span matListItemTitle>Settings</span>
-          </mat-list-item>
+          @if (isAdmin) {
+            <mat-list-item
+              [routerLink]="['/', workspace._id, 'settings']"
+              routerLinkActive="active"
+            >
+              <mat-icon matListItemIcon>settings</mat-icon>
+              <span matListItemTitle>Settings</span>
+            </mat-list-item>
+          }
         </mat-list>
       </mat-expansion-panel>
     }

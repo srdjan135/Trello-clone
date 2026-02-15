@@ -121,7 +121,7 @@ export class MembersComponent implements OnInit {
           m.user.username.toLowerCase().includes(data.search.toLowerCase()),
         );
 
-        this.workspaceService.workspaceId = of(this.workspaceId);
+        this.workspaceService.setWorkspaceId(this.workspaceId);
         this.workspaceService.workspaceMembersRemainingNumber = of(
           10 - this.workspace.members.length,
         );

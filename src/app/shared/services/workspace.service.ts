@@ -14,7 +14,7 @@ export class WorkspaceService {
   workspaceMembersRemainingNumber =
     this.workspaceMembersRemainingNumber$.asObservable();
 
-  private workspaceId$ = new Subject<string>();
+  private workspaceId$ = new BehaviorSubject<string | null>(null);
   workspaceId = this.workspaceId$.asObservable();
 
   constructor(private api: ApiService) {}
@@ -27,5 +27,9 @@ export class WorkspaceService {
 
   updateWorkspacesList(workspace: Workspace) {
     this.workspaces$.next([...this.workspaces$.value, workspace]);
+  }
+
+  setWorkspaceId(id: string) {
+    this.workspaceId$.next(id);
   }
 }

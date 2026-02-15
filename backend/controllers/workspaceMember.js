@@ -51,8 +51,8 @@ exports.removeWorkspaceMember = async (req, res) => {
         await Workspace.findByIdAndDelete(workspaceId);
         await WorkspaceMember.deleteMany({ workspace: workspaceId });
         await User.updateMany(
-          { workspace: workspaceId },
-          { $pull: { workspace: workspaceId } },
+          { workspaces: workspaceId },
+          { $pull: { workspaces: workspaceId } },
         );
 
         return res.status(200).json({
@@ -70,5 +70,25 @@ exports.removeWorkspaceMember = async (req, res) => {
     res.status(200).json({ message: "Member removed successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to remove workspace member" });
+  }
+};
+
+exports.getMyRole = async (req, res) => {
+  const { workspaceId } = req.params;
+  const userId = req.userData.userId;
+
+  try {
+    const member = await WorkspaceMember.findOne({
+      workspace: workspaceId,
+      user: userId,
+    });
+
+    if (!member) {
+      return res.status(404).json({ message: "Not a member" });
+    }
+
+    res.status(200).json({ role: member.role });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get role" });
   }
 };

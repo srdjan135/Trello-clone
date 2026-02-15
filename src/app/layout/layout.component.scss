@@ -24,6 +24,12 @@ mat-sidenav-container {
     main {
       display: flex;
       justify-content: center;
+      padding-left: 0;
+    }
+
+    main:has(.settings-title) {
+      justify-content: start;
+      padding-left: 5rem;
     }
   }
 }

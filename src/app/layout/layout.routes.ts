@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../shared/guards/auth.guard';
-import { LayoutComponent } from './layout.component';
+import { WorkspaceAdminGuard } from '../shared/guards/workspace-admin.guard';
 
 export const layoutRoutes: Routes = [
   {
@@ -30,6 +30,14 @@ export const layoutRoutes: Routes = [
             (m) => m.MembersComponent,
           ),
         canActivate: [AuthGuard],
+      },
+      {
+        path: ':workspaceId/settings',
+        loadComponent: () =>
+          import('../workspaces/workspace/settings/settings.component').then(
+            (m) => m.SettingsComponent,
+          ),
+        canActivate: [AuthGuard, WorkspaceAdminGuard],
       },
     ],
   },

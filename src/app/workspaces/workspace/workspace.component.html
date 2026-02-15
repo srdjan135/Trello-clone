@@ -17,10 +17,16 @@
       <mat-icon>person</mat-icon>
       Members
     </button>
-    <button mat-raised-button>
-      <mat-icon>settings</mat-icon>
-      Settings
-    </button>
+    @if (isAdmin) {
+      <button
+        mat-raised-button
+        [routerLink]="['/', workspace._id, 'settings']"
+        routerLinkActive="active"
+      >
+        <mat-icon>settings</mat-icon>
+        Settings
+      </button>
+    }
   </div>
 </div>
 <app-boards [workspace]="workspace"></app-boards>

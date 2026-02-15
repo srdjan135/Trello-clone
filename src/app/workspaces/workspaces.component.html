@@ -1,4 +1,6 @@
 <h1>Your workspaces</h1>
 @for (workspace of workspaces; track workspace._id) {
   <app-workspace [workspace]="workspace"></app-workspace>
+} @empty {
+  <p>There are currently no workspaces.</p>
 }

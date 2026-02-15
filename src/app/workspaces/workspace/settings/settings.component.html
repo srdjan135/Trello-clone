@@ -1,0 +1,91 @@
+<h3 class="settings-title">Workspace Settings</h3>
+@if (workspace) {
+  @if (!isEditing) {
+    <div class="main-wrapper" #mainWrapper>
+      <mat-icon>dashboard</mat-icon>
+      <div class="info-wrapper">
+        <div class="wrapper settings">
+          <h5>{{ workspace.name }}</h5>
+          <button
+            mat-icon-button
+            matTooltip="Edit Workspace"
+            (click)="showEditWorkspaceForm()"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+        <p class="isPrivate">
+          <mat-icon>{{ workspace.isPrivate ? "lock" : "lock_open" }}</mat-icon>
+          {{ workspace.isPrivate ? "Private" : "Public" }}
+        </p>
+      </div>
+    </div>
+    <p class="description">{{ workspace.description }}</p>
+  } @else {
+    <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input
+          type="text"
+          matInput
+          [ngModel]="workspace.name"
+          name="name"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea
+          type="text"
+          matInput
+          rows="5"
+          [ngModel]="workspace.description"
+          name="description"
+        ></textarea>
+      </mat-form-field>
+      <mat-checkbox [ngModel]="workspace.isPrivate" name="isPrivate"
+        >Private Workspace</mat-checkbox
+      >
+      <div class="actions">
+        <button mat-flat-button type="submit">Save</button>
+        <button mat-raised-button type="button" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  }
+
+  <p class="delete-workspace" [matMenuTriggerFor]="deleteWorkspaceMenu">
+    Delete this Workspace?
+  </p>
+
+  <mat-menu #deleteWorkspaceMenu="matMenu" class="deleteMenu">
+    <h5>Delete Workspace?</h5>
+    <button mat-icon-button matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+    <p clickStopPropagation>
+      Enter the Workspace name "{{ workspace.name }}" to delete
+    </p>
+    <span>Things to know:</span>
+    <ul>
+      <li>This is permanent and can't be undone.</li>
+      <li>All boards in this Workspace will be closed.</li>
+      <li>Board admins can reopen boards.</li>
+      <li>Board members will not be able to interact with closed boards.</li>
+    </ul>
+    <mat-form-field appearance="outline" clickStopPropagation>
+      <mat-label>Enter the Workspace name to delete</mat-label>
+      <input type="text" matInput [formControl]="deleteControl" />
+    </mat-form-field>
+    <button
+      mat-raised-button
+      type="button"
+      [disabled]="IsDisabledButton"
+      clickStopPropagation
+      (click)="deleteWorkspace()"
+    >
+      Delete Workspace
+    </button>
+  </mat-menu>
+}

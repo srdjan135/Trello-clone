@@ -2,6 +2,7 @@ const Workspace = require("../models/workspace");
 const User = require("../models/user");
 const Notification = require("../models/notification");
 const WorkspaceMember = require("../models/workspaceMember");
+const Board = require("../models/board");
 
 exports.getWorkspaces = async (req, res) => {
   const userId = req.userData.userId;
@@ -129,5 +130,67 @@ exports.postWorkspace = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: "Failed to create workspace!" });
+  }
+};
+
+exports.updateWorkspace = async (req, res) => {
+  const { workspaceId } = req.params;
+  const { name, description, isPrivate } = req.body;
+
+  try {
+    const updatedWorkspace = await Workspace.findByIdAndUpdate(
+      workspaceId,
+      {
+        name,
+        description,
+        isPrivate,
+      },
+      { new: true },
+    );
+
+    if (!updatedWorkspace) {
+      return res.status(404).json({ message: "Workspace not found!" });
+    }
+
+    res.status(200).json({ updatedWorkspace });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update workspace!" });
+  }
+};
+
+exports.deleteWorkspace = async (req, res) => {
+  const { workspaceId } = req.params;
+  const userId = req.userData.userId;
+
+  try {
+    const workspace = await Workspace.findById(workspaceId);
+    if (!workspace) {
+      return res.status(404).json({ message: "Workspace not found!" });
+    }
+
+    const member = await WorkspaceMember.findOne({
+      workspace: workspaceId,
+      user: userId,
+      role: "admin",
+    });
+
+    if (!member) {
+      return res.status(403).json({ message: "Not authorized!" });
+    }
+
+    await WorkspaceMember.deleteMany({ workspace: workspaceId });
+
+    await Board.deleteMany({ workspace: workspaceId });
+
+    await User.updateMany(
+      { workspaces: workspaceId },
+      { $pull: { workspaces: workspaceId } },
+    );
+
+    await Workspace.findByIdAndDelete(workspaceId);
+
+    res.status(200).json({ message: "Workspace deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete workspace!" });
   }
 };
