@@ -9,7 +9,7 @@
     font-size: 40px;
     width: 40px;
     height: 40px;
-    color: $primary;
+    color: var(--primary);
   }
 
   .wrapper {
@@ -75,7 +75,7 @@
   }
 
   ul {
-    color: $text-main;
+    color: var(--text-main);
     padding-left: 1.5rem;
   }
 
@@ -110,6 +110,10 @@
 form {
   display: flex;
   flex-direction: column;
+
+  mat-checkbox ::ng-deep .mdc-label {
+    color: var(--text-main);
+  }
 
   .actions {
     margin-top: 1rem;

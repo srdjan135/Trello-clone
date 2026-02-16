@@ -15,6 +15,10 @@
       button {
         border-radius: 8px;
         margin: 0 0.5rem;
+
+        mat-icon {
+          color: var(--primary);
+        }
       }
     }
   }

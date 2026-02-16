@@ -13,7 +13,7 @@ mat-toolbar {
 
     mat-icon {
       transform: rotate(180deg);
-      color: $primary;
+      color: var(--primary);
     }
   }
 
@@ -156,6 +156,34 @@ mat-toolbar {
           font-weight: 200;
         }
       }
+    }
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.themes-menu {
+  margin-right: 1.8rem;
+
+  mat-radio-group {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      padding: 0.5rem 1.5rem 0.5rem 0;
+      border-left: 1px solid transparent;
+
+      mat-radio-button {
+        & ::ng-deep .mdc-label {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+      }
+    }
+
+    .active-theme {
+      border-left-color: var(--primary);
+      background-color: $primary-hover;
     }
   }
 }

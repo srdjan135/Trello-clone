@@ -17,7 +17,7 @@
         display: inline-block;
         line-height: normal;
         border-radius: 1rem;
-        background-color: $primary;
+        background-color: var(--primary);
         color: $white;
         padding: 5px;
         font-size: 16px;
@@ -26,6 +26,10 @@
 
     button {
       border-radius: 8px;
+
+      mat-icon {
+        color: $white;
+      }
     }
   }
 
@@ -42,12 +46,12 @@
         &:hover,
         &.active {
           cursor: pointer;
-          color: $primary;
+          color: var(--primary);
           background-color: $primary-hover;
           border-radius: 12px;
 
           span {
-            color: $primary;
+            color: var(--primary);
           }
         }
       }
@@ -61,7 +65,7 @@
       width: 75%;
 
       div {
-        border-bottom: 1px solid $bg-main;
+        border-bottom: 1px solid var(--text-main);
         margin-bottom: 1rem;
 
         .inner-wrapper {

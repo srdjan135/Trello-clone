@@ -17,13 +17,14 @@ import { User } from '../models/user.model';
 import { ApiService } from '../shared/services/api.service';
 import { AuthService } from '../shared/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { CreateWorkspaceComponent } from '../workspaces/create-workspace/create-workspace.component';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Notification } from '../models/notification';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { MatBadge } from '@angular/material/badge';
+import { MatRadioModule } from '@angular/material/radio';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
@@ -44,6 +45,8 @@ import { MatBadge } from '@angular/material/badge';
     RouterLinkActive,
     ClickStopPropagationDirective,
     MatBadge,
+    MatRadioModule,
+    FormsModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -53,6 +56,7 @@ export class HeaderComponent implements OnInit {
   user!: User;
   userInitial!: string;
   notifications: Notification[] = [];
+  selectedTheme = 'light';
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -62,6 +66,9 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const savedTheme = localStorage.getItem('Theme') || 'light';
+    this.selectedTheme = savedTheme;
+    this.applyTheme(savedTheme);
     this.api.getUser().subscribe((res) => {
       this.user = res.user;
       this.userInitial = this.user.username.split('')[0];
@@ -135,5 +142,11 @@ export class HeaderComponent implements OnInit {
       );
       this.cdr.markForCheck();
     });
+  }
+
+  applyTheme(value: string) {
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(`${value}-theme`);
+    localStorage.setItem('Theme', value);
   }
 }

@@ -4,6 +4,14 @@ aside {
   mat-list-item,
   mat-expansion-panel {
     margin: 5px 0;
+
+    mat-icon {
+      color: var(--text-main);
+    }
+
+    span {
+      color: var(--text-main);
+    }
   }
 
   mat-list-item:hover,
@@ -11,20 +19,20 @@ aside {
     .mat-expansion-panel-header:not([aria-disabled="true"]):hover,
   .active {
     cursor: pointer;
-    color: $primary;
+    color: var(--primary);
     background-color: $primary-hover;
     border-radius: 12px;
 
     span {
-      color: $primary;
+      color: var(--primary);
     }
 
     mat-icon {
-      color: $primary;
+      color: var(--primary) !important;
     }
 
     ::ng-deep .mat-expansion-indicator svg {
-      fill: $primary;
+      fill: var(--primary);
     }
   }
 
@@ -37,7 +45,7 @@ aside {
     font-weight: 400;
 
     mat-icon {
-      color: #44474e;
+      color: var(--text-main);
     }
 
     ::ng-deep .mat-content {
@@ -49,15 +57,30 @@ aside {
     background-color: $primary-hover;
 
     .mat-expansion-panel-header {
-      color: $primary;
+      color: var(--primary);
     }
 
     ::ng-deep .mat-expansion-indicator svg {
-      fill: $primary;
+      fill: var(--primary);
     }
 
     mat-icon {
-      color: $primary;
+      color: var(--primary);
+    }
+
+    mat-list {
+      .active,
+      mat-list-item:hover {
+        color: $white;
+
+        span {
+          color: $white;
+        }
+
+        mat-icon {
+          color: $white !important;
+        }
+      }
     }
   }
 

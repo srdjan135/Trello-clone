@@ -84,7 +84,7 @@
         </button>
       </div>
     } @empty {
-      <div>No notifications yet!</div>
+      <p>No notifications yet!</p>
     }
   </ng-template>
 </mat-menu>
@@ -150,7 +150,7 @@
     <button mat-menu-item>
       <span>Settings</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [matMenuTriggerFor]="themesMenu" clickStopPropagation>
       <span>Themes</span>
     </button>
     <mat-divider></mat-divider>
@@ -162,4 +162,32 @@
       <span>Logout</span>
     </button>
   </div>
+</mat-menu>
+
+<mat-menu #themesMenu="matMenu" class="themes-menu">
+  <mat-radio-group
+    [(ngModel)]="selectedTheme"
+    (change)="applyTheme($event.value)"
+  >
+    <button
+      mat-menu-item
+      clickStopPropagation
+      [class.active-theme]="selectedTheme === 'light'"
+    >
+      <mat-radio-button value="light">
+        <img src="/assets/light-theme.svg" alt="light-theme" />
+        Light Theme</mat-radio-button
+      >
+    </button>
+    <button
+      mat-menu-item
+      clickStopPropagation
+      [class.active-theme]="selectedTheme === 'dark'"
+    >
+      <mat-radio-button value="dark">
+        <img src="/assets/dark-theme.svg" alt="dark-theme" />
+        Dark Theme</mat-radio-button
+      >
+    </button>
+  </mat-radio-group>
 </mat-menu>

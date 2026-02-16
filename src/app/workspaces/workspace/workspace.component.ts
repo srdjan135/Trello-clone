@@ -33,9 +33,11 @@ export class WorkspaceComponent implements OnInit {
 
   ngOnInit(): void {
     this.workspaceService.setWorkspaceId(this.workspace._id);
-    this.api.getMyRole(this.workspace._id).subscribe((res) => {
-      this.isAdmin = res.role === 'admin';
-      this.cdr.markForCheck();
-    });
+    if (this.workspace) {
+      this.api.getMyRole(this.workspace._id).subscribe((res) => {
+        this.isAdmin = res.role === 'admin';
+        this.cdr.markForCheck();
+      });
+    }
   }
 }

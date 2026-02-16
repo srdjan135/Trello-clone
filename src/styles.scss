@@ -1,4 +1,52 @@
 @use "variables" as *;
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+:root {
+  --text-main: #3c4858;
+  --bg-main: #faf9fd;
+  --board-hover: whitesmoke;
+  --primary: #0052cc;
+}
+
+$light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+    ),
+  )
+);
+
+.light-theme {
+  @include mat.all-component-themes($light-theme);
+  --text-main: #3c4858;
+  --bg-main: #faf9fd;
+  --board-hover: whitesmoke;
+  --primary: #0052cc;
+}
+
+$dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: mat.$azure-palette,
+    ),
+  )
+);
+
+.dark-theme {
+  @include mat.all-component-themes($dark-theme);
+  --text-main: #a1a1a1;
+  --bg-main: #121316;
+  --board-hover: #1c1d1f;
+  --primary: #0052cc;
+}
+
+html {
+  @include mat.all-component-themes($light-theme);
+}
 
 html,
 body {
@@ -7,6 +55,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-main);
 }
 
 body:has(.invite-wrapper) {
@@ -20,13 +69,20 @@ h2,
 h3,
 h4,
 h5,
+h6,
 span,
-p {
-  color: $text-main;
+p,
+ul,
+li {
+  color: var(--text-main);
 }
 
 button[mat-flat-button] > span {
   color: $white;
+}
+
+button[mat-flat-button]:not(:disabled) {
+  background-color: var(--primary) !important;
 }
 
 .avatar {
@@ -36,7 +92,7 @@ button[mat-flat-button] > span {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $primary;
+  background-color: var(--primary);
   color: $white;
   border-radius: 50%;
   cursor: pointer;

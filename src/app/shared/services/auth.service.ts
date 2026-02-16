@@ -92,6 +92,7 @@ export class AuthService {
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('Theme');
   }
 
   private getAuthData() {
