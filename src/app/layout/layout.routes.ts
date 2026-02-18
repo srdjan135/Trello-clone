@@ -39,6 +39,14 @@ export const layoutRoutes: Routes = [
           ),
         canActivate: [AuthGuard, WorkspaceAdminGuard],
       },
+      {
+        path: 'manage-account',
+        loadComponent: () =>
+          import('../manage-account/manage-account.component').then(
+            (m) => m.ManageAccountComponent,
+          ),
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

@@ -1,0 +1,56 @@
+<h5>Manage Account</h5>
+@if (user) {
+  <form (ngSubmit)="onSubmit(form)" #form="ngForm" class="manage">
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input
+        type="text"
+        matInput
+        [(ngModel)]="user.username"
+        name="username"
+        minlength="3"
+        #username="ngModel"
+        required
+      />
+
+      @if (username.hasError("required")) {
+        <mat-error> Username is required! </mat-error>
+      }
+
+      @if (username.hasError("minlength")) {
+        <mat-error>
+          Username must contain
+          {{ username.errors?.["minlength"].requiredLength }} characters or
+          more!
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        type="email"
+        matInput
+        [(ngModel)]="user.email"
+        name="email"
+        email
+        #email="ngModel"
+        required
+      />
+
+      @if (email.hasError("required")) {
+        <mat-error> E-mail is required! </mat-error>
+      }
+
+      @if (email.hasError("email")) {
+        <mat-error> Enter a valid e-mail! </mat-error>
+      }
+    </mat-form-field>
+
+    <div>
+      <button mat-flat-button type="submit" [disabled]="getIsDisabled(form)">
+        Save
+      </button>
+    </div>
+  </form>
+}

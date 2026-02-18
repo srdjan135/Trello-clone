@@ -34,6 +34,10 @@ export class ApiService {
     return this.http.get<{ user: User }>(`${this.API_URL}/user`);
   }
 
+  manageUser(data: { username: string; email: string }, userId: string) {
+    return this.http.put(`${this.API_URL}/user/${userId}`, data);
+  }
+
   searchUsers(query: string, workspaceId: string) {
     return this.http.get<{ users: User[] }>(`${this.API_URL}/users/search`, {
       params: {

@@ -1,4 +1,5 @@
 import { Workspace } from './workspace';
+import { Notification } from './notification';
 
 export interface User {
   _id: string;
