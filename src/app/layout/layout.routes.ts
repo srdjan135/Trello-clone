@@ -55,6 +55,14 @@ export const layoutRoutes: Routes = [
           ),
         canActivate: [AuthGuard],
       },
+      {
+        path: 'contact-support',
+        loadComponent: () =>
+          import('../help/contact-support/contact-support.component').then(
+            (m) => m.ContactSupportComponent,
+          ),
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

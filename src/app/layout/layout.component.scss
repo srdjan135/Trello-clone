@@ -28,7 +28,8 @@ mat-sidenav-container {
     }
 
     main:has(.settings-title),
-    main:has(.manage) {
+    main:has(.manage),
+    main:has(.support-container) {
       justify-content: start;
       padding-left: 5rem;
     }

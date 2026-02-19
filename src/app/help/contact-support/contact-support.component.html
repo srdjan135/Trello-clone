@@ -1,0 +1,56 @@
+<div class="support-container">
+  <h5>Contact Support</h5>
+  <p class="subtitle">
+    Need help? Report a problem or send us a question and our team will get back
+    to you.
+  </p>
+
+  <form #supportForm="ngForm" (ngSubmit)="onSubmit(supportForm)">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select name="category" ngModel required #category="ngModel">
+        <mat-option value="bug">Bug Report</mat-option>
+        <mat-option value="feature">Feature Request</mat-option>
+        <mat-option value="account">Account Issue</mat-option>
+        <mat-option value="other">Other</mat-option>
+      </mat-select>
+      @if (category.invalid && category.touched) {
+        <mat-error>Category is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Subject</mat-label>
+      <input matInput name="subject" ngModel required #subject="ngModel" />
+      @if (subject.invalid && subject.touched) {
+        <mat-error>Subject is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Message</mat-label>
+      <textarea
+        matInput
+        rows="5"
+        name="message"
+        ngModel
+        required
+        #message="ngModel"
+      ></textarea>
+      @if (message.invalid && message.touched) {
+        <mat-error>Message is required</mat-error>
+      }
+    </mat-form-field>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="supportForm.invalid"
+        class="full-width"
+      >
+        Send Message
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Workspace = require("../models/workspace");
+const nodemailer = require("nodemailer");
 
 exports.getUser = async (req, res) => {
   const userId = req.userData.userId;
@@ -59,4 +60,53 @@ exports.searchUsers = async (req, res) => {
   }).select("_id username");
 
   res.status(200).json({ users });
+};
+
+exports.contactSupport = async (req, res) => {
+  const { category, subject, message } = req.body;
+  const { userId } = req.userData;
+
+  try {
+    if (!category || !subject || !message) {
+      return res.status(400).json({
+        message: "All fields are required!",
+      });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.USER_EMAIL,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Trello Clone Support" <${process.env.EMAIL_USER}>`,
+      to: process.env.SUPPORT_EMAIL,
+      subject: `[Support - ${category.toUpperCase()}] ${subject}`,
+      html: `
+        <h2>New Support Request</h2>
+        <p><strong>User ID:</strong> ${userId}</p>
+        <p><strong>Category:</strong> ${category}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <hr />
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    console.log(transporter);
+
+    res.status(200).json({
+      message: "Support request sent successfully!",
+    });
+  } catch (err) {
+    console.error("Support email error:", err);
+    res.status(500).json({
+      message: "Failed to send report!",
+    });
+  }
 };

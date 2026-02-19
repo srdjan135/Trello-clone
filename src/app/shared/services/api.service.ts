@@ -190,4 +190,8 @@ export class ApiService {
       },
     });
   }
+
+  contactSupport(data: { category: string; subject: string; message: string }) {
+    return this.http.post(`${this.API_URL}/contact-support`, data);
+  }
 }
