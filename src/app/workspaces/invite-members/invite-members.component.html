@@ -27,6 +27,7 @@
         [matChipInputAddOnBlur]="addOnBlur"
         (matChipInputTokenEnd)="add($event)"
         [matAutocomplete]="auto"
+        (focus)="autoTrigger.openPanel()"
         placeholder="Add user..."
       />
     </mat-chip-grid>

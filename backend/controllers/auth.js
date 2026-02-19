@@ -24,17 +24,6 @@ exports.signUp = async (req, res) => {
       workspaces: [],
     });
 
-    const workspace = await Workspace.create({
-      name: "Default",
-      members: [user._id],
-      isPrivate: true,
-      description: "This is the default trello workspace!",
-    });
-
-    await User.findByIdAndUpdate(user._id, {
-      $addToSet: { workspaces: workspace._id },
-    });
-
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_KEY,

@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
@@ -16,15 +17,20 @@ import { MatDivider } from '@angular/material/divider';
 import { User } from '../models/user.model';
 import { ApiService } from '../shared/services/api.service';
 import { AuthService } from '../shared/services/auth.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalComponent } from '../shared/components/modal/modal.component';
-import { CreateWorkspaceComponent } from '../workspaces/create-workspace/create-workspace.component';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Notification } from '../models/notification';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { MatBadge } from '@angular/material/badge';
 import { MatRadioModule } from '@angular/material/radio';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedService } from '../shared/services/shared.service';
+import { Board } from '../models/board.model';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
+import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -47,6 +53,10 @@ import { FormsModule } from '@angular/forms';
     MatBadge,
     MatRadioModule,
     FormsModule,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatOption,
+    MatAutocompleteTrigger,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -57,12 +67,17 @@ export class HeaderComponent implements OnInit {
   userInitial!: string;
   notifications: Notification[] = [];
   selectedTheme = 'light';
+  searchControl = new FormControl('');
+  filteredBoards: Board[] = [];
+
+  @ViewChild(MatAutocompleteTrigger) autoTrigger!: MatAutocompleteTrigger;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private api: ApiService,
     private auth: AuthService,
-    private dialog: MatDialog,
+    private sharedService: SharedService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -78,20 +93,32 @@ export class HeaderComponent implements OnInit {
       this.notifications = res.notifications;
       this.cdr.markForCheck();
     });
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((value) => {
+          if (!value || value.length < 1) {
+            return of({ boards: [] });
+          }
+          return this.api.searchBoards(value || '');
+        }),
+      )
+      .subscribe((res) => {
+        this.filteredBoards = res.boards;
+        if (!this.autoTrigger.panelOpen) {
+          this.autoTrigger.openPanel();
+        }
+      });
   }
 
   openFormModal() {
-    this.dialog.open(ModalComponent, {
-      width: '70%',
-      maxWidth: '100vw',
-      height: '60%',
-      data: {
-        title: 'Create Workspace',
-        subtitle:
-          'Boost your productivity by making it easier for everyone to access boards in one location',
-        component: CreateWorkspaceComponent,
-      },
-    });
+    this.sharedService.openCreateWorkspaceModal();
+  }
+
+  openBoard(board: Board) {
+    this.router.navigate(['/boards', board._id]);
+    this.searchControl.setValue('');
   }
 
   logout() {

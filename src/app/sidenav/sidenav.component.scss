@@ -84,7 +84,13 @@ aside {
     }
   }
 
-  mat-divider {
+  p {
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    font-size: 14px;
+  }
+
+  mat-divider:first-of-type {
     margin-bottom: 2rem;
   }
 

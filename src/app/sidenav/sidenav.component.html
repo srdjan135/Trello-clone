@@ -60,6 +60,12 @@
           }
         </mat-list>
       </mat-expansion-panel>
+    } @empty {
+      <p>There are currently no workspaces.</p>
     }
+    <mat-divider></mat-divider>
+    <mat-list-item (click)="openWorkspaceModal()">
+      <span>Create Workspace</span>
+    </mat-list-item>
   </mat-list>
 </aside>

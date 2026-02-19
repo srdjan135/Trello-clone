@@ -6,6 +6,7 @@ import {
   inject,
   OnDestroy,
   signal,
+  ViewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -25,6 +26,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import {
   debounceTime,
@@ -75,6 +77,8 @@ export class InviteMembersComponent implements OnDestroy {
 
   userCtrl = new FormControl('');
 
+  @ViewChild(MatAutocompleteTrigger) autoTrigger!: MatAutocompleteTrigger;
+
   ngOnInit() {
     this.userCtrl.valueChanges
       .pipe(
@@ -82,12 +86,15 @@ export class InviteMembersComponent implements OnDestroy {
         distinctUntilChanged(),
         filter(
           (value): value is string =>
-            typeof value === 'string' && value.length > 1,
+            typeof value === 'string' && value.length >= 1,
         ),
         switchMap((value) => this.api.searchUsers(value, this.workspaceId)),
       )
       .subscribe((res) => {
         this.filteredUsers = res.users;
+        if (!this.autoTrigger.panelOpen) {
+          this.autoTrigger.openPanel();
+        }
       });
 
     this.subscription =

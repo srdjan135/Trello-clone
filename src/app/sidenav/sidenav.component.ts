@@ -19,6 +19,7 @@ import { filter, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorkspaceService } from '../shared/services/workspace.service';
 import { ApiService } from '../shared/services/api.service';
+import { SharedService } from '../shared/services/shared.service';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
@@ -50,6 +51,7 @@ export class SidenavComponent implements OnInit {
     private destroyRef: DestroyRef,
     private router: Router,
     private api: ApiService,
+    private sharedService: SharedService,
   ) {}
 
   ngOnInit(): void {
@@ -79,5 +81,9 @@ export class SidenavComponent implements OnInit {
 
   isWorkspaceActive(workspaceId: string) {
     return this.router.url.includes(`${workspaceId}`);
+  }
+
+  openWorkspaceModal() {
+    this.sharedService.openCreateWorkspaceModal();
   }
 }

@@ -9,12 +9,32 @@
     <h1>Trello</h1>
   </div>
   <div class="search">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="search-field">
       <mat-label>Search</mat-label>
-      <input matInput placeholder="Search boards..." />
+
+      <input
+        type="text"
+        matInput
+        placeholder="Search boards..."
+        [formControl]="searchControl"
+        [matAutocomplete]="auto"
+        (focus)="autoTrigger.openPanel()"
+      />
+
       <mat-icon matPrefix>search</mat-icon>
+
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="openBoard($event.option.value)"
+      >
+        @for (board of filteredBoards; track board._id) {
+          <mat-option [value]="board">
+            {{ board.title }}
+            <small class="workspace-name"> ({{ board.workspace.name }}) </small>
+          </mat-option>
+        }
+      </mat-autocomplete>
     </mat-form-field>
-    <button mat-flat-button>Create</button>
   </div>
   <div class="header-end">
     <button

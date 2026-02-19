@@ -182,4 +182,12 @@ export class ApiService {
       data,
     );
   }
+
+  searchBoards(query: string) {
+    return this.http.get<{ boards: Board[] }>(`${this.API_URL}/boards/search`, {
+      params: {
+        q: query,
+      },
+    });
+  }
 }
