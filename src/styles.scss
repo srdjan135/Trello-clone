@@ -85,6 +85,10 @@ button[mat-flat-button]:not(:disabled) {
   background-color: var(--primary) !important;
 }
 
+button[mat-button] > span {
+  color: $primary;
+}
+
 .avatar {
   width: 30px;
   height: 30px;

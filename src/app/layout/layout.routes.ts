@@ -47,6 +47,14 @@ export const layoutRoutes: Routes = [
           ),
         canActivate: [AuthGuard],
       },
+      {
+        path: 'how-it-works',
+        loadComponent: () =>
+          import('../help/how-it-works/how-it-works.component').then(
+            (m) => m.HowItWorksComponent,
+          ),
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

@@ -1,0 +1,146 @@
+<h5>How It Works</h5>
+<div>
+  <button mat-button (click)="accordion.openAll()">Expand All</button>
+  <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+</div>
+
+<mat-accordion multi>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Create a Workspace</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>
+      A workspace is your main collaboration space where you organize teams and
+      projects.
+    </p>
+
+    <ul>
+      <li>Create multiple workspaces for different teams or clients</li>
+      <li>Invite members via email or invite link</li>
+      <li>Manage roles (Admin / Member)</li>
+      <li>Control visibility (Private / Public)</li>
+    </ul>
+
+    <p><strong>Example:</strong> Marketing Team Workspace</p>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Create a Board</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>Boards represent individual projects inside a workspace.</p>
+
+    <ul>
+      <li>Each board belongs to a workspace</li>
+      <li>Customize board backgrounds</li>
+      <li>Invite specific members to collaborate</li>
+      <li>Manage project-specific tasks</li>
+    </ul>
+
+    <p><strong>Example:</strong> Website Redesign Board</p>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Add Lists (Columns)</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>Lists help you structure your workflow stages.</p>
+
+    <ul>
+      <li>Create unlimited lists</li>
+      <li>Rename or delete lists</li>
+      <li>Reorder lists by drag & drop</li>
+      <li>Organize tasks visually</li>
+    </ul>
+
+    <p>
+      <strong>Typical workflow:</strong> Backlog → To Do → In Progress → Review
+      → Done
+    </p>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Create and Manage Tasks</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>Tasks (cards) represent individual pieces of work.</p>
+
+    <ul>
+      <li>Add title and detailed description</li>
+      <li>Set due dates</li>
+      <li>Assign one or multiple members</li>
+      <li>Add labels (priority or category)</li>
+      <li>Upload attachments</li>
+      <li>Leave comments for collaboration</li>
+    </ul>
+
+    <p><strong>Example:</strong> “Design homepage hero section”</p>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Drag & Drop Workflow</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>
+      Move tasks between lists to track progress visually using drag & drop.
+    </p>
+
+    <ul>
+      <li>Move tasks from To Do → In Progress → Done</li>
+      <li>Reorder tasks within a list</li>
+      <li>Instantly visualize project status</li>
+    </ul>
+
+    <p>This follows the Kanban methodology for efficient task management.</p>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Assign Members & Collaborate</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>Collaboration keeps your team aligned and productive.</p>
+
+    <ul>
+      <li>Assign members to tasks</li>
+      <li>Mention teammates in comments</li>
+      <li>Track responsibilities clearly</li>
+      <li>See who is working on what</li>
+    </ul>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Search and Filter</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>Quickly find boards and tasks across all workspaces.</p>
+
+    <ul>
+      <li>Global board search</li>
+      <li>Filter tasks by member</li>
+      <li>Filter by due date</li>
+      <li>Filter by labels</li>
+    </ul>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Manage Roles & Permissions</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p>Keep control over your workspace with role-based permissions.</p>
+
+    <ul>
+      <li>Admins can manage members and settings</li>
+      <li>Admins can delete boards and workspaces</li>
+      <li>Members can create, edit and move tasks</li>
+      <li>Secure and structured collaboration</li>
+    </ul>
+  </mat-expansion-panel>
+</mat-accordion>
