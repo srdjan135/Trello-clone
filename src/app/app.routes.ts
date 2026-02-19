@@ -34,4 +34,12 @@ export const routes: Routes = [
       ),
     canActivate: [AuthGuard],
   },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./404-page/page-not-found.component').then(
+        (m) => m.PageNotFoundComponent,
+      ),
+    canActivate: [AuthGuard],
+  },
 ];
