@@ -19,10 +19,19 @@ export const routes: Routes = [
   {
     path: 'invite/:token',
     component: InviteComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'invite/:token/accept',
     component: InviteComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'switch-accounts',
+    loadComponent: () =>
+      import('./switch-accounts/switch-accounts.component').then(
+        (m) => m.SwitchAccountsComponent,
+      ),
     canActivate: [AuthGuard],
   },
 ];

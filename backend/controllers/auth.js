@@ -44,7 +44,7 @@ exports.signUp = async (req, res) => {
     res.status(201).json({
       token,
       expiresIn: TOKEN_EXPIRES_IN,
-      userId: user._id,
+      user: user._id,
     });
   } catch (err) {
     res.status(500).json({ message: "Sign up filed!", err });
@@ -89,7 +89,7 @@ exports.signIn = async (req, res) => {
     res.status(200).json({
       token,
       expiresIn: TOKEN_EXPIRES_IN,
-      userId: user._id,
+      user: user,
     });
   } catch (err) {
     res.status(500).json({ message: "Sign in filed!" });

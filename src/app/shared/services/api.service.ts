@@ -16,17 +16,18 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   signUp(userData: FormData) {
-    return this.http.post<{ user: User; token?: string; expiresIn?: number }>(
-      `${this.API_URL}/signup`,
-      userData,
-    );
+    return this.http.post<{
+      token: string;
+      expiresIn: number;
+      user: User;
+    }>(`${this.API_URL}/signup`, userData);
   }
 
   signIn(userData: FormData) {
     return this.http.post<{
       token: string;
       expiresIn: number;
-      user?: User;
+      user: User;
     }>(`${this.API_URL}/signin`, userData);
   }
 
