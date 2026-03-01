@@ -156,7 +156,11 @@
           <p>Add a description to yout board</p>
         </div>
       </button>
-      <button mat-menu-item>
+      <button
+        mat-menu-item
+        clickStopPropagation
+        [matMenuTriggerFor]="workspaceMenu"
+      >
         <mat-icon>dashboard</mat-icon>
         <p>Workspace</p>
       </button>
@@ -228,5 +232,27 @@
         </mat-form-field>
       </div>
     }
+  </mat-menu>
+
+  <mat-menu #workspaceMenu="matMenu" class="workspaceMenu">
+    <h5>Change Workspace</h5>
+    <mat-form-field appearance="outline" clickStopPropagation>
+      <mat-label>This board is part of...</mat-label>
+      <mat-select [formControl]="boardWorkspaceCtrl">
+        @for (workspace of workspaces; track workspace._id) {
+          <mat-option [value]="workspace.name" clickStopPropagation>{{
+            workspace.name
+          }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button
+      mat-flat-button
+      clickStopPropagation
+      [disabled]="boardWorkspaceCtrl.value === currentWorkspaceId"
+      (click)="changeWorkspace()"
+    >
+      Change
+    </button>
   </mat-menu>
 }

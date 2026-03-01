@@ -24,7 +24,7 @@ exports.getBoard = async (req, res) => {
   const { boardId } = req.params;
 
   try {
-    const board = await Board.findById(boardId);
+    const board = await Board.findById(boardId).populate("workspace");
 
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
@@ -88,7 +88,13 @@ exports.updateBoard = async (req, res) => {
   const { boardId } = req.params;
   const updates = req.body;
 
-  const allowedFields = ["title", "background", "description", "visibility"];
+  const allowedFields = [
+    "title",
+    "background",
+    "workspace",
+    "description",
+    "visibility",
+  ];
 
   const filteredUpdates = {};
 

@@ -28,6 +28,8 @@ import { MatDivider } from '@angular/material/divider';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { Workspace } from '../../../../models/workspace';
 
 @Component({
   selector: 'app-board',
@@ -49,6 +51,8 @@ import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
     MatFormField,
     MatLabel,
     MatInput,
+    MatSelect,
+    MatOption,
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
@@ -60,12 +64,14 @@ export class BoardComponent implements OnInit {
   isEditBoardTitle: boolean = false;
   boardTitle = new FormControl('');
   descriptionCtrl = new FormControl('');
+  boardWorkspaceCtrl = new FormControl('');
   filters: Filters = filters;
   filterKeys = Object.keys(this.filters) as (keyof Filters)[];
   user!: User;
   selectedVisibility: 'private' | 'workspace' | 'public' = 'private';
   isAbout: boolean = false;
   boardMembers!: BoardMember[];
+  workspaces!: Workspace[];
 
   sectionTitles: Record<keyof Filters, string> = {
     members: 'Members',
@@ -106,6 +112,11 @@ export class BoardComponent implements OnInit {
         this.descriptionCtrl.setValue(this.board.description ?? '', {
           emitEvent: false,
         });
+        if (typeof this.board.workspace !== 'string') {
+          this.boardWorkspaceCtrl.setValue(this.board.workspace.name, {
+            emitEvent: false,
+          });
+        }
         this.cdr.markForCheck();
       });
 
@@ -151,6 +162,10 @@ export class BoardComponent implements OnInit {
       this.user = res.user;
       this.cdr.markForCheck();
     });
+    this.api.getWorkspaces().subscribe((res) => {
+      this.workspaces = res.workspaces;
+      this.cdr.markForCheck();
+    });
   }
 
   setVisibility(value: 'private' | 'workspace' | 'public') {
@@ -160,6 +175,14 @@ export class BoardComponent implements OnInit {
       })
       .subscribe();
     this.selectedVisibility = value;
+  }
+
+  get currentWorkspaceId(): string | null {
+    if (!this.board) return null;
+
+    return typeof this.board.workspace === 'string'
+      ? this.board.workspace
+      : this.board.workspace.name;
   }
 
   get visibilityIcon(): string {
@@ -194,5 +217,18 @@ export class BoardComponent implements OnInit {
         component: InviteBoardMembersComponent,
       },
     });
+  }
+
+  changeWorkspace() {
+    const workspaceName = this.boardWorkspaceCtrl.value;
+    const workspace = this.workspaces.find((w) => w.name === workspaceName);
+    if (!workspaceName) return;
+
+    this.api
+      .updateBoard(this.boardId, { workspace: workspace?._id })
+      .subscribe((res) => {
+        this.board = res.board;
+        this.cdr.markForCheck();
+      });
   }
 }

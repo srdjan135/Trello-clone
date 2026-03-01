@@ -32,6 +32,7 @@ import {
 } from '@angular/material/autocomplete';
 import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
 import { AvatarComponent } from '../shared/components/avatar/avatar.component';
+import { Workspace } from '../models/workspace';
 
 @Component({
   selector: 'app-header',
@@ -71,6 +72,7 @@ export class HeaderComponent implements OnInit {
   selectedTheme = 'light';
   searchControl = new FormControl('');
   filteredBoards: Board[] = [];
+  workspaces!: Workspace[];
 
   @ViewChild(MatAutocompleteTrigger) autoTrigger!: MatAutocompleteTrigger;
 
@@ -112,6 +114,19 @@ export class HeaderComponent implements OnInit {
           this.autoTrigger.openPanel();
         }
       });
+    this.api.getWorkspaces().subscribe((res) => {
+      this.workspaces = res.workspaces;
+      this.cdr.markForCheck();
+    });
+  }
+
+  getWorkspaceName(board: Board): string {
+    if (typeof board.workspace === 'string') {
+      const found = this.workspaces.find((w) => w._id === board.workspace);
+      return found?.name ?? '';
+    }
+
+    return board.workspace.name;
   }
 
   openFormModal() {

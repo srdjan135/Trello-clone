@@ -324,3 +324,32 @@
     }
   }
 }
+
+::ng-deep .cdk-overlay-container .cdk-overlay-pane {
+  transform: translateY(0) !important;
+
+  .mat-mdc-menu-panel.workspaceMenu {
+    padding: 1rem;
+    min-width: 300px;
+    margin-right: 1rem;
+
+    .mat-mdc-menu-content {
+      padding: 0;
+    }
+
+    h5 {
+      font-size: 16px;
+      text-align: center;
+      line-height: normal;
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    button {
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+}

@@ -30,7 +30,9 @@
         @for (board of filteredBoards; track board._id) {
           <mat-option [value]="board">
             {{ board.title }}
-            <small class="workspace-name"> ({{ board.workspace.name }}) </small>
+            <small class="workspace-name">
+              ({{ getWorkspaceName(board) }})
+            </small>
           </mat-option>
         }
       </mat-autocomplete>

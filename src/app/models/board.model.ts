@@ -6,7 +6,7 @@ export interface Board {
   title: string;
   background: string;
   members: User[];
-  workspace: Workspace;
+  workspace: Workspace | string;
   visibility: 'workspace' | 'private' | 'public';
   description?: string;
 }
