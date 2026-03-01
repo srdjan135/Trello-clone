@@ -12,11 +12,12 @@ import { Workspace } from '../../../models/workspace';
 import { Board } from '../../../models/board.model';
 import { ApiService } from '../../../shared/services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-boards',
   standalone: true,
-  imports: [CreateBoardComponent],
+  imports: [CreateBoardComponent, RouterLink],
   templateUrl: './boards.component.html',
   styleUrl: './boards.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

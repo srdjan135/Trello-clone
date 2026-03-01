@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { InviteComponent } from './workspaces/invite/invite.component';
+import { BoardsLayoutComponent } from './boards-layout/boards-layout.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,15 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () =>
       import('./layout/layout.routes').then((m) => m.layoutRoutes),
+  },
+  {
+    path: '',
+    component: BoardsLayoutComponent,
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./boards-layout/boards-layout.routes').then(
+        (m) => m.boardsLayoutRoutes,
+      ),
   },
   {
     path: 'invite/:token',

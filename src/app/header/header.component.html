@@ -52,9 +52,10 @@
     <button mat-icon-button matTooltip="Help" [matMenuTriggerFor]="helpMenu">
       <mat-icon>help_outline</mat-icon>
     </button>
-    <div class="avatar" matTooltip="Account" [matMenuTriggerFor]="accountMenu">
-      {{ userInitial }}
-    </div>
+    <app-avatar
+      matTooltip="Account"
+      [matMenuTriggerFor]="accountMenu"
+    ></app-avatar>
   </div>
 </mat-toolbar>
 
@@ -67,14 +68,15 @@
       <div class="notification-message">
         <span>{{ notification.message }}</span>
 
-        @if (notification.type === "WORKSPACE_INVITE") {
+        @if (
+          notification.type === "WORKSPACE_INVITE" ||
+          notification.type === "BOARD_INVITE"
+        ) {
           <div>
             <button
               mat-icon-button
               matTooltip="Decline"
-              (click)="
-                declineInvite(notification._id, notification.data.workspaceId)
-              "
+              (click)="declineInvite(notification._id)"
               clickStopPropagation
             >
               <mat-icon>close</mat-icon>
@@ -83,9 +85,7 @@
             <button
               mat-icon-button
               matTooltip="Accept"
-              (click)="
-                acceptInvite(notification._id, notification.data.workspaceId)
-              "
+              (click)="acceptInvite(notification._id)"
               clickStopPropagation
             >
               <mat-icon>check</mat-icon>
@@ -146,7 +146,7 @@
     <h3>Account</h3>
     @if (user) {
       <div class="account">
-        <div class="avatar">{{ userInitial }}</div>
+        <app-avatar></app-avatar>
         <div>
           <p>{{ user.username }}</p>
           <p>{{ user.email }}</p>

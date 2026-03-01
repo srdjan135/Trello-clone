@@ -12,6 +12,12 @@ const boardSchema = mongoose.Schema(
       ref: "Workspace",
       required: true,
     },
+    visibility: {
+      type: String,
+      enum: ["workspace", "private", "public"],
+      required: true,
+    },
+    description: { type: String },
   },
   { timestamps: true, default: false },
 );

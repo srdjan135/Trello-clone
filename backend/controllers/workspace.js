@@ -41,7 +41,7 @@ exports.inviteWorkspaceMembers = async (req, res) => {
           sender: inviterId,
           recipient: userId,
           type: "WORKSPACE_INVITE",
-          message: `${sender.username} vas je pozvao u ${workspace.name} workspace`,
+          message: `${sender.username} invited you to ${workspace.name} workspace`,
           data: {
             workspaceId,
             invitedBy: inviterId,
@@ -54,50 +54,6 @@ exports.inviteWorkspaceMembers = async (req, res) => {
       }
     }
     res.status(200).json({ message: "Invites sent successfully" });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to invite members" });
-  }
-};
-
-exports.declineInviteToWorkspace = async (req, res) => {
-  try {
-    const { notificationId } = req.body;
-    const userId = req.userData.userId;
-
-    await Notification.findByIdAndDelete(notificationId);
-    await User.findByIdAndUpdate(userId, {
-      $pull: {
-        notifications: notificationId,
-      },
-    });
-    res.status(200).json({});
-  } catch (err) {
-    res.status(500).json({ message: "Failed to invite members" });
-  }
-};
-
-exports.acceptInviteToWorkspace = async (req, res) => {
-  try {
-    const { memberId, workspaceId, notificationId } = req.body;
-    const userId = req.userData.userId;
-
-    await Workspace.findByIdAndUpdate(workspaceId, {
-      $addToSet: { members: memberId },
-    });
-
-    await Notification.findByIdAndDelete(notificationId);
-    await User.findByIdAndUpdate(userId, {
-      $pull: {
-        notifications: notificationId,
-      },
-    });
-
-    await WorkspaceMember.create({
-      workspace: workspaceId,
-      user: userId,
-    });
-
-    res.status(200).json({});
   } catch (err) {
     res.status(500).json({ message: "Failed to invite members" });
   }

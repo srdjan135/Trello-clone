@@ -4,9 +4,11 @@
   @for (account of accounts; track account.userId) {
     <div class="account-card">
       <div class="account">
-        <div class="avatar">
-          {{ account.username?.charAt(0) || "" }}
-        </div>
+        @if (account) {
+          <div class="avatar">
+            {{ account.username.charAt(0).toUpperCase() || "" }}
+          </div>
+        }
         <div>
           <span>{{ account.username }}</span>
           <p>{{ account.email }}</p>

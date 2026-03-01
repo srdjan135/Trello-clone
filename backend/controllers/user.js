@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Workspace = require("../models/workspace");
 const nodemailer = require("nodemailer");
+const Board = require("../models/board");
 
 exports.getUser = async (req, res) => {
   const userId = req.userData.userId;
@@ -41,21 +42,31 @@ exports.manageUser = async (req, res) => {
 };
 
 exports.searchUsers = async (req, res) => {
-  const q = req.query.q;
+  const { q, workspaceId, type, boardId } = req.query;
   const currentUserId = req.userData.userId;
-  const workspaceId = req.query.workspaceId;
 
   if (!q) {
     return res.status(200).json({ users: [] });
   }
 
-  const workspace = await Workspace.findById(workspaceId).select("members");
+  let excludeIds = [currentUserId];
+
+  if (type === "workspace") {
+    const workspace = await Workspace.findById(workspaceId).select("members");
+    if (workspace) {
+      excludeIds.push(...workspace.members);
+    }
+  }
+
+  if (type === "board") {
+    const board = await Board.findById(boardId).select("members");
+    if (board) {
+      excludeIds.push(...board.members);
+    }
+  }
 
   const users = await User.find({
-    _id: {
-      $ne: currentUserId,
-      $nin: workspace.members,
-    },
+    _id: { $nin: excludeIds },
     username: { $regex: q, $options: "i" },
   }).select("_id username");
 

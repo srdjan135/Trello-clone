@@ -6,6 +6,7 @@ import { Workspace } from '../../models/workspace';
 import { Board } from '../../models/board.model';
 import { Notification } from '../../models/notification';
 import { WorkspaceMember } from '../../models/workspaceMember';
+import { BoardMember } from '../../models/boardMember';
 
 @Injectable({
   providedIn: 'root',
@@ -39,12 +40,20 @@ export class ApiService {
     return this.http.put(`${this.API_URL}/user/${userId}`, data);
   }
 
-  searchUsers(query: string, workspaceId: string) {
+  searchUsers(
+    q: string,
+    workspaceId?: string,
+    type?: 'workspace' | 'board',
+    boardId?: string,
+  ) {
+    let params: any = { q };
+
+    if (workspaceId) params.workspaceId = workspaceId;
+    if (workspaceId) params.type = type;
+    if (boardId) params.boardId = boardId;
+
     return this.http.get<{ users: User[] }>(`${this.API_URL}/users/search`, {
-      params: {
-        q: query,
-        workspaceId,
-      },
+      params,
     });
   }
 
@@ -55,7 +64,7 @@ export class ApiService {
   }
 
   deleteNotification(notificationId: string) {
-    return this.http.delete(`${this.API_URL}/${notificationId}`);
+    return this.http.delete(`${this.API_URL}/notifications/${notificationId}`);
   }
 
   readNotifications(userId: string) {
@@ -128,23 +137,14 @@ export class ApiService {
     });
   }
 
-  acceptInviteToWorkspace(
-    memberId: string,
-    workspaceId: string | undefined,
-    notificationId: string,
-  ) {
-    return this.http.post(`${this.API_URL}/workspace/${workspaceId}/accept`, {
-      memberId,
-      workspaceId,
+  acceptInvite(notificationId: string) {
+    return this.http.post(`${this.API_URL}/notifications/accept`, {
       notificationId,
     });
   }
 
-  declineInviteToWorkspace(
-    notificationId: string,
-    workspaceId: string | undefined,
-  ) {
-    return this.http.post(`${this.API_URL}/workspace/${workspaceId}/decline`, {
+  declineInvite(notificationId: string) {
+    return this.http.post(`${this.API_URL}/notifications/decline`, {
       notificationId,
     });
   }
@@ -172,6 +172,10 @@ export class ApiService {
     );
   }
 
+  getBoard(boardId: string) {
+    return this.http.get<{ board: Board }>(`${this.API_URL}/boards/${boardId}`);
+  }
+
   createBoard(data: {
     title: string;
     background: string;
@@ -189,6 +193,39 @@ export class ApiService {
         q: query,
       },
     });
+  }
+
+  updateBoardVisibility(
+    value: 'private' | 'workspace' | 'public',
+    boardId: string,
+  ) {
+    return this.http.put(`${this.API_URL}/boards/${boardId}/visibility`, {
+      value,
+    });
+  }
+
+  updateBoardDescription(boardDesc: string, boardId: string) {
+    return this.http.put<{ board: Board }>(
+      `${this.API_URL}/boards/${boardId}/description`,
+      {
+        boardDesc,
+      },
+    );
+  }
+
+  inviteBoardMembers(
+    allAddedMembers: { users: Record<string, User> },
+    boardId: string,
+  ) {
+    return this.http.post(`${this.API_URL}/boards/${boardId}/invite`, {
+      allAddedMembers,
+    });
+  }
+
+  getBoardMembers(boardId: string) {
+    return this.http.get<{ boardMembers: BoardMember[] }>(
+      `${this.API_URL}/boardMembers/${boardId}`,
+    );
   }
 
   contactSupport(data: { category: string; subject: string; message: string }) {

@@ -88,7 +88,9 @@ export class InviteMembersComponent implements OnDestroy {
           (value): value is string =>
             typeof value === 'string' && value.length >= 1,
         ),
-        switchMap((value) => this.api.searchUsers(value, this.workspaceId)),
+        switchMap((value) =>
+          this.api.searchUsers(value, this.workspaceId, 'workspace'),
+        ),
       )
       .subscribe((res) => {
         this.filteredUsers = res.users;
@@ -130,6 +132,7 @@ export class InviteMembersComponent implements OnDestroy {
   selected(event: MatAutocompleteSelectedEvent) {
     this.addUser(event.option.value);
     this.userCtrl.setValue('');
+    event.option.deselect();
   }
 
   private addUser(user: User) {

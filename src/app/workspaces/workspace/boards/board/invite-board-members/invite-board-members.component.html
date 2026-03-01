@@ -1,0 +1,34 @@
+<form (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Invite board members</mat-label>
+    <mat-chip-grid #chipGrid>
+      @for (member of boardMembers; track member._id) {
+        <mat-chip-row (removed)="remove(member)">
+          {{ member.username }}
+          <button matChipRemove><mat-icon>cancel</mat-icon></button>
+        </mat-chip-row>
+      }
+    </mat-chip-grid>
+
+    <input
+      #memberInput
+      name="member"
+      placeholder="New Member"
+      [formControl]="userCtrl"
+      [matChipInputFor]="chipGrid"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matAutocomplete]="auto"
+      (matChipInputTokenEnd)="add($event)"
+      (keydown.enter)="$event.preventDefault()"
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="selected($event)"
+    >
+      @for (user of filteredUsers; track user._id) {
+        <mat-option [value]="user">{{ user.username }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+  <button type="submit" mat-flat-button>Invite</button>
+</form>

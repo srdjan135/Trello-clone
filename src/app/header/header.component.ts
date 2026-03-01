@@ -31,6 +31,7 @@ import {
   MatOption,
 } from '@angular/material/autocomplete';
 import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
+import { AvatarComponent } from '../shared/components/avatar/avatar.component';
 
 @Component({
   selector: 'app-header',
@@ -57,6 +58,7 @@ import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
     MatAutocomplete,
     MatOption,
     MatAutocompleteTrigger,
+    AvatarComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -140,26 +142,22 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  declineInvite(notificationId: string, workspaceId: string | undefined) {
-    this.api
-      .declineInviteToWorkspace(notificationId, workspaceId)
-      .subscribe(() => {
-        this.notifications = this.notifications.filter(
-          (n) => n._id !== notificationId,
-        );
-        this.cdr.markForCheck();
-      });
+  declineInvite(notificationId: string) {
+    this.api.declineInvite(notificationId).subscribe(() => {
+      this.notifications = this.notifications.filter(
+        (n) => n._id !== notificationId,
+      );
+      this.cdr.markForCheck();
+    });
   }
 
-  acceptInvite(notificationId: string, workspaceId: string | undefined) {
-    this.api
-      .acceptInviteToWorkspace(this.user._id, workspaceId, notificationId)
-      .subscribe(() => {
-        this.notifications = this.notifications.filter(
-          (n) => n._id !== notificationId,
-        );
-        this.cdr.markForCheck();
-      });
+  acceptInvite(notificationId: string) {
+    this.api.acceptInvite(notificationId).subscribe(() => {
+      this.notifications = this.notifications.filter(
+        (n) => n._id !== notificationId,
+      );
+      this.cdr.markForCheck();
+    });
   }
 
   deleteNotification(notificationId: string) {

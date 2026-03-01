@@ -1,5 +1,8 @@
 @for (board of sortedBoards; track board._id) {
-  <div class="board-card">
+  <div
+    class="board-card"
+    [routerLink]="['/', workspace._id, 'boards', board._id]"
+  >
     <div
       class="bg"
       [style.backgroundImage]="'url(' + board.background + ')'"

@@ -73,13 +73,15 @@
       @for (member of filteredWorkspaceMembers; track member._id) {
         <div class="members">
           <div>
-            <div class="avatar">
-              {{ member.user.username?.charAt(0) || "" }}
-            </div>
-            <div class="member-info">
-              <h5>{{ member.user.username }}</h5>
-              <p>{{ member.user.email }}</p>
-            </div>
+            @if (member.user) {
+              <div class="avatar">
+                {{ member.user.username.charAt(0).toUpperCase() || "" }}
+              </div>
+              <div class="member-info">
+                <h5>{{ member.user.username }}</h5>
+                <p>{{ member.user.email }}</p>
+              </div>
+            }
           </div>
           <div class="actions">
             <button mat-button [matMenuTriggerFor]="viewBoardsMenu">

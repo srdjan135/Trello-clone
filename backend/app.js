@@ -10,6 +10,7 @@ const boardRoutes = require("./routes/board");
 const notificationRoutes = require("./routes/notification");
 const inviteRoutes = require("./routes/invite");
 const workspaceMemberRoutes = require("./routes/workspaceMember");
+const boardMemberRoutes = require("./routes/boardMember");
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/api", boardRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", inviteRoutes);
 app.use("/api", workspaceMemberRoutes);
+app.use("/api", boardMemberRoutes);
 
 const PORT = 3000;
 mongoose

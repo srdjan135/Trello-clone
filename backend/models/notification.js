@@ -16,7 +16,7 @@ const notificationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["WORKSPACE_INVITE"],
+      enum: ["WORKSPACE_INVITE", "BOARD_INVITE"],
       required: true,
     },
 

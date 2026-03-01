@@ -4,8 +4,6 @@ const { requireAdmin } = require("../middlewares/requireAdmin");
 const {
   getWorkspaces,
   inviteWorkspaceMembers,
-  declineInviteToWorkspace,
-  acceptInviteToWorkspace,
   postWorkspace,
   updateWorkspace,
   deleteWorkspace,
@@ -31,16 +29,6 @@ router.post(
   "/workspace/:workspaceId/invite",
   checkAuth,
   inviteWorkspaceMembers,
-);
-router.post(
-  "/workspace/:workspaceId/decline",
-  checkAuth,
-  declineInviteToWorkspace,
-);
-router.post(
-  "/workspace/:workspaceId/accept",
-  checkAuth,
-  acceptInviteToWorkspace,
 );
 
 module.exports = router;
