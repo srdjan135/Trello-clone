@@ -7,8 +7,7 @@ const {
   getBoard,
   postBoard,
   searchBoards,
-  updateBoardVisibility,
-  updateBoardDescription,
+  updateBoard,
   inviteBoardMembers,
 } = require("../controllers/board");
 
@@ -16,8 +15,7 @@ router.get("/:workspaceId/boards", checkAuth, getBoards);
 router.get("/boards/:boardId", checkAuth, getBoard);
 router.post("/:workspaceId/boards", checkAuth, postBoard);
 router.get("/boards/search", checkAuth, searchBoards);
-router.put("/boards/:boardId/visibility", checkAuth, updateBoardVisibility);
-router.put("/boards/:boardId/description", checkAuth, updateBoardDescription);
+router.patch("/boards/:boardId/update", checkAuth, updateBoard);
 router.post("/boards/:boardId/invite", checkAuth, inviteBoardMembers);
 
 module.exports = router;

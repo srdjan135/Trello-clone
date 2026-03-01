@@ -84,16 +84,24 @@ exports.searchBoards = async (req, res) => {
   }
 };
 
-exports.updateBoardVisibility = async (req, res) => {
-  const { value } = req.body;
+exports.updateBoard = async (req, res) => {
   const { boardId } = req.params;
+  const updates = req.body;
+
+  const allowedFields = ["title", "background", "description", "visibility"];
+
+  const filteredUpdates = {};
+
+  for (const key of Object.keys(updates)) {
+    if (allowedFields.includes(key)) {
+      filteredUpdates[key] = updates[key];
+    }
+  }
 
   try {
     const board = await Board.findByIdAndUpdate(
       boardId,
-      {
-        $set: { visibility: value },
-      },
+      { $set: filteredUpdates },
       { new: true },
     );
 
@@ -103,27 +111,7 @@ exports.updateBoardVisibility = async (req, res) => {
 
     res.status(200).json({ board });
   } catch (err) {
-    res.status(500).json({ message: "Failed to update board visibility!" });
-  }
-};
-
-exports.updateBoardDescription = async (req, res) => {
-  const { boardDesc } = req.body;
-  const { boardId } = req.params;
-
-  try {
-    const board = await Board.findByIdAndUpdate(
-      boardId,
-      {
-        $set: { description: boardDesc },
-      },
-      { new: true },
-    );
-
-    res.status(200).json({ board });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to update board description!" });
+    res.status(500).json({ message: "Failed to update board!" });
   }
 };
 

@@ -101,6 +101,7 @@ export class BoardComponent implements OnInit {
 
       this.api.getBoard(this.boardId).subscribe((res) => {
         this.board = res.board;
+        this.selectedVisibility = res.board.visibility;
         this.boardTitle.setValue(this.board.title);
         this.descriptionCtrl.setValue(this.board.description ?? '', {
           emitEvent: false,
@@ -118,11 +119,28 @@ export class BoardComponent implements OnInit {
           debounceTime(300),
           distinctUntilChanged(),
           switchMap((value) =>
-            this.api.updateBoardDescription(value as string, this.boardId),
+            this.api.updateBoard(this.boardId, {
+              description: value as string,
+            }),
           ),
         )
         .subscribe((res) => {
           this.descriptionCtrl.setValue(res.board.description ?? '', {
+            emitEvent: false,
+          });
+          this.cdr.markForCheck();
+        });
+
+      this.boardTitle.valueChanges
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap((value) =>
+            this.api.updateBoard(this.boardId, { title: value as string }),
+          ),
+        )
+        .subscribe((res) => {
+          this.boardTitle.setValue(res.board.title ?? '', {
             emitEvent: false,
           });
           this.cdr.markForCheck();
@@ -136,7 +154,11 @@ export class BoardComponent implements OnInit {
   }
 
   setVisibility(value: 'private' | 'workspace' | 'public') {
-    this.api.updateBoardVisibility(value, this.boardId).subscribe();
+    this.api
+      .updateBoard(this.boardId, {
+        visibility: value,
+      })
+      .subscribe();
     this.selectedVisibility = value;
   }
 

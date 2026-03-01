@@ -195,21 +195,10 @@ export class ApiService {
     });
   }
 
-  updateBoardVisibility(
-    value: 'private' | 'workspace' | 'public',
-    boardId: string,
-  ) {
-    return this.http.put(`${this.API_URL}/boards/${boardId}/visibility`, {
-      value,
-    });
-  }
-
-  updateBoardDescription(boardDesc: string, boardId: string) {
-    return this.http.put<{ board: Board }>(
-      `${this.API_URL}/boards/${boardId}/description`,
-      {
-        boardDesc,
-      },
+  updateBoard(boardId: string, updates: Partial<Board>) {
+    return this.http.patch<{ board: Board }>(
+      `${this.API_URL}/boards/${boardId}/update`,
+      updates,
     );
   }
 
