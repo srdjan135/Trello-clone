@@ -7,4 +7,5 @@ export interface BoardMember {
     username: string;
     email?: string;
   };
+  addedViaWorkspace: boolean;
 }

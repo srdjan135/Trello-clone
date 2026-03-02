@@ -1,4 +1,4 @@
-@for (board of sortedBoards; track board._id) {
+@for (board of visibleBoards; track board._id) {
   <div
     class="board-card"
     [routerLink]="['/', workspace._id, 'boards', board._id]"
@@ -9,9 +9,15 @@
     ></div>
     <p>{{ board.title }}</p>
   </div>
+} @empty {
+  @if (!isAdmin) {
+    <p>You are not currently on any board.</p>
+  }
 }
 
-<app-create-board
-  [workspace]="workspace"
-  (newBoard)="updateBoardsList($event)"
-></app-create-board>
+@if (isAdmin) {
+  <app-create-board
+    [workspace]="workspace"
+    (newBoard)="updateBoardsList($event)"
+  ></app-create-board>
+}

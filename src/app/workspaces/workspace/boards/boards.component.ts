@@ -28,6 +28,8 @@ export class BoardsComponent implements OnChanges, OnInit {
   @Input() search = '';
   boards: Board[] = [];
   sortedBoards: Board[] = [];
+  isAdmin!: boolean;
+  currentUserId!: string;
 
   constructor(
     private api: ApiService,
@@ -60,6 +62,28 @@ export class BoardsComponent implements OnChanges, OnInit {
 
       sessionStorage.removeItem('switchMessage');
     }
+
+    this.api.getMyRole(this.workspace._id).subscribe((res) => {
+      this.isAdmin = res.role === 'admin';
+      this.cdr.markForCheck();
+    });
+
+    this.api.getUser().subscribe((res) => {
+      this.currentUserId = res.user._id;
+      this.cdr.markForCheck();
+    });
+  }
+
+  get visibleBoards() {
+    return this.sortedBoards.filter((board) => {
+      if (board.visibility !== 'private') return true;
+
+      return (
+        board.members?.some(
+          (member) => (member as unknown as string) === this.currentUserId,
+        ) ?? false
+      );
+    });
   }
 
   updateBoardsList(newBoard: Board) {

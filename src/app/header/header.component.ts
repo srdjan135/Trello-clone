@@ -129,12 +129,22 @@ export class HeaderComponent implements OnInit {
     return board.workspace.name;
   }
 
+  getWorkspaceId(board: Board): string {
+    if (typeof board.workspace === 'string') {
+      const found = this.workspaces.find((w) => w._id === board.workspace);
+      return found?._id ?? '';
+    }
+
+    return board.workspace._id;
+  }
+
   openFormModal() {
     this.sharedService.openCreateWorkspaceModal();
   }
 
   openBoard(board: Board) {
-    this.router.navigate(['/boards', board._id]);
+    const workspaceId = this.getWorkspaceId(board);
+    this.router.navigate(['/', workspaceId, 'boards', board._id]);
     this.searchControl.setValue('');
   }
 

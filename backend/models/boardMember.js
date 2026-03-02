@@ -16,6 +16,10 @@ const boardMemberSchema = mongoose.Schema(
       type: String,
       default: "member",
     },
+    addedViaWorkspace: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

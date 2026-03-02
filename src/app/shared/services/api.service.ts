@@ -196,7 +196,7 @@ export class ApiService {
   }
 
   updateBoard(boardId: string, updates: Partial<Board>) {
-    return this.http.patch<{ board: Board }>(
+    return this.http.patch<{ board: Board; boardMembers: BoardMember[] }>(
       `${this.API_URL}/boards/${boardId}/update`,
       updates,
     );

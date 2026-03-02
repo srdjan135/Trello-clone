@@ -14,10 +14,15 @@ const boardSchema = mongoose.Schema(
     },
     visibility: {
       type: String,
-      enum: ["workspace", "private", "public"],
+      enum: ["private", "workspace", "public"],
       required: true,
+      default: "private",
     },
     description: { type: String },
+    addedViaWorkspace: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true, default: false },
 );

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../shared/guards/auth.guard';
+import { BoardGuard } from '../shared/guards/board.guard';
 
 export const boardsLayoutRoutes: Routes = [
   {
@@ -8,6 +9,6 @@ export const boardsLayoutRoutes: Routes = [
       import('../workspaces/workspace/boards/board/board.component').then(
         (m) => m.BoardComponent,
       ),
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, BoardGuard],
   },
 ];

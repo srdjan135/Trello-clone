@@ -178,7 +178,10 @@ export class BoardComponent implements OnInit {
       .updateBoard(this.boardId, {
         visibility: value,
       })
-      .subscribe();
+      .subscribe((res) => {
+        this.boardMembers = [...res.boardMembers];
+        this.cdr.markForCheck();
+      });
     this.selectedVisibility = value;
   }
 
