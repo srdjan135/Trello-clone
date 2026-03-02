@@ -30,6 +30,7 @@ import { MatInput } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 import { MatSelect, MatOption } from '@angular/material/select';
 import { Workspace } from '../../../../models/workspace';
+import { bgColorImages, bgImages } from '../create-board/images';
 
 @Component({
   selector: 'app-board',
@@ -72,6 +73,9 @@ export class BoardComponent implements OnInit {
   isAbout: boolean = false;
   boardMembers!: BoardMember[];
   workspaces!: Workspace[];
+  bgColorImages: string[] = bgColorImages;
+  bgImages: string[] = bgImages;
+  selectedBg!: string;
 
   sectionTitles: Record<keyof Filters, string> = {
     members: 'Members',
@@ -112,6 +116,7 @@ export class BoardComponent implements OnInit {
         this.descriptionCtrl.setValue(this.board.description ?? '', {
           emitEvent: false,
         });
+        this.selectedBg = res.board.background;
         if (typeof this.board.workspace !== 'string') {
           this.boardWorkspaceCtrl.setValue(this.board.workspace.name, {
             emitEvent: false,
@@ -228,6 +233,17 @@ export class BoardComponent implements OnInit {
       .updateBoard(this.boardId, { workspace: workspace?._id })
       .subscribe((res) => {
         this.board = res.board;
+        this.cdr.markForCheck();
+      });
+  }
+
+  changeBackground() {
+    if (!this.selectedBg || this.selectedBg === this.board.background) return;
+
+    this.api
+      .updateBoard(this.boardId, { background: this.selectedBg })
+      .subscribe((res) => {
+        this.board.background = res.board.background;
         this.cdr.markForCheck();
       });
   }

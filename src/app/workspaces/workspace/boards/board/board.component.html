@@ -59,7 +59,7 @@
     </div>
     <div
       class="kanban-body"
-      [style.backgroundImage]="'url(' + board.background + ')'"
+      [style.backgroundImage]="'url(' + selectedBg + ')'"
     ></div>
   </div>
 
@@ -162,9 +162,13 @@
         [matMenuTriggerFor]="workspaceMenu"
       >
         <mat-icon>dashboard</mat-icon>
-        <p>Workspace</p>
+        <p>Change Workspace</p>
       </button>
-      <button mat-menu-item>
+      <button
+        mat-menu-item
+        clickStopPropagation
+        [matMenuTriggerFor]="backgroundMenu"
+      >
         <img [src]="board.background" alt="image" />
         <p>Change Background</p>
       </button>
@@ -251,6 +255,48 @@
       clickStopPropagation
       [disabled]="boardWorkspaceCtrl.value === currentWorkspaceId"
       (click)="changeWorkspace()"
+    >
+      Change
+    </button>
+  </mat-menu>
+
+  <mat-menu #backgroundMenu="matMenu" class="backgroundMenu">
+    <h5>Change Background</h5>
+    <div class="wrapper">
+      @for (backgroundImage of bgImages; track backgroundImage) {
+        <div
+          class="background-image"
+          clickStopPropagation
+          (click)="selectedBg = backgroundImage"
+          [class.selected]="selectedBg === backgroundImage"
+          [style.backgroundImage]="'url(' + backgroundImage + ')'"
+        >
+          @if (selectedBg === backgroundImage) {
+            <mat-icon class="check">check</mat-icon>
+          }
+        </div>
+      }
+    </div>
+    <div class="wrapper">
+      @for (backgroundColor of bgColorImages; track backgroundColor) {
+        <div
+          class="background-color"
+          clickStopPropagation
+          (click)="selectedBg = backgroundColor"
+          [class.selected]="selectedBg === backgroundColor"
+          [style.backgroundImage]="'url(' + backgroundColor + ')'"
+        >
+          @if (selectedBg === backgroundColor) {
+            <mat-icon class="check">check</mat-icon>
+          }
+        </div>
+      }
+    </div>
+    <button
+      mat-flat-button
+      clickStopPropagation
+      [disabled]="selectedBg === board.background"
+      (click)="changeBackground()"
     >
       Change
     </button>

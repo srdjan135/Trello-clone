@@ -353,3 +353,78 @@
     }
   }
 }
+
+::ng-deep
+  .cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-menu-panel.backgroundMenu {
+  padding: 1rem;
+  min-width: 300px;
+  margin-right: 1rem;
+
+  .mat-mdc-menu-content {
+    padding: 0;
+  }
+
+  h5 {
+    font-size: 16px;
+    text-align: center;
+    line-height: normal;
+  }
+
+  .wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    .background-image {
+      width: 25%;
+      height: 40px;
+      margin-bottom: 0.5rem;
+    }
+
+    .background-color {
+      width: 20%;
+      height: 30px;
+    }
+
+    .background-image,
+    .background-color {
+      background-position: center center;
+      background-size: cover;
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+
+      &.selected {
+        outline: 2px solid var(--primary);
+      }
+
+      .check {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: $white;
+        font-size: 20px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 50%;
+        padding: 2px;
+        transition:
+          transform 0.15s ease,
+          opacity 0.15s ease;
+      }
+
+      &:hover {
+        filter: brightness(0.9);
+      }
+    }
+  }
+  button {
+    width: 100%;
+    margin-top: 1rem;
+    border-radius: 8px;
+  }
+}
