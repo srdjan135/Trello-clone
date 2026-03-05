@@ -33,6 +33,7 @@ import {
 import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
 import { AvatarComponent } from '../shared/components/avatar/avatar.component';
 import { Workspace } from '../models/workspace';
+import { WorkspaceService } from '../shared/services/workspace.service';
 
 @Component({
   selector: 'app-header',
@@ -82,6 +83,7 @@ export class HeaderComponent implements OnInit {
     private auth: AuthService,
     private sharedService: SharedService,
     private router: Router,
+    private workspaceService: WorkspaceService,
   ) {}
 
   ngOnInit(): void {
@@ -177,10 +179,11 @@ export class HeaderComponent implements OnInit {
   }
 
   acceptInvite(notificationId: string) {
-    this.api.acceptInvite(notificationId).subscribe(() => {
+    this.api.acceptInvite(notificationId).subscribe((res) => {
       this.notifications = this.notifications.filter(
         (n) => n._id !== notificationId,
       );
+      this.workspaceService.updateWorkspacesList(res.workspace);
       this.cdr.markForCheck();
     });
   }

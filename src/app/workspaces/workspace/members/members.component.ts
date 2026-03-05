@@ -1,7 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Workspace } from '../../../models/workspace';
 import { ApiService } from '../../../shared/services/api.service';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import {
   combineLatest,
   debounceTime,
@@ -28,6 +33,7 @@ import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { Board } from '../../../models/board.model';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 
 @Component({
   selector: 'app-members',
@@ -49,6 +55,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
     MatIconButton,
     MatTooltip,
     ReactiveFormsModule,
+    ClickStopPropagationDirective,
   ],
   templateUrl: './members.component.html',
   styleUrl: './members.component.scss',
@@ -62,12 +69,14 @@ export class MembersComponent implements OnInit {
   currentMember!: WorkspaceMember;
   boards!: Board[];
   searchWorkspaceMembersByName = new FormControl('');
+  memberBoardsMap = new Map<string, Board[]>();
 
   constructor(
     private api: ApiService,
     private sharedService: SharedService,
     private workspaceService: WorkspaceService,
     private route: ActivatedRoute,
+    private router: Router,
     private cdr: ChangeDetectorRef,
     private snackBar: MatSnackBar,
   ) {}
@@ -111,6 +120,7 @@ export class MembersComponent implements OnInit {
         this.workspace = data.workspace;
         this.workspaceMembers = data.members;
         this.boards = data.boards;
+        this.prepareMemberBoards();
         this.currentUser = data.user;
 
         this.currentMember = data.members.find(
@@ -134,6 +144,18 @@ export class MembersComponent implements OnInit {
     return this.currentMember?.role === 'admin';
   }
 
+  prepareMemberBoards() {
+    this.memberBoardsMap.clear();
+
+    for (let member of this.workspaceMembers) {
+      const boards = this.boards.filter((board) =>
+        board.members.includes(member.user._id as unknown as User),
+      );
+
+      this.memberBoardsMap.set(member.user._id, boards);
+    }
+  }
+
   inviteModal() {
     this.sharedService.openInviteModal();
   }
@@ -150,11 +172,13 @@ export class MembersComponent implements OnInit {
   }
 
   setWorkspaceMemberRole(member: WorkspaceMember, role: 'admin' | 'member') {
-    this.api.setWorkspaceMemberRole(member, role).subscribe(() => {
+    member.role = role;
+    this.api.setWorkspaceMemberRole(member, role).subscribe((res) => {
       const updateMemberRole = this.workspaceMembers.find(
         (m) => m._id === member._id,
       )!;
       updateMemberRole.role = role;
+      this.memberBoardsMap.set(member.user._id, res.boards);
       this.cdr.markForCheck();
     });
   }
@@ -164,6 +188,9 @@ export class MembersComponent implements OnInit {
       this.filteredWorkspaceMembers = this.filteredWorkspaceMembers.filter(
         (m) => m._id !== member._id,
       );
+      if (this.currentUser._id === member.user._id) {
+        this.router.navigate(['/boards']);
+      }
       this.cdr.markForCheck();
     });
   }

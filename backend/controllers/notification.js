@@ -54,11 +54,16 @@ exports.acceptInvite = async (req, res) => {
     }
 
     const { type, data } = notification;
+    let workspace;
 
     if (type === "WORKSPACE_INVITE") {
-      await Workspace.findByIdAndUpdate(data.workspaceId, {
-        $addToSet: { members: userId },
-      });
+      workspace = await Workspace.findByIdAndUpdate(
+        data.workspaceId,
+        {
+          $addToSet: { members: userId },
+        },
+        { new: true },
+      );
 
       await WorkspaceMember.create({
         workspace: data.workspaceId,
@@ -67,6 +72,22 @@ exports.acceptInvite = async (req, res) => {
     }
 
     if (type === "BOARD_INVITE") {
+      const isMemberAlready = await Workspace.exists({
+        _id: data.workspaceId,
+        members: userId,
+      });
+
+      if (!isMemberAlready) {
+        workspace = await Workspace.findByIdAndUpdate(data.workspaceId, {
+          $addToSet: { members: userId },
+        });
+
+        await WorkspaceMember.create({
+          workspace: data.workspaceId,
+          user: userId,
+        });
+      }
+
       await Board.findByIdAndUpdate(data.boardId, {
         $addToSet: { members: userId },
       });
@@ -83,7 +104,7 @@ exports.acceptInvite = async (req, res) => {
       $pull: { notifications: notificationId },
     });
 
-    res.status(200).json({});
+    res.status(200).json({ workspace });
   } catch (err) {
     console.log(err);
 

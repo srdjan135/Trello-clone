@@ -84,8 +84,12 @@
             }
           </div>
           <div class="actions">
-            <button mat-button [matMenuTriggerFor]="viewBoardsMenu">
-              View boards ({{ workspace.boards?.length }})
+            <button
+              mat-button
+              [matMenuTriggerFor]="viewBoardsMenu"
+              [matMenuTriggerData]="{ member }"
+            >
+              View boards ({{ memberBoardsMap.get(member.user._id)?.length }})
             </button>
             <button
               mat-button
@@ -100,7 +104,7 @@
               <button mat-button (click)="removeMemberFromWorkspace(member)">
                 <mat-icon>close</mat-icon>
                 {{
-                  member.role === "admin"
+                  member.role === "admin" && member.user._id === currentUser._id
                     ? "Leave Workspace"
                     : "Remove from workspace"
                 }}
@@ -121,29 +125,44 @@
 }
 
 <mat-menu #viewBoardsMenu="matMenu" class="viewMenu">
-  <h6>Workspace Boards</h6>
-  <button mat-icon-button matTooltip="Close">
-    <mat-icon>close</mat-icon>
-  </button>
-  @for (board of boards; track board._id) {
-    <div class="wrapper">
-      <div
-        class="bg"
-        [style.backgroundImage]="'url(' + board.background + ')'"
-      ></div>
-      <p>{{ board.title }}</p>
-    </div>
-  } @empty {
-    <p>There are currently no boards</p>
-  }
+  <ng-template matMenuContent let-member="member">
+    <h6>Workspace Boards</h6>
+    <button mat-icon-button matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+    @for (
+      board of memberBoardsMap.get(member.user._id) ?? [];
+      track board._id
+    ) {
+      <div class="wrapper">
+        <div
+          class="bg"
+          [style.backgroundImage]="'url(' + board.background + ')'"
+        ></div>
+        <p>{{ board.title }}</p>
+      </div>
+    } @empty {
+      <p>There are currently no boards</p>
+    }
+  </ng-template>
 </mat-menu>
 
-<mat-menu #roleMenu="matMenu">
+<mat-menu #roleMenu="matMenu" class="roleMenu">
   <ng-template matMenuContent let-member="member">
-    <button mat-menu-item (click)="setWorkspaceMemberRole(member, 'admin')">
+    <button
+      mat-menu-item
+      (click)="setWorkspaceMemberRole(member, 'admin')"
+      clickStopPropagation
+      [class.selected]="member.role === 'admin'"
+    >
       Admin
     </button>
-    <button mat-menu-item (click)="setWorkspaceMemberRole(member, 'member')">
+    <button
+      mat-menu-item
+      (click)="setWorkspaceMemberRole(member, 'member')"
+      clickStopPropagation
+      [class.selected]="member.role === 'member'"
+    >
       Member
     </button>
   </ng-template>

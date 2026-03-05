@@ -178,7 +178,11 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 0;
+
+    &:first-of-type {
+      margin-top: 1.5rem;
+    }
 
     .bg {
       width: 30px;
@@ -186,5 +190,15 @@
       background-position: center center;
       background-size: cover;
     }
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.roleMenu {
+  button {
+    border: 1px solid transparent;
+  }
+  button.selected {
+    border-left-color: var(--primary);
+    background-color: $primary-hover;
   }
 }

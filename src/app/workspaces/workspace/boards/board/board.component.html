@@ -6,8 +6,9 @@
           <button
             class="board-title"
             #boardTitleButton
-            (click)="isEditBoardTitle = true"
+            (click)="editBoardTitle()"
             clickStopPropagation
+            [disabled]="isMember"
           >
             <h5>{{ boardTitle.value }}</h5>
           </button>
@@ -36,18 +37,20 @@
         >
           <mat-icon>filter_list</mat-icon>
         </button>
-        <button
-          mat-icon-button
-          matTooltip="Board visibility"
-          [matMenuTriggerFor]="visibilityMenu"
-        >
-          <mat-icon>{{ visibilityIcon }}</mat-icon>
-        </button>
-        <button mat-flat-button (click)="openInviteModal()">
-          <mat-icon>person_outline</mat-icon>
-          <mat-icon>add</mat-icon>
-          Share
-        </button>
+        @if (!isMember) {
+          <button
+            mat-icon-button
+            matTooltip="Board visibility"
+            [matMenuTriggerFor]="visibilityMenu"
+          >
+            <mat-icon>{{ visibilityIcon }}</mat-icon>
+          </button>
+          <button mat-flat-button (click)="openInviteModal()">
+            <mat-icon>person_outline</mat-icon>
+            <mat-icon>add</mat-icon>
+            Share
+          </button>
+        }
         <button
           mat-icon-button
           matTooltip="More"
@@ -156,30 +159,35 @@
           <p>Add a description to yout board</p>
         </div>
       </button>
-      <button
-        mat-menu-item
-        clickStopPropagation
-        [matMenuTriggerFor]="workspaceMenu"
-      >
-        <mat-icon>dashboard</mat-icon>
-        <p>Change Workspace</p>
-      </button>
-      <button
-        mat-menu-item
-        clickStopPropagation
-        [matMenuTriggerFor]="backgroundMenu"
-      >
-        <img [src]="board.background" alt="image" />
-        <p>Change Background</p>
-      </button>
+      @if (!isMember) {
+        <button
+          mat-menu-item
+          clickStopPropagation
+          [matMenuTriggerFor]="workspaceMenu"
+        >
+          <mat-icon>dashboard</mat-icon>
+          <p>Change Workspace</p>
+        </button>
+        <button
+          mat-menu-item
+          clickStopPropagation
+          [matMenuTriggerFor]="backgroundMenu"
+        >
+          <img [src]="board.background" alt="image" />
+          <p>Change Background</p>
+        </button>
+      }
+
       <button mat-menu-item>
         <mat-icon class="copy">filter_none</mat-icon>
         <p>Copy Board</p>
       </button>
-      <button mat-menu-item>
-        <mat-icon>remove</mat-icon>
-        <p>Close Board</p>
-      </button>
+      @if (!isMember) {
+        <button mat-menu-item>
+          <mat-icon>remove</mat-icon>
+          <p>Close Board</p>
+        </button>
+      }
     } @else {
       <button
         mat-icon-button
@@ -202,8 +210,10 @@
               {{ admin.user.username.charAt(0).toUpperCase() }}
             </div>
             <div class="about-user-info">
-              <p>{{ admin.user.username }}</p>
-              <p>{{ admin.user.email }}</p>
+              <div>
+                <p>{{ admin.user.username }}</p>
+                <p>{{ admin.user.email }}</p>
+              </div>
             </div>
           </div>
         }
@@ -218,22 +228,38 @@
               {{ member.user.username.charAt(0).toUpperCase() }}
             </div>
             <div class="about-user-info">
-              <p>{{ member.user.username }}</p>
-              <p>{{ member.user.email }}</p>
+              <div>
+                <p>{{ member.user.username }}</p>
+                <p>{{ member.user.email }}</p>
+              </div>
+              @if (getIsRemovableMember()) {
+                @if (!isMember) {
+                  <button
+                    mat-icon-button
+                    matTooltip="Remove member"
+                    clickStopPropagation
+                    (click)="removeMember(member._id)"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              }
             </div>
           </div>
         } @empty {
           <p class="empty">There are currently no members!</p>
         }
-        <mat-divider></mat-divider>
-        <mat-form-field appearance="outline" clickStopPropagation>
-          <mat-label>Board description</mat-label>
-          <textarea
-            matInput
-            rows="5"
-            [formControl]="descriptionCtrl"
-          ></textarea>
-        </mat-form-field>
+        @if (!isMember) {
+          <mat-divider></mat-divider>
+          <mat-form-field appearance="outline" clickStopPropagation>
+            <mat-label>Board description</mat-label>
+            <textarea
+              matInput
+              rows="5"
+              [formControl]="descriptionCtrl"
+            ></textarea>
+          </mat-form-field>
+        }
       </div>
     }
   </mat-menu>

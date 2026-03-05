@@ -73,6 +73,7 @@ export class BoardComponent implements OnInit {
   isAbout: boolean = false;
   boardMembers!: BoardMember[];
   workspaces!: Workspace[];
+  workspaceId!: string;
   bgColorImages: string[] = bgColorImages;
   bgImages: string[] = bgImages;
   selectedBg!: string;
@@ -105,9 +106,11 @@ export class BoardComponent implements OnInit {
     private api: ApiService,
     private dialog: MatDialog,
   ) {}
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.boardId = params.get('boardId')!;
+      this.workspaceId = params.get('workspaceId')!;
 
       this.api.getBoard(this.boardId).subscribe((res) => {
         this.board = res.board;
@@ -180,6 +183,7 @@ export class BoardComponent implements OnInit {
       })
       .subscribe((res) => {
         this.boardMembers = [...res.boardMembers];
+        this.board.visibility = res.board.visibility;
         this.cdr.markForCheck();
       });
     this.selectedVisibility = value;
@@ -211,6 +215,23 @@ export class BoardComponent implements OnInit {
   get members() {
     const members = this.boardMembers.filter((m) => m.role === 'member');
     return members;
+  }
+
+  get isMember(): boolean {
+    if (!this.boardMembers || !this.user) return false;
+
+    return this.boardMembers.some(
+      (m) => m.role === 'member' && m.user._id === this.user._id,
+    );
+  }
+
+  getIsRemovableMember() {
+    return this.board.visibility !== 'workspace';
+  }
+
+  editBoardTitle() {
+    if (this.isMember) return;
+    this.isEditBoardTitle = true;
   }
 
   openInviteModal() {
@@ -249,5 +270,14 @@ export class BoardComponent implements OnInit {
         this.board.background = res.board.background;
         this.cdr.markForCheck();
       });
+  }
+
+  removeMember(memberId: string) {
+    this.api.removeBoardMember(memberId, this.boardId).subscribe((res) => {
+      this.boardMembers = this.boardMembers.filter(
+        (m) => m._id !== res.boardMember._id,
+      );
+      this.cdr.markForCheck();
+    });
   }
 }

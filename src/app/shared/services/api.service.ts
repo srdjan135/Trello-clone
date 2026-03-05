@@ -109,10 +109,13 @@ export class ApiService {
   }
 
   setWorkspaceMemberRole(member: WorkspaceMember, role: string) {
-    return this.http.put(`${this.API_URL}/workspaceMembers/${member._id}`, {
-      member,
-      role,
-    });
+    return this.http.put<{ boards: Board[] }>(
+      `${this.API_URL}/workspaceMembers/${member._id}`,
+      {
+        member,
+        role,
+      },
+    );
   }
 
   removeWorkspaceMember(member: WorkspaceMember, workspaceId: string) {
@@ -138,9 +141,12 @@ export class ApiService {
   }
 
   acceptInvite(notificationId: string) {
-    return this.http.post(`${this.API_URL}/notifications/accept`, {
-      notificationId,
-    });
+    return this.http.post<{ workspace: Workspace }>(
+      `${this.API_URL}/notifications/accept`,
+      {
+        notificationId,
+      },
+    );
   }
 
   declineInvite(notificationId: string) {
@@ -214,6 +220,12 @@ export class ApiService {
   getBoardMembers(boardId: string) {
     return this.http.get<{ boardMembers: BoardMember[] }>(
       `${this.API_URL}/boardMembers/${boardId}`,
+    );
+  }
+
+  removeBoardMember(memberId: string, boardId: string) {
+    return this.http.delete<{ boardMember: BoardMember }>(
+      `${this.API_URL}/boardMembers/${boardId}/${memberId}`,
     );
   }
 

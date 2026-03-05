@@ -16,6 +16,13 @@ const workspaceMemberSchema = mongoose.Schema(
       type: String,
       default: "member",
     },
+    previousBoards: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Board",
+        required: true,
+      },
+    ],
   },
   { timestamps: true },
 );

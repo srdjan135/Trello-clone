@@ -239,6 +239,7 @@ exports.inviteBoardMembers = async (req, res) => {
           message: `${sender.username} invited you to ${board.title} board.`,
           data: {
             boardId,
+            workspaceId: board.workspace.toString(),
             invitedBy: inviterId,
           },
         });

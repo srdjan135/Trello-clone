@@ -1,6 +1,8 @@
 const WorkspaceMember = require("../models/workspaceMember");
 const Workspace = require("../models/workspace");
 const User = require("../models/user");
+const Board = require("../models/board");
+const BoardMember = require("../models/boardMember");
 
 exports.getWorkspaceMembers = async (req, res) => {
   const { workspaceId } = req.params;
@@ -20,14 +22,87 @@ exports.setWorkspaceMemberRole = async (req, res) => {
   try {
     const { member, role } = req.body;
 
+    let boards = [];
+
     await WorkspaceMember.findByIdAndUpdate(member._id, {
-      $set: { role: role },
+      $set: { role },
     });
-    res
-      .status(200)
-      .json({ message: "Successfully setted workspace member role" });
+
+    await BoardMember.updateOne(
+      { user: member.user },
+      {
+        $set: { role },
+      },
+    );
+
+    if (role === "admin") {
+      boards = await Board.find({ workspace: member.workspace });
+
+      const currentBoards = await BoardMember.find({ user: member.user });
+      const boardIds = currentBoards.map((b) => b.board);
+
+      await WorkspaceMember.findByIdAndUpdate(member._id, {
+        $set: { role, previousBoards: boardIds },
+      });
+
+      for (const board of boards) {
+        await Board.updateOne(
+          { _id: board._id },
+          {
+            $addToSet: { members: member.user },
+          },
+        );
+
+        await BoardMember.updateOne(
+          { board: board._id, user: member.user },
+          { $set: { role: "admin" } },
+          { upsert: true },
+        );
+      }
+    }
+
+    if (role === "member") {
+      const workspaceMember = await WorkspaceMember.findById(member._id);
+
+      const previousBoards = workspaceMember.previousBoards || [];
+
+      boards = await Board.find({ workspace: member.workspace });
+
+      for (const board of boards) {
+        if (
+          !previousBoards.some((id) => id.toString() === board._id.toString())
+        ) {
+          await Board.updateOne(
+            { _id: board._id },
+            {
+              $pull: { members: member.user._id },
+            },
+          );
+
+          await BoardMember.deleteOne({
+            board: board._id,
+            user: member.user,
+          });
+        } else {
+          await BoardMember.updateOne(
+            { board: board._id, user: member.user },
+            { $set: { role: "member" } },
+            { upsert: true },
+          );
+        }
+      }
+
+      await WorkspaceMember.findByIdAndUpdate(member._id, {
+        $set: { role: "member" },
+        $unset: { previousBoards: "" },
+      });
+    }
+
+    res.status(200).json({ boards });
   } catch (err) {
-    res.status(500).json({ message: "Failed to set workspace member role" });
+    res.status(500).json({
+      message: "Failed to set workspace member role",
+    });
   }
 };
 
@@ -55,6 +130,20 @@ exports.removeWorkspaceMember = async (req, res) => {
           { $pull: { workspaces: workspaceId } },
         );
 
+        const boards = await Board.find({ workspace: workspaceId }).select(
+          "_id",
+        );
+
+        const boardIds = boards.map((b) => b._id);
+
+        await BoardMember.deleteMany({
+          board: { $in: boardIds },
+        });
+
+        await Board.deleteMany({
+          workspace: workspaceId,
+        });
+
         return res.status(200).json({
           message: "Last admin removed, workspace deleted",
           workspaceDeleted: true,
@@ -66,6 +155,13 @@ exports.removeWorkspaceMember = async (req, res) => {
     await Workspace.findByIdAndUpdate(workspaceId, {
       $pull: { members: member.user },
     });
+
+    await Board.updateMany(
+      { workspace: workspaceId },
+      { $pull: { members: member.user } },
+    );
+
+    await BoardMember.deleteMany({ user: member.user });
 
     res.status(200).json({ message: "Member removed successfully" });
   } catch (err) {
