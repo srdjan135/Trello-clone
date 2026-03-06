@@ -1,0 +1,319 @@
+<div class="kanban-header">
+  <div #titleWrapper>
+    @if (!isEditBoardTitle) {
+      <button
+        class="board-title"
+        #boardTitleButton
+        (click)="editBoardTitle()"
+        clickStopPropagation
+        [disabled]="isMember"
+      >
+        <h5>{{ boardTitle.value }}</h5>
+      </button>
+    }
+    @if (isEditBoardTitle) {
+      <input
+        type="text"
+        [formControl]="boardTitle"
+        [attr.size]="boardTitle.value?.length || 1"
+        clickStopPropagation
+      />
+    }
+  </div>
+
+  <div class="kanban-header-actions">
+    @if (user) {
+      <app-avatar
+        [matTooltip]="user.username"
+        [matMenuTriggerFor]="profileMenu"
+      ></app-avatar>
+    }
+    <button
+      mat-icon-button
+      matTooltip="Filter Cards"
+      [matMenuTriggerFor]="filterMenu"
+    >
+      <mat-icon>filter_list</mat-icon>
+    </button>
+    @if (!isMember) {
+      <button
+        mat-icon-button
+        matTooltip="Board visibility"
+        [matMenuTriggerFor]="visibilityMenu"
+      >
+        <mat-icon>{{ visibilityIcon }}</mat-icon>
+      </button>
+      <button mat-flat-button (click)="openInviteModal()">
+        <mat-icon>person_outline</mat-icon>
+        <mat-icon>add</mat-icon>
+        Share
+      </button>
+    }
+    <button mat-icon-button matTooltip="More" [matMenuTriggerFor]="moreMenu">
+      <mat-icon>more_horiz</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-menu #profileMenu="matMenu" class="profileMenu">
+  <div class="menu-header">
+    <app-avatar></app-avatar>
+    <div>
+      @if (user) {
+        <p>{{ user.username }}</p>
+        <p>{{ user.email }}</p>
+      }
+    </div>
+  </div>
+  <button mat-menu-item routerLink="/manage-account">Edit profile info</button>
+</mat-menu>
+
+<mat-menu #filterMenu="matMenu" class="filterMenu">
+  <h4 class="menu-title">Filter</h4>
+  @for (key of filterKeys; track key) {
+    <div class="filter-group">
+      <h4 class="filter-title">
+        {{ sectionTitles[key] }}
+      </h4>
+
+      @for (option of filters[key]; track option) {
+        <mat-checkbox>
+          @if (option.labelColor) {
+            <span class="label-color" [style.background]="option.labelColor">
+            </span>
+          } @else {
+            {{ option.filterValue }}
+          }
+        </mat-checkbox>
+      }
+    </div>
+  }
+</mat-menu>
+
+<mat-menu #visibilityMenu="matMenu" class="visibilityMenu">
+  <h5>Change visibility</h5>
+  <button
+    mat-menu-item
+    clickStopPropagation
+    (click)="setVisibility('private')"
+    [class.selected]="selectedVisibility === 'private'"
+  >
+    <mat-icon color="warn">lock</mat-icon>
+    <div>
+      <p>Private</p>
+      <p>
+        Only board members can see this board. Workspace admins can close the
+        board or remove members.
+      </p>
+    </div>
+  </button>
+  <button
+    mat-menu-item
+    clickStopPropagation
+    (click)="setVisibility('workspace')"
+    [class.selected]="selectedVisibility === 'workspace'"
+  >
+    <mat-icon>people_outline</mat-icon>
+    <div>
+      <p>Workspace</p>
+      <p>All members of the this Workspace can see and edit this board.</p>
+    </div>
+  </button>
+  <button
+    mat-menu-item
+    clickStopPropagation
+    (click)="setVisibility('public')"
+    [class.selected]="selectedVisibility === 'public'"
+  >
+    <mat-icon>public</mat-icon>
+    <div>
+      <p>Public</p>
+      <p>
+        Anyone on the internet can see this board. Only board members can edit.
+      </p>
+    </div>
+  </button>
+</mat-menu>
+
+<mat-menu #moreMenu="matMenu" class="moreMenu">
+  @if (!isAbout) {
+    <h5>Menu</h5>
+    <button mat-menu-item clickStopPropagation (click)="isAbout = true">
+      <mat-icon>info_outline</mat-icon>
+      <div>
+        <p>About this board</p>
+        <p>Add a description to yout board</p>
+      </div>
+    </button>
+    @if (!isMember) {
+      <button
+        mat-menu-item
+        clickStopPropagation
+        [matMenuTriggerFor]="workspaceMenu"
+      >
+        <mat-icon>dashboard</mat-icon>
+        <p>Change Workspace</p>
+      </button>
+      <button
+        mat-menu-item
+        clickStopPropagation
+        [matMenuTriggerFor]="backgroundMenu"
+      >
+        @if (board) {
+          <img [src]="board.background" alt="image" />
+        }
+        <p>Change Background</p>
+      </button>
+    }
+
+    <button mat-menu-item>
+      <mat-icon class="copy">filter_none</mat-icon>
+      <p>Copy Board</p>
+    </button>
+    @if (!isMember) {
+      <button mat-menu-item>
+        <mat-icon>remove</mat-icon>
+        <p>Close Board</p>
+      </button>
+    }
+  } @else {
+    <button
+      mat-icon-button
+      clickStopPropagation
+      (click)="isAbout = false"
+      class="back-button"
+    >
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <h5>About this board</h5>
+
+    <div class="wrapper">
+      <div class="about-header">
+        <mat-icon>person_outline</mat-icon>
+        <p>Board admins</p>
+      </div>
+      @for (admin of admins; track admin._id) {
+        <div class="about-content">
+          <div class="avatar">
+            {{ admin.user.username.charAt(0).toUpperCase() }}
+          </div>
+          <div class="about-user-info">
+            <div>
+              <p>{{ admin.user.username }}</p>
+              <p>{{ admin.user.email }}</p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <div class="about-header">
+        <mat-icon>person_outline</mat-icon>
+        <p>Board members</p>
+      </div>
+      @for (member of members; track member._id) {
+        <div class="about-content">
+          <div class="avatar">
+            {{ member.user.username.charAt(0).toUpperCase() }}
+          </div>
+          <div class="about-user-info">
+            <div>
+              <p>{{ member.user.username }}</p>
+              <p>{{ member.user.email }}</p>
+            </div>
+            @if (getIsRemovableMember()) {
+              @if (!isMember) {
+                <button
+                  mat-icon-button
+                  matTooltip="Remove member"
+                  clickStopPropagation
+                  (click)="removeMember(member._id)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="empty">There are currently no members!</p>
+      }
+      @if (!isMember) {
+        <mat-divider></mat-divider>
+        <mat-form-field appearance="outline" clickStopPropagation>
+          <mat-label>Board description</mat-label>
+          <textarea
+            matInput
+            rows="5"
+            [formControl]="descriptionCtrl"
+          ></textarea>
+        </mat-form-field>
+      }
+    </div>
+  }
+</mat-menu>
+
+<mat-menu #workspaceMenu="matMenu" class="workspaceMenu">
+  <h5>Change Workspace</h5>
+  <mat-form-field appearance="outline" clickStopPropagation>
+    <mat-label>This board is part of...</mat-label>
+    <mat-select [formControl]="boardWorkspaceCtrl">
+      @for (workspace of workspaces; track workspace._id) {
+        <mat-option [value]="workspace.name" clickStopPropagation>{{
+          workspace.name
+        }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button
+    mat-flat-button
+    clickStopPropagation
+    [disabled]="boardWorkspaceCtrl.value === currentWorkspaceId"
+    (click)="changeWorkspace()"
+  >
+    Change
+  </button>
+</mat-menu>
+
+<mat-menu #backgroundMenu="matMenu" class="backgroundMenu">
+  <h5>Change Background</h5>
+  <div class="wrapper">
+    @for (backgroundImage of bgImages; track backgroundImage) {
+      <div
+        class="background-image"
+        clickStopPropagation
+        (click)="selectedBackground(backgroundImage)"
+        [class.selected]="selectedBg === backgroundImage"
+        [style.backgroundImage]="'url(' + backgroundImage + ')'"
+      >
+        @if (selectedBg === backgroundImage) {
+          <mat-icon class="check">check</mat-icon>
+        }
+      </div>
+    }
+  </div>
+  <div class="wrapper">
+    @for (backgroundColor of bgColorImages; track backgroundColor) {
+      <div
+        class="background-color"
+        clickStopPropagation
+        (click)="selectedBackground(backgroundColor)"
+        [class.selected]="selectedBg === backgroundColor"
+        [style.backgroundImage]="'url(' + backgroundColor + ')'"
+      >
+        @if (selectedBg === backgroundColor) {
+          <mat-icon class="check">check</mat-icon>
+        }
+      </div>
+    }
+  </div>
+  @if (board) {
+    <button
+      mat-flat-button
+      clickStopPropagation
+      [disabled]="selectedBg === board.background"
+      (click)="changeBackground()"
+    >
+      Change
+    </button>
+  }
+</mat-menu>
