@@ -23,6 +23,7 @@ const boardSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    columns: [{ type: mongoose.Schema.Types.ObjectId, ref: "Column" }],
   },
   { timestamps: true, default: false },
 );

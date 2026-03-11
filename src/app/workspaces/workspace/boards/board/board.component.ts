@@ -8,11 +8,12 @@ import { Board } from '../../../../models/board.model';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../shared/services/api.service';
 import { KanbanHeaderComponent } from './kanban-header/kanban-header.component';
+import { BoardColumnsComponent } from './board-columns/board-columns.component';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [KanbanHeaderComponent],
+  imports: [KanbanHeaderComponent, BoardColumnsComponent],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

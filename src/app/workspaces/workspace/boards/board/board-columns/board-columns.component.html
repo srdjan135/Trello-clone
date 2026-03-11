@@ -1,0 +1,18 @@
+<div
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  [cdkDropListData]="boardColumns"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (column of boardColumns; track column._id) {
+    <app-board-column
+      [column]="column"
+      [columns]="boardColumns"
+      [cdkDragData]="column"
+      (columnsChanged)="updateColumns($event)"
+      cdkDrag
+    ></app-board-column>
+  }
+</div>
+
+<app-create-column (newColumn)="addColumn($event)"></app-create-column>

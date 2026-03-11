@@ -1,3 +1,4 @@
+import { Column } from './column.model';
 import { User } from './user.model';
 import { Workspace } from './workspace';
 
@@ -10,4 +11,5 @@ export interface Board {
   visibility: 'private' | 'workspace' | 'public';
   addedViaWorkspace: boolean;
   description?: string;
+  columns: Column[];
 }

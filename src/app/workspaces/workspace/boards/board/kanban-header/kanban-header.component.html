@@ -1,5 +1,5 @@
 <div class="kanban-header">
-  <div #titleWrapper>
+  <div (clickOutside)="isEditBoardTitle = false">
     @if (!isEditBoardTitle) {
       <button
         class="board-title"

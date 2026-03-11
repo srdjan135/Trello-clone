@@ -1,0 +1,65 @@
+<div class="column">
+  <div class="column-header">
+    <div class="column-title" (clickOutside)="isEditingColumnTitle = false">
+      @if (!isEditingColumnTitle) {
+        <div (click)="isEditingColumnTitle = true">
+          {{ columnTitle.value }}
+        </div>
+      } @else {
+        <input type="text" [formControl]="columnTitle" />
+      }
+    </div>
+    <button mat-icon-button [matMenuTriggerFor]="columnActions">
+      <mat-icon>more_horiz</mat-icon>
+    </button>
+  </div>
+  <div class="column-body"></div>
+  <div class="column-footer">
+    <button mat-button><mat-icon>add</mat-icon> Add Card</button>
+  </div>
+</div>
+
+<mat-menu #columnActions="matMenu" class="columnActionsMenu">
+  <h5>Column Actions</h5>
+  <button mat-menu-item clickStopPropagation>Copy column</button>
+  <button mat-menu-item clickStopPropagation [matMenuTriggerFor]="moveMenu">
+    Move column
+  </button>
+  <button mat-menu-item clickStopPropagation>Sort by...</button>
+  <button mat-menu-item clickStopPropagation>Delete column</button>
+</mat-menu>
+
+<mat-menu #moveMenu="matMenu" class="moveMenu">
+  <h5>Move Column</h5>
+  <mat-form-field appearance="outline" clickStopPropagation>
+    <mat-label>Board</mat-label>
+    <mat-select
+      class="workspaceBoardsList"
+      (selectionChange)="onBoardChange($event.value)"
+      [formControl]="moveToBoardCtrl"
+    >
+      @for (workspace of workspaces; track workspace._id) {
+        <h5>{{ workspace.name }}</h5>
+        @for (board of workspace.boards; track board._id) {
+          <mat-option class="workspaceBoards" [value]="board._id">{{
+            board.title
+          }}</mat-option>
+        }
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" clickStopPropagation>
+    <mat-label>Position</mat-label>
+    <mat-select [formControl]="moveToPositionCtrl">
+      @for (position of positions; track position) {
+        <mat-option [value]="position">
+          {{ position }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-flat-button clickStopPropagation (click)="moveColumn()">
+    Move
+  </button>
+</mat-menu>

@@ -3,6 +3,7 @@ const checkAuth = require("../middlewares/check-auth");
 const { requireAdmin } = require("../middlewares/requireAdmin");
 const {
   getWorkspaces,
+  getPopulateWorkspaces,
   inviteWorkspaceMembers,
   postWorkspace,
   updateWorkspace,
@@ -12,6 +13,7 @@ const {
 const router = express.Router();
 
 router.get("/workspaces", checkAuth, getWorkspaces);
+router.get("/workspaces/populate", checkAuth, getPopulateWorkspaces);
 router.post("/workspaces", checkAuth, postWorkspace);
 router.put(
   "/workspaces/:workspaceId",

@@ -32,6 +32,7 @@ import { bgColorImages, bgImages } from '../../create-board/images';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { MatInput } from '@angular/material/input';
+import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
 
 @Component({
   selector: 'app-kanban-header',
@@ -55,30 +56,32 @@ import { MatInput } from '@angular/material/input';
     MatIconButton,
     ClickStopPropagationDirective,
     RouterLink,
+    ClickOutsideDirective,
   ],
   templateUrl: './kanban-header.component.html',
   styleUrl: './kanban-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanHeaderComponent {
+  @Output() selectedBgChange = new EventEmitter<string>();
+
+  user!: User;
+  workspaceId!: string;
+  workspaces!: Workspace[];
   boardId!: string;
   board!: Board;
+  boardMembers!: BoardMember[];
+  selectedVisibility: 'private' | 'workspace' | 'public' = 'private';
   isEditBoardTitle: boolean = false;
+  isAbout: boolean = false;
+  filters: Filters = filters;
+  filterKeys = Object.keys(this.filters) as (keyof Filters)[];
   boardTitle = new FormControl('');
   descriptionCtrl = new FormControl('');
   boardWorkspaceCtrl = new FormControl('');
-  filters: Filters = filters;
-  filterKeys = Object.keys(this.filters) as (keyof Filters)[];
-  user!: User;
-  selectedVisibility: 'private' | 'workspace' | 'public' = 'private';
-  isAbout: boolean = false;
-  boardMembers!: BoardMember[];
-  workspaces!: Workspace[];
-  workspaceId!: string;
   bgColorImages: string[] = bgColorImages;
   bgImages: string[] = bgImages;
   selectedBg!: string;
-  @Output() selectedBgChange = new EventEmitter<string>();
 
   sectionTitles: Record<keyof Filters, string> = {
     members: 'Members',
@@ -86,21 +89,6 @@ export class KanbanHeaderComponent {
     dueDate: 'Due Date',
     labels: 'Labels',
   };
-
-  @ViewChild('titleWrapper') titleWrapper!: ElementRef;
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    if (!this.isEditBoardTitle) return;
-
-    const clickedInside = this.titleWrapper.nativeElement.contains(
-      event.target,
-    );
-
-    if (!clickedInside) {
-      this.isEditBoardTitle = false;
-    }
-  }
 
   constructor(
     private route: ActivatedRoute,

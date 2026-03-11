@@ -11,6 +11,7 @@ const notificationRoutes = require("./routes/notification");
 const inviteRoutes = require("./routes/invite");
 const workspaceMemberRoutes = require("./routes/workspaceMember");
 const boardMemberRoutes = require("./routes/boardMember");
+const columnRoutes = require("./routes/column");
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api", notificationRoutes);
 app.use("/api", inviteRoutes);
 app.use("/api", workspaceMemberRoutes);
 app.use("/api", boardMemberRoutes);
+app.use("/api", columnRoutes);
 
 const PORT = 3000;
 mongoose

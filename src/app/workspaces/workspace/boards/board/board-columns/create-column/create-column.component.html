@@ -1,0 +1,28 @@
+@if (!isAddingList) {
+  <div (click)="isAddingList = true" class="create-column-card">
+    <mat-icon>add</mat-icon>
+    <p>Add another list</p>
+  </div>
+} @else {
+  <form
+    class="create-column"
+    (clickOutside)="isAddingList = false"
+    #form="ngForm"
+    (ngSubmit)="createBoardColumn(form)"
+  >
+    <input
+      type="text"
+      placeholder="Enter column title..."
+      ngModel
+      name="columnTitle"
+      required
+      minlength="2"
+    />
+    <div>
+      <button mat-flat-button type="submit">Add list</button>
+      <button mat-icon-button type="button" (click)="isAddingList = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </form>
+}

@@ -7,6 +7,7 @@ import { Board } from '../../models/board.model';
 import { Notification } from '../../models/notification';
 import { WorkspaceMember } from '../../models/workspaceMember';
 import { BoardMember } from '../../models/boardMember';
+import { Column } from '../../models/column.model';
 
 @Injectable({
   providedIn: 'root',
@@ -74,6 +75,12 @@ export class ApiService {
   getWorkspaces() {
     return this.http.get<{ workspaces: Workspace[] }>(
       `${this.API_URL}/workspaces`,
+    );
+  }
+
+  gePopulateWorkspaces() {
+    return this.http.get<{ workspaces: Workspace[] }>(
+      `${this.API_URL}/workspaces/populate`,
     );
   }
 
@@ -227,6 +234,36 @@ export class ApiService {
     return this.http.delete<{ boardMember: BoardMember }>(
       `${this.API_URL}/boardMembers/${boardId}/${memberId}`,
     );
+  }
+
+  createColumn(columnTitle: string, boardId: string) {
+    return this.http.post<{ column: Column }>(
+      `${this.API_URL}/${boardId}/columns`,
+      { columnTitle },
+    );
+  }
+
+  getColumns(boardId: string) {
+    return this.http.get<{ columns: Column[] }>(
+      `${this.API_URL}/${boardId}/columns`,
+    );
+  }
+
+  updateColumn(columnId: string, updates: Partial<Column>) {
+    return this.http.patch<{ column: Column }>(
+      `${this.API_URL}/board/${columnId}`,
+      { updates },
+    );
+  }
+
+  moveColumn(columnId: string, boardId: string, order: number) {
+    return this.http.patch<{
+      sourceColumns: Column[];
+      targetColumns: Column[];
+    }>(`${this.API_URL}/columns/${columnId}/move`, {
+      targetBoardId: boardId,
+      newOrder: order,
+    });
   }
 
   contactSupport(data: { category: string; subject: string; message: string }) {
