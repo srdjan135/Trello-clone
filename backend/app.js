@@ -12,6 +12,7 @@ const inviteRoutes = require("./routes/invite");
 const workspaceMemberRoutes = require("./routes/workspaceMember");
 const boardMemberRoutes = require("./routes/boardMember");
 const columnRoutes = require("./routes/column");
+const cardRoutes = require("./routes/card");
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api", inviteRoutes);
 app.use("/api", workspaceMemberRoutes);
 app.use("/api", boardMemberRoutes);
 app.use("/api", columnRoutes);
+app.use("/api", cardRoutes);
 
 const PORT = 3000;
 mongoose

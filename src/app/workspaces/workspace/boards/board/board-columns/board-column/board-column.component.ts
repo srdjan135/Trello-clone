@@ -21,6 +21,16 @@ import { MatSelect, MatOption } from '@angular/material/select';
 import { Workspace } from '../../../../../../models/workspace';
 import { Board } from '../../../../../../models/board.model';
 import { ActivatedRoute } from '@angular/router';
+import { CreateCardComponent } from './cards/create-card/create-card.component';
+import { CardsComponent } from './cards/cards.component';
+import {
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
+import { Card } from '../../../../../../models/card.model';
+import { CardService } from '../../../../../../shared/services/card.service';
 
 @Component({
   selector: 'app-board-column',
@@ -37,6 +47,9 @@ import { ActivatedRoute } from '@angular/router';
     MatLabel,
     MatSelect,
     MatOption,
+    CreateCardComponent,
+    CardsComponent,
+    CdkDropList,
   ],
   templateUrl: './board-column.component.html',
   styleUrl: './board-column.component.scss',
@@ -44,24 +57,33 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class BoardColumnComponent implements OnInit {
   @Input({ required: true }) column!: Column;
+  @Input() connectedDropLists!: string[];
   @Input({ required: true }) columns!: Column[];
   @Output() columnsChanged = new EventEmitter<Column[]>();
   workspaces!: Workspace[];
 
   isEditingColumnTitle: boolean = false;
+  isAddingCard: boolean = false;
   columnTitle = new FormControl('');
   moveToBoardCtrl = new FormControl();
   moveToPositionCtrl = new FormControl();
   positions: number[] = [];
   selectedBoard!: Board;
+  cards: Card[] = [];
 
   constructor(
     private api: ApiService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
+    private cardService: CardService,
   ) {}
 
   ngOnInit(): void {
+    this.api.getCards(this.column._id).subscribe((res) => {
+      this.cards = res.cards;
+      this.cardService.setCards(this.column._id, this.cards);
+      this.cdr.markForCheck();
+    });
     this.columnTitle.setValue(this.column.title, { emitEvent: false });
     const columnPosition =
       this.columns.findIndex((c) => c._id === this.column._id) + 1;
@@ -113,6 +135,41 @@ export class BoardColumnComponent implements OnInit {
       .moveColumn(this.column._id, boardId, position - 1)
       .subscribe((res) => {
         this.columnsChanged.emit(res.sourceColumns);
+      });
+  }
+
+  drop(event: CdkDragDrop<Card[]>) {
+    const card = event.item.data;
+    if (!card) return;
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+      this.cardService.setCards(event.container.id, event.container.data);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+
+      // update obe kolone koristeći iste reference
+      this.cardService.setCards(
+        event.previousContainer.id,
+        event.previousContainer.data,
+      );
+      this.cardService.setCards(event.container.id, event.container.data);
+    }
+
+    this.api
+      .moveCard(this.column._id, card._id, event.currentIndex)
+      .subscribe((res) => {
+        this.cards = [...res.cards];
+        this.cdr.markForCheck();
       });
   }
 }

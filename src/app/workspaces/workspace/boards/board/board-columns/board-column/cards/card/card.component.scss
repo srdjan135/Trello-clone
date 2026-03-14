@@ -1,0 +1,86 @@
+@use "src/variables" as *;
+
+:host {
+  padding: 0.3rem;
+  margin: 0.4rem;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0px 0px 2px 0px var(--text-main);
+  position: relative;
+  cursor: pointer;
+
+  .card-body {
+    display: flex;
+    align-items: center;
+
+    mat-checkbox {
+      display: inline-flex;
+      justify-content: center;
+      transform: scale(0.85);
+      transform-origin: left center;
+      transition: 0.5s ease;
+      opacity: 1;
+      width: 24px;
+      height: 24px;
+
+      &:not(:has(.mdc-checkbox--selected)) {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      & ::ng-deep .mdc-checkbox__background {
+        border-radius: 50%;
+      }
+
+      & ::ng-deep .mdc-checkbox__ripple {
+        display: none;
+      }
+
+      &.mdc-checkbox--selected {
+        opacity: 1;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    p {
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
+    }
+
+    button {
+      display: none;
+      position: absolute;
+      right: 0.2rem;
+      top: 0.2rem;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      line-height: 24px;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+
+  &:hover {
+    .card-body mat-checkbox {
+      opacity: 1;
+      width: 24px;
+      height: 24px;
+    }
+
+    .card-body button {
+      display: block;
+    }
+  }
+}

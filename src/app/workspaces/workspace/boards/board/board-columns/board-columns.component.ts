@@ -14,12 +14,19 @@ import {
   CdkDrag,
   CdkDropList,
   moveItemInArray,
+  CdkDropListGroup,
 } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-board-columns',
   standalone: true,
-  imports: [CreateColumnComponent, BoardColumnComponent, CdkDrag, CdkDropList],
+  imports: [
+    CreateColumnComponent,
+    BoardColumnComponent,
+    CdkDrag,
+    CdkDropList,
+    CdkDropListGroup,
+  ],
   templateUrl: './board-columns.component.html',
   styleUrl: './board-columns.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +34,7 @@ import {
 export class BoardColumnsComponent implements OnInit {
   boardId!: string;
   boardColumns: Column[] = [];
+  connectedDropLists: string[] = [];
 
   constructor(
     private api: ApiService,
@@ -39,6 +47,7 @@ export class BoardColumnsComponent implements OnInit {
       this.boardId = params.get('boardId')!;
       this.api.getColumns(this.boardId).subscribe((res) => {
         this.boardColumns = res.columns;
+        this.updateConnectedLists();
         this.cdr.markForCheck();
       });
     });
@@ -46,6 +55,7 @@ export class BoardColumnsComponent implements OnInit {
 
   addColumn(column: Column) {
     this.boardColumns = [...this.boardColumns, column];
+    this.updateConnectedLists();
   }
 
   drop(event: CdkDragDrop<Column[]>) {
@@ -62,5 +72,9 @@ export class BoardColumnsComponent implements OnInit {
 
   updateColumns(columns: Column[]) {
     this.boardColumns = columns;
+  }
+
+  updateConnectedLists() {
+    this.connectedDropLists = this.boardColumns.map((c) => c._id);
   }
 }

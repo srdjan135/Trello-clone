@@ -13,10 +13,29 @@
       <mat-icon>more_horiz</mat-icon>
     </button>
   </div>
-  <div class="column-body"></div>
-  <div class="column-footer">
-    <button mat-button><mat-icon>add</mat-icon> Add Card</button>
+  <div
+    class="column-body"
+    cdkDropList
+    [id]="column._id"
+    [cdkDropListData]="cards || []"
+    [cdkDropListConnectedTo]="connectedDropLists"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <app-cards [column]="column"></app-cards>
   </div>
+  @if (!isAddingCard) {
+    <div class="column-footer">
+      <button mat-button (click)="isAddingCard = true">
+        <mat-icon>add</mat-icon> Add Card
+      </button>
+    </div>
+  } @else {
+    <app-create-card
+      [column]="column"
+      [(isAddingCard)]="isAddingCard"
+      (clickOutside)="isAddingCard = false"
+    ></app-create-card>
+  }
 </div>
 
 <mat-menu #columnActions="matMenu" class="columnActionsMenu">

@@ -1,0 +1,3 @@
+@for (card of cards; track card._id) {
+  <app-card [card]="card" cdkDrag [cdkDragData]="card"></app-card>
+}

@@ -1,4 +1,5 @@
 <div
+  cdkDropListGroup
   cdkDropList
   cdkDropListOrientation="horizontal"
   [cdkDropListData]="boardColumns"
@@ -11,6 +12,7 @@
       [cdkDragData]="column"
       (columnsChanged)="updateColumns($event)"
       cdkDrag
+      [connectedDropLists]="connectedDropLists"
     ></app-board-column>
   }
 </div>

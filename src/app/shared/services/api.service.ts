@@ -8,6 +8,7 @@ import { Notification } from '../../models/notification';
 import { WorkspaceMember } from '../../models/workspaceMember';
 import { BoardMember } from '../../models/boardMember';
 import { Column } from '../../models/column.model';
+import { Card } from '../../models/card.model';
 
 @Injectable({
   providedIn: 'root',
@@ -264,6 +265,28 @@ export class ApiService {
       targetBoardId: boardId,
       newOrder: order,
     });
+  }
+
+  createCard(cardTitle: string, columnId: string) {
+    return this.http.post<{ card: Card }>(`${this.API_URL}/${columnId}/cards`, {
+      cardTitle,
+    });
+  }
+
+  getCards(columnId: string) {
+    return this.http.get<{ cards: Card[] }>(
+      `${this.API_URL}/${columnId}/cards`,
+    );
+  }
+
+  moveCard(columnId: string, cardId: string, order: number) {
+    return this.http.patch<{ cards: Card[] }>(
+      `${this.API_URL}/${cardId}/move`,
+      {
+        columnId,
+        order,
+      },
+    );
   }
 
   contactSupport(data: { category: string; subject: string; message: string }) {

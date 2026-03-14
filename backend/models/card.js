@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
 
-const columnSchema = mongoose.Schema(
+const cardSchema = mongoose.Schema(
   {
     title: { type: String, required: true },
-    boardId: {
+    columnId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Board",
+      ref: "Column",
       required: true,
     },
     order: { type: Number, required: true },
-    cards: [{ type: mongoose.Schema.Types.ObjectId, ref: "Card" }],
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Column", columnSchema);
+module.exports = mongoose.model("Card", cardSchema);

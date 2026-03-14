@@ -1,0 +1,11 @@
+<input
+  type="text"
+  placeholder="Enter card title"
+  [formControl]="cardTitleCtrl"
+/>
+<div>
+  <button mat-flat-button (click)="createCard()">Add Card</button>
+  <button mat-icon-button (click)="isAddingCardChange.emit(false)">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
