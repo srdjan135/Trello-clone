@@ -163,6 +163,39 @@ export class BoardColumnComponent implements OnInit {
       });
   }
 
+  sortCards(type: string) {
+    const cards = [...this.cardService.getCardsSnapshot(this.column._id)];
+
+    if (!cards.length) return;
+
+    if (type === 'newest') {
+      cards.sort(
+        (a, b) =>
+          new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime(),
+      );
+    }
+
+    if (type === 'oldest') {
+      cards.sort(
+        (a, b) =>
+          new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime(),
+      );
+    }
+
+    if (type === 'alphabetical') {
+      cards.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    const updatedCards = cards.map((card, index) => ({
+      ...card,
+      order: index,
+    }));
+
+    this.cardService.setCards(this.column._id, updatedCards);
+
+    this.api.sortCards(updatedCards).subscribe();
+  }
+
   drop(event: CdkDragDrop<Card[]>) {
     const card = event.item.data;
     if (!card) return;

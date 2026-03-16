@@ -50,7 +50,9 @@
   <button mat-menu-item clickStopPropagation [matMenuTriggerFor]="moveMenu">
     Move column
   </button>
-  <button mat-menu-item clickStopPropagation>Sort by...</button>
+  <button mat-menu-item clickStopPropagation [matMenuTriggerFor]="sortCardMenu">
+    Sort by...
+  </button>
   <button mat-menu-item clickStopPropagation>Delete column</button>
 </mat-menu>
 
@@ -102,5 +104,19 @@
 
   <button mat-flat-button clickStopPropagation (click)="moveColumn()">
     Move
+  </button>
+</mat-menu>
+
+<mat-menu #sortCardMenu="matMenu" class="sortMenu">
+  <button mat-menu-item (click)="sortCards('newest')">
+    Date created (newest first)
+  </button>
+
+  <button mat-menu-item (click)="sortCards('oldest')">
+    Date created (oldest first)
+  </button>
+
+  <button mat-menu-item (click)="sortCards('alphabetical')">
+    Card name (alphabetically)
   </button>
 </mat-menu>

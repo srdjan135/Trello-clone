@@ -296,6 +296,10 @@ export class ApiService {
     );
   }
 
+  sortCards(cards: Card[]) {
+    return this.http.patch(`${this.API_URL}/cards/sort`, { cards });
+  }
+
   contactSupport(data: { category: string; subject: string; message: string }) {
     return this.http.post(`${this.API_URL}/contact-support`, data);
   }

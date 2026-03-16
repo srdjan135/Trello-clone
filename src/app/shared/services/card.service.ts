@@ -19,10 +19,9 @@ export class CardService {
     return this.getSubject(columnId).asObservable();
   }
 
-  // mutate niz, ne kreiraj novi
   setCards(columnId: string, cards: Card[]) {
     const subject = this.getSubject(columnId);
-    subject.value.splice(0, subject.value.length, ...cards); // očisti i dodaj sve
+    subject.value.splice(0, subject.value.length, ...cards);
     subject.next(subject.value);
   }
 
@@ -32,5 +31,9 @@ export class CardService {
       subject.value.push(card);
       subject.next(subject.value);
     }
+  }
+
+  getCardsSnapshot(columnId: string): Card[] {
+    return this.cardsMap.get(columnId)?.value ?? [];
   }
 }

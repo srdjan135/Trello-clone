@@ -84,7 +84,7 @@
 }
 
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.moveMenu {
-  margin: 0.5rem;
+  margin: 0 0.5rem;
   overflow: hidden;
 
   .mat-mdc-menu-content {
@@ -104,6 +104,11 @@
     border-radius: 4px;
     height: 30px;
   }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.sortMenu {
+  margin: 0 0.5rem;
+  overflow: hidden;
 }
 
 ::ng-deep .cdk-overlay-container .cdk-overlay-pane .mat-mdc-select-panel {

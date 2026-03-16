@@ -3,4 +3,5 @@ export interface Card {
   title: string;
   columnId: string;
   order: number;
+  createdAt?: string;
 }

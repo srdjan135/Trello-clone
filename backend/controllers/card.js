@@ -87,3 +87,19 @@ exports.moveCard = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.sortCards = async (req, res) => {
+  const { cards } = req.body;
+
+  try {
+    const updates = cards.map((card) =>
+      Card.updateOne({ _id: card._id }, { $set: { order: card.order } }),
+    );
+
+    await Promise.all(updates);
+
+    res.status(200).json({ message: "Orders updated" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to sort cards" });
+  }
+};
