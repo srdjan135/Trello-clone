@@ -14,7 +14,12 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { Column } from '../../../../../../models/column.model';
 import { ClickStopPropagationDirective } from '../../../../../../shared/directives/click-stop-propagation.directive';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  switchMap,
+} from 'rxjs';
 import { ApiService } from '../../../../../../shared/services/api.service';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect, MatOption } from '@angular/material/select';
@@ -31,6 +36,8 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Card } from '../../../../../../models/card.model';
 import { CardService } from '../../../../../../shared/services/card.service';
+import { AsyncPipe } from '@angular/common';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-board-column',
@@ -50,6 +57,8 @@ import { CardService } from '../../../../../../shared/services/card.service';
     CreateCardComponent,
     CardsComponent,
     CdkDropList,
+    AsyncPipe,
+    MatInput,
   ],
   templateUrl: './board-column.component.html',
   styleUrl: './board-column.component.scss',
@@ -60,16 +69,19 @@ export class BoardColumnComponent implements OnInit {
   @Input() connectedDropLists!: string[];
   @Input({ required: true }) columns!: Column[];
   @Output() columnsChanged = new EventEmitter<Column[]>();
-  workspaces!: Workspace[];
+  @Output() addCopiedColumn = new EventEmitter<Column>();
 
+  workspaces!: Workspace[];
   isEditingColumnTitle: boolean = false;
   isAddingCard: boolean = false;
   columnTitle = new FormControl('');
+  copyColumnTitle = new FormControl('');
   moveToBoardCtrl = new FormControl();
   moveToPositionCtrl = new FormControl();
   positions: number[] = [];
   selectedBoard!: Board;
-  cards: Card[] = [];
+  boardId!: string;
+  cards$!: Observable<Card[]>;
 
   constructor(
     private api: ApiService,
@@ -79,12 +91,13 @@ export class BoardColumnComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.cards$ = this.cardService.getCards(this.column._id);
     this.api.getCards(this.column._id).subscribe((res) => {
-      this.cards = res.cards;
-      this.cardService.setCards(this.column._id, this.cards);
+      this.cardService.setCards(this.column._id, res.cards);
       this.cdr.markForCheck();
     });
     this.columnTitle.setValue(this.column.title, { emitEvent: false });
+    this.copyColumnTitle.setValue(this.columnTitle.value, { emitEvent: false });
     const columnPosition =
       this.columns.findIndex((c) => c._id === this.column._id) + 1;
     const count = this.columns.length;
@@ -93,8 +106,8 @@ export class BoardColumnComponent implements OnInit {
 
     this.cdr.markForCheck();
     this.route.paramMap.subscribe((params) => {
-      const boardId = params.get('boardId')!;
-      this.moveToBoardCtrl.setValue(boardId);
+      this.boardId = params.get('boardId')!;
+      this.moveToBoardCtrl.setValue(this.boardId);
     });
     this.api.gePopulateWorkspaces().subscribe((res) => {
       this.workspaces = res.workspaces;
@@ -127,6 +140,18 @@ export class BoardColumnComponent implements OnInit {
     this.positions = Array.from({ length: count + 1 }, (_, i) => i + 1);
   }
 
+  copyColumn() {
+    if (!this.copyColumnTitle.value) return;
+
+    const copyColumnTitle = this.copyColumnTitle.value;
+
+    this.api
+      .copyColumn(this.boardId, this.column._id, copyColumnTitle)
+      .subscribe((res) => {
+        this.addCopiedColumn.emit(res.copiedColumn);
+      });
+  }
+
   moveColumn() {
     const boardId = this.moveToBoardCtrl.value;
     const position = this.moveToPositionCtrl.value;
@@ -142,34 +167,27 @@ export class BoardColumnComponent implements OnInit {
     const card = event.item.data;
     if (!card) return;
 
+    const previousCards = [...event.previousContainer.data];
+    const currentCards = [...event.container.data];
+
     if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
-      this.cardService.setCards(event.container.id, event.container.data);
+      moveItemInArray(currentCards, event.previousIndex, event.currentIndex);
+
+      this.cardService.setCards(event.container.id, currentCards);
     } else {
       transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
+        previousCards,
+        currentCards,
         event.previousIndex,
         event.currentIndex,
       );
 
-      // update obe kolone koristeći iste reference
-      this.cardService.setCards(
-        event.previousContainer.id,
-        event.previousContainer.data,
-      );
-      this.cardService.setCards(event.container.id, event.container.data);
+      this.cardService.setCards(event.previousContainer.id, previousCards);
+      this.cardService.setCards(event.container.id, currentCards);
     }
 
     this.api
-      .moveCard(this.column._id, card._id, event.currentIndex)
-      .subscribe((res) => {
-        this.cards = [...res.cards];
-        this.cdr.markForCheck();
-      });
+      .moveCard(event.container.id, card._id, event.currentIndex)
+      .subscribe();
   }
 }

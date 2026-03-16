@@ -257,6 +257,13 @@ export class ApiService {
     );
   }
 
+  copyColumn(boardId: string, columnId: string, columnTitle: string) {
+    return this.http.post<{ copiedColumn: Column }>(
+      `${this.API_URL}/columns/${columnId}/copy`,
+      { boardId, columnTitle },
+    );
+  }
+
   moveColumn(columnId: string, boardId: string, order: number) {
     return this.http.patch<{
       sourceColumns: Column[];

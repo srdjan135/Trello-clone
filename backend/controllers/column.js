@@ -1,5 +1,6 @@
 const Board = require("../models/board");
 const Column = require("../models/column");
+const Card = require("../models/card");
 
 exports.createColumn = async (req, res) => {
   const { columnTitle } = req.body;
@@ -83,6 +84,60 @@ exports.updateColumn = async (req, res) => {
     res.status(200).json({ column });
   } catch (err) {
     res.status(500).json({ message: "Failed to update column" });
+  }
+};
+
+exports.copyColumn = async (req, res) => {
+  const { columnId } = req.params;
+  const { boardId, columnTitle } = req.body;
+
+  try {
+    const board = await Board.findById(boardId);
+
+    if (!board) {
+      res.status(404).json({ message: "Board not found!" });
+    }
+
+    const column = await Column.findById(columnId);
+
+    if (!column) {
+      res.status(404).json({ message: "Column not found" });
+    }
+
+    const count = await Column.countDocuments({ boardId });
+
+    const copiedColumn = await Column.create({
+      title: columnTitle,
+      boardId,
+      order: count,
+      cards: [],
+    });
+
+    for (const cardId of column.cards) {
+      const originalCard = await Card.findById(cardId);
+
+      const newCard = await Card.create({
+        title: originalCard.title,
+        columnId: copiedColumn._id,
+        order: originalCard.order,
+      });
+
+      await Column.updateOne(
+        { _id: copiedColumn._id },
+        { $push: { cards: newCard._id } },
+      );
+    }
+
+    await Board.updateOne(
+      { _id: boardId },
+      { $push: { columns: copiedColumn._id } },
+    );
+
+    res.status(200).json({ copiedColumn });
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({ message: "Failed to copy column" });
   }
 };
 

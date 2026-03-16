@@ -64,6 +64,10 @@
       padding: 0;
       line-height: 24px;
 
+      & ::ng-deep .mdc-icon-button__ripple {
+        background-color: $white;
+      }
+
       mat-icon {
         font-size: 14px;
         width: 14px;

@@ -6,7 +6,7 @@
           {{ columnTitle.value }}
         </div>
       } @else {
-        <input type="text" [formControl]="columnTitle" />
+        <input type="text" [formControl]="columnTitle" required minlength="2" />
       }
     </div>
     <button mat-icon-button [matMenuTriggerFor]="columnActions">
@@ -17,7 +17,7 @@
     class="column-body"
     cdkDropList
     [id]="column._id"
-    [cdkDropListData]="cards || []"
+    [cdkDropListData]="(cards$ | async) || []"
     [cdkDropListConnectedTo]="connectedDropLists"
     (cdkDropListDropped)="drop($event)"
   >
@@ -40,12 +40,34 @@
 
 <mat-menu #columnActions="matMenu" class="columnActionsMenu">
   <h5>Column Actions</h5>
-  <button mat-menu-item clickStopPropagation>Copy column</button>
+  <button
+    mat-menu-item
+    clickStopPropagation
+    [matMenuTriggerFor]="copyColumnMenu"
+  >
+    Copy column
+  </button>
   <button mat-menu-item clickStopPropagation [matMenuTriggerFor]="moveMenu">
     Move column
   </button>
   <button mat-menu-item clickStopPropagation>Sort by...</button>
   <button mat-menu-item clickStopPropagation>Delete column</button>
+</mat-menu>
+
+<mat-menu #copyColumnMenu="matMenu" class="copyMenu">
+  <mat-form-field appearance="outline" clickStopPropagation>
+    <mat-label>Name</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="copyColumnTitle"
+      required
+      minlength="2"
+    />
+  </mat-form-field>
+  <button mat-flat-button (click)="copyColumn()" clickStopPropagation>
+    Create
+  </button>
 </mat-menu>
 
 <mat-menu #moveMenu="matMenu" class="moveMenu">

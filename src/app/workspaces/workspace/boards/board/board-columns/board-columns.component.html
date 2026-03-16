@@ -9,9 +9,10 @@
     <app-board-column
       [column]="column"
       [columns]="boardColumns"
-      [cdkDragData]="column"
       (columnsChanged)="updateColumns($event)"
+      (addCopiedColumn)="addColumn($event)"
       cdkDrag
+      [cdkDragData]="column"
       [connectedDropLists]="connectedDropLists"
     ></app-board-column>
   }

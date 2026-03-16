@@ -70,6 +70,19 @@
   }
 }
 
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.copyMenu {
+  margin: 0 0.5rem;
+  overflow: hidden;
+
+  .mat-mdc-menu-content {
+    padding: 1rem;
+  }
+
+  button {
+    border-radius: 8px;
+  }
+}
+
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.moveMenu {
   margin: 0.5rem;
   overflow: hidden;
