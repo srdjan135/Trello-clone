@@ -237,6 +237,16 @@ export class ApiService {
     );
   }
 
+  copyBoard(
+    boardId: string,
+    data: { title: string; workspace?: string; keepCards: boolean },
+  ) {
+    return this.http.post<{ board: Board }>(
+      `${this.API_URL}/boards/${boardId}/copy`,
+      data,
+    );
+  }
+
   createColumn(columnTitle: string, boardId: string) {
     return this.http.post<{ column: Column }>(
       `${this.API_URL}/${boardId}/columns`,

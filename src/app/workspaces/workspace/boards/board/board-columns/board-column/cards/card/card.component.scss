@@ -65,7 +65,7 @@
       line-height: 24px;
 
       & ::ng-deep .mdc-icon-button__ripple {
-        background-color: $white;
+        background-color: var(--bg-main);
       }
 
       mat-icon {

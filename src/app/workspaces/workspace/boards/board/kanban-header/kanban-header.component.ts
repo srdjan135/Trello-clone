@@ -23,7 +23,7 @@ import { Workspace } from '../../../../../models/workspace';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { Board } from '../../../../../models/board.model';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../../../shared/services/api.service';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { InviteBoardMembersComponent } from '../invite-board-members/invite-board-members.component';
@@ -79,6 +79,9 @@ export class KanbanHeaderComponent {
   boardTitle = new FormControl('');
   descriptionCtrl = new FormControl('');
   boardWorkspaceCtrl = new FormControl('');
+  copyBoardTitle = new FormControl('');
+  copyBoardWorkspaceCtrl = new FormControl('');
+  keepCardsCtrl = new FormControl(false);
   bgColorImages: string[] = bgColorImages;
   bgImages: string[] = bgImages;
   selectedBg!: string;
@@ -92,6 +95,7 @@ export class KanbanHeaderComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private cdr: ChangeDetectorRef,
     private api: ApiService,
     private dialog: MatDialog,
@@ -113,6 +117,9 @@ export class KanbanHeaderComponent {
         });
         if (typeof this.board.workspace !== 'string') {
           this.boardWorkspaceCtrl.setValue(this.board.workspace.name, {
+            emitEvent: false,
+          });
+          this.copyBoardWorkspaceCtrl.setValue(this.board.workspace.name, {
             emitEvent: false,
           });
         }
@@ -264,6 +271,28 @@ export class KanbanHeaderComponent {
       .subscribe((res) => {
         this.board.background = res.board.background;
         this.selectedBgChange.emit(this.board.background);
+        this.cdr.markForCheck();
+      });
+  }
+
+  copyBoard() {
+    if (!this.copyBoardTitle.value || !this.copyBoardWorkspaceCtrl.value)
+      return;
+
+    const copyBoardTitle = this.copyBoardTitle.value;
+    const workspace = this.workspaces.find(
+      (w) => w.name === this.copyBoardWorkspaceCtrl.value,
+    );
+
+    this.api
+      .copyBoard(this.boardId, {
+        title: copyBoardTitle,
+        workspace: workspace?._id,
+        keepCards: this.keepCardsCtrl.value!,
+      })
+      .subscribe((res) => {
+        this.router.navigate(['/', this.workspaceId, 'boards', res.board._id]);
+        this.copyBoardTitle.setValue('');
         this.cdr.markForCheck();
       });
   }

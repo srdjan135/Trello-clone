@@ -415,3 +415,40 @@
     border-radius: 8px;
   }
 }
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.copyBoardMenu {
+  margin: 0 1rem;
+  overflow: hidden;
+  min-width: 320px;
+
+  .mat-mdc-menu-content {
+    padding: 1rem;
+  }
+
+  h5 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    mat-form-field {
+      width: 100%;
+
+      &:last-of-type ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+    }
+
+    mat-checkbox {
+      margin: 0.5rem 0;
+    }
+  }
+
+  button {
+    border-radius: 8px;
+  }
+}

@@ -9,6 +9,7 @@ const {
   searchBoards,
   updateBoard,
   inviteBoardMembers,
+  copyBoard,
 } = require("../controllers/board");
 
 router.get("/:workspaceId/boards", checkAuth, getBoards);
@@ -17,5 +18,6 @@ router.get("/boards/:boardId", checkAuth, getBoard);
 router.post("/:workspaceId/boards", checkAuth, postBoard);
 router.patch("/boards/:boardId/update", checkAuth, updateBoard);
 router.post("/boards/:boardId/invite", checkAuth, inviteBoardMembers);
+router.post("/boards/:boardId/copy", checkAuth, copyBoard);
 
 module.exports = router;

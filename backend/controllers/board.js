@@ -4,6 +4,8 @@ const WorkspaceMember = require("../models/workspaceMember");
 const Notification = require("../models/notification");
 const User = require("../models/user");
 const BoardMember = require("../models/boardMember");
+const Column = require("../models/column");
+const Card = require("../models/card");
 
 exports.getBoards = async (req, res) => {
   const workspaceId = req.params.workspaceId;
@@ -252,5 +254,74 @@ exports.inviteBoardMembers = async (req, res) => {
     res.status(200).json({ message: "Invites sent successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to invite members!" });
+  }
+};
+
+exports.copyBoard = async (req, res) => {
+  const { boardId } = req.params;
+  const { title, workspace, keepCards } = req.body;
+  const userId = req.userData.userId;
+
+  try {
+    const originalBoard = await Board.findById(boardId);
+
+    if (!originalBoard) {
+      return res.status(404).json({ message: "Original board not found" });
+    }
+
+    const newBoard = await Board.create({
+      title,
+      background: originalBoard.background,
+      members: [userId],
+      workspace: workspace,
+      visibility: originalBoard.visibility,
+      description: originalBoard.description,
+      columns: [],
+    });
+
+    for (const columnId of originalBoard.columns) {
+      const column = await Column.findById(columnId);
+
+      const newColumn = await Column.create({
+        title: column.title,
+        boardId: newBoard._id,
+        order: column.order,
+        cards: [],
+      });
+
+      await Board.findByIdAndUpdate(newBoard._id, {
+        $push: { columns: newColumn._id },
+      });
+
+      if (keepCards) {
+        const originalCards = await Card.find({ columnId });
+        for (const card of originalCards) {
+          await Card.create({
+            ...card._doc,
+            _id: undefined,
+            columnId: newColumn._id,
+          });
+
+          await Column.findByIdAndUpdate(newColumn._id, {
+            $push: { cards: card._id },
+          });
+        }
+      }
+    }
+
+    await Workspace.findByIdAndUpdate(workspace, {
+      $push: { boards: newBoard._id },
+    });
+
+    await BoardMember.create({
+      board: newBoard._id,
+      user: userId,
+      role: "admin",
+    });
+
+    res.status(200).json({ board: newBoard });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to copy board!" });
   }
 };

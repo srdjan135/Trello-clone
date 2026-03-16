@@ -60,6 +60,10 @@ export class BoardColumnsComponent implements OnInit {
 
   deleteColumn(column: Column) {
     this.boardColumns = this.boardColumns.filter((c) => c._id !== column._id);
+    this.boardColumns = this.boardColumns.map((c, index) => ({
+      ...c,
+      order: index + 1,
+    }));
     this.updateConnectedLists();
   }
 

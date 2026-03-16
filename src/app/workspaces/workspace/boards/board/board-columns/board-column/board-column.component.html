@@ -50,9 +50,15 @@
   <button mat-menu-item clickStopPropagation [matMenuTriggerFor]="moveMenu">
     Move column
   </button>
-  <button mat-menu-item clickStopPropagation [matMenuTriggerFor]="sortCardMenu">
-    Sort by...
-  </button>
+  @if (((cards$ | async)?.length ?? 0) > 1) {
+    <button
+      mat-menu-item
+      clickStopPropagation
+      [matMenuTriggerFor]="sortCardMenu"
+    >
+      Sort by...
+    </button>
+  }
   <button
     mat-menu-item
     clickStopPropagation
