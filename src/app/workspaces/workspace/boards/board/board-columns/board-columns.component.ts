@@ -58,6 +58,11 @@ export class BoardColumnsComponent implements OnInit {
     this.updateConnectedLists();
   }
 
+  deleteColumn(column: Column) {
+    this.boardColumns = this.boardColumns.filter((c) => c._id !== column._id);
+    this.updateConnectedLists();
+  }
+
   drop(event: CdkDragDrop<Column[]>) {
     moveItemInArray(this.boardColumns, event.previousIndex, event.currentIndex);
 

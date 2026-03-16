@@ -78,6 +78,10 @@
     padding: 1rem;
   }
 
+  mat-form-field {
+    width: 100%;
+  }
+
   button {
     border-radius: 8px;
   }
@@ -86,29 +90,64 @@
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.moveMenu {
   margin: 0 0.5rem;
   overflow: hidden;
+  min-width: 320px;
 
   .mat-mdc-menu-content {
-    text-align: center;
-    padding: 0.5rem 0 1rem 0;
+    padding: 0.5rem 1rem 1rem 1rem;
   }
 
   h5 {
     font-size: 16px;
+    text-align: center;
   }
 
-  mat-form-field {
-    width: 90%;
+  .wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    mat-form-field {
+      width: 100%;
+    }
   }
 
   button {
-    border-radius: 4px;
-    height: 30px;
+    border-radius: 8px;
   }
 }
 
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.sortMenu {
   margin: 0 0.5rem;
   overflow: hidden;
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.deleteMenu {
+  margin: 0 0.5rem;
+  overflow: hidden;
+
+  .mat-mdc-menu-content {
+    padding: 1rem;
+  }
+
+  h5 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+
+    li {
+      font-weight: 400;
+    }
+  }
+
+  button {
+    background-color: $error !important;
+    border-radius: 8px;
+  }
 }
 
 ::ng-deep .cdk-overlay-container .cdk-overlay-pane .mat-mdc-select-panel {

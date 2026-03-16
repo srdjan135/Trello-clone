@@ -70,6 +70,7 @@ export class BoardColumnComponent implements OnInit {
   @Input({ required: true }) columns!: Column[];
   @Output() columnsChanged = new EventEmitter<Column[]>();
   @Output() addCopiedColumn = new EventEmitter<Column>();
+  @Output() deletedColumn = new EventEmitter<Column>();
 
   workspaces!: Workspace[];
   isEditingColumnTitle: boolean = false;
@@ -194,6 +195,12 @@ export class BoardColumnComponent implements OnInit {
     this.cardService.setCards(this.column._id, updatedCards);
 
     this.api.sortCards(updatedCards).subscribe();
+  }
+
+  deleteColumn() {
+    this.api.deleteColumn(this.column._id).subscribe((res) => {
+      this.deletedColumn.emit(res.column);
+    });
   }
 
   drop(event: CdkDragDrop<Card[]>) {

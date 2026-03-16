@@ -222,3 +222,27 @@ exports.moveColumn = async (req, res) => {
     res.status(500).json({ message: "Failed to move column" });
   }
 };
+
+exports.deleteColumn = async (req, res) => {
+  const { columnId } = req.params;
+
+  try {
+    const column = await Column.findById(columnId);
+
+    if (!column) {
+      return res.status(404).json({ message: "Column not found" });
+    }
+
+    await Column.deleteOne({ _id: columnId });
+
+    await Card.deleteMany({ _id: { $in: column.cards } });
+
+    await Board.findByIdAndUpdate(column.boardId, {
+      $pull: { columns: columnId },
+    });
+
+    res.status(200).json({ column });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete column" });
+  }
+};

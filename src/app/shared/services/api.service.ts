@@ -274,6 +274,12 @@ export class ApiService {
     });
   }
 
+  deleteColumn(columnId: string) {
+    return this.http.delete<{ column: Column }>(
+      `${this.API_URL}/columns/${columnId}/delete`,
+    );
+  }
+
   createCard(cardTitle: string, columnId: string) {
     return this.http.post<{ card: Card }>(`${this.API_URL}/${columnId}/cards`, {
       cardTitle,
