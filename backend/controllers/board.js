@@ -325,3 +325,31 @@ exports.copyBoard = async (req, res) => {
     res.status(500).json({ message: "Failed to copy board!" });
   }
 };
+
+exports.deleteBoard = async (req, res) => {
+  const { boardId } = req.params;
+
+  try {
+    const board = await Board.findById(boardId);
+
+    if (!board) {
+      return res.status(404).json({ message: "Board not found" });
+    }
+
+    await Card.deleteMany({ columnId: { $in: board.columns } });
+
+    await Column.deleteMany({ boardId });
+
+    await BoardMember.deleteMany({ board: boardId });
+
+    await Board.findByIdAndDelete(boardId);
+
+    await Workspace.findByIdAndUpdate(board.workspace, {
+      $pull: { boards: boardId },
+    });
+
+    res.status(200).json({ message: "Board deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete board!" });
+  }
+};

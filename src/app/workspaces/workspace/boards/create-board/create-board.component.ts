@@ -69,6 +69,7 @@ export class CreateBoardComponent {
       })
       .subscribe((res) => {
         this.newBoard.emit(res.board);
+        form.reset();
       });
   }
 

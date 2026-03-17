@@ -452,3 +452,37 @@
     border-radius: 8px;
   }
 }
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.deleteBoardMenu {
+  margin: 0 1rem;
+  overflow: hidden;
+  min-width: 320px;
+
+  .mat-mdc-menu-content {
+    padding: 1rem;
+  }
+
+  h5 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  p {
+    margin: 1rem 0;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+
+    li {
+      font-weight: 400;
+    }
+  }
+
+  button {
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    background-color: $error !important;
+  }
+}

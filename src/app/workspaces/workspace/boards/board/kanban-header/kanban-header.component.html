@@ -175,9 +175,13 @@
       <p>Copy Board</p>
     </button>
     @if (!isMember) {
-      <button mat-menu-item>
-        <mat-icon>remove</mat-icon>
-        <p>Close Board</p>
+      <button
+        mat-menu-item
+        clickStopPropagation
+        [matMenuTriggerFor]="deleteBoardMenu"
+      >
+        <mat-icon>delete_outline</mat-icon>
+        <p>Delete Board</p>
       </button>
     }
   } @else {
@@ -357,5 +361,18 @@
     [disabled]="copyBoardTitle.invalid || copyBoardWorkspaceCtrl.invalid"
   >
     Create
+  </button>
+</mat-menu>
+
+<mat-menu #deleteBoardMenu="matMenu" class="deleteBoardMenu">
+  <h5>Delete Board?</h5>
+  <p>Things to know before deleting a board:</p>
+  <ul>
+    <li>All cards and columns on the board will be permanently deleted.</li>
+    <li>This action cannot be undone.</li>
+  </ul>
+
+  <button mat-flat-button clickStopPropagation (click)="deleteBoard()">
+    Delete
   </button>
 </mat-menu>

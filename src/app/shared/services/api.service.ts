@@ -247,6 +247,10 @@ export class ApiService {
     );
   }
 
+  deleteBoard(boardId: string) {
+    return this.http.delete(`${this.API_URL}/boards/${boardId}/delete`);
+  }
+
   createColumn(columnTitle: string, boardId: string) {
     return this.http.post<{ column: Column }>(
       `${this.API_URL}/${boardId}/columns`,

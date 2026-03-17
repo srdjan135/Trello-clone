@@ -1,6 +1,8 @@
 @use "src/variables" as *;
 
 :host {
+  height: fit-content;
+
   .column {
     width: 250px;
     background-color: var(--bg-main);

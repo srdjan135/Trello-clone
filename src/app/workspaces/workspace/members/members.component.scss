@@ -113,9 +113,10 @@
         }
 
         .actions {
+          width: 60%;
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: end;
 
           button {
             border-radius: 8px;
@@ -125,6 +126,18 @@
             gap: 0.5rem;
             white-space: nowrap;
             overflow: hidden;
+
+            &:first-child {
+              width: 40%;
+            }
+
+            &:nth-child(2) {
+              width: 15%;
+            }
+
+            &:last-child {
+              width: 45%;
+            }
           }
 
           button ::ng-deep span,

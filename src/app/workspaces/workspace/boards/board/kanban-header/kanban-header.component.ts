@@ -297,6 +297,12 @@ export class KanbanHeaderComponent {
       });
   }
 
+  deleteBoard() {
+    this.api.deleteBoard(this.boardId).subscribe(() => {
+      this.router.navigate(['/boards']);
+    });
+  }
+
   removeMember(memberId: string) {
     this.api.removeBoardMember(memberId, this.boardId).subscribe((res) => {
       this.boardMembers = this.boardMembers.filter(
