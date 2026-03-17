@@ -1,0 +1,39 @@
+@if (user) {
+  <div class="account-settings">
+    <h5>Account Settings</h5>
+    <div class="wrapper">
+      <h6>Delete your account</h6>
+      <p>When you delete your account, your data will be deleted.</p>
+      <a [matMenuTriggerFor]="deleteAccountMenu"> Delete Account </a>
+    </div>
+  </div>
+
+  <mat-menu #deleteAccountMenu="matMenu" class="deleteAccountMenu">
+    <h5>Delete your account?</h5>
+    <p>Things to know:</p>
+    <ul>
+      <li>All workspaces will be deleted forever.</li>
+      <li>All boards will be deleted forever.</li>
+      <li>All columns and cards will be deleted forever.</li>
+      <li>This action cannot be undone.</li>
+    </ul>
+    <mat-form-field appearance="outline" clickStopPropagation>
+      <mat-label>Confirm deletion</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="confirmDeleteAccountCtrl"
+        placeholder="Enter your username to confirm"
+        required
+      />
+    </mat-form-field>
+    <button
+      mat-flat-button
+      [disabled]="confirmDeleteAccountCtrl.value !== user.username"
+      clickStopPropagation
+      (click)="deleteAccount()"
+    >
+      Delete
+    </button>
+  </mat-menu>
+}

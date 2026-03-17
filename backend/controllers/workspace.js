@@ -3,6 +3,9 @@ const User = require("../models/user");
 const Notification = require("../models/notification");
 const WorkspaceMember = require("../models/workspaceMember");
 const Board = require("../models/board");
+const Column = require("../models/column");
+const Card = require("../models/card");
+const BoardMember = require("../models/boardMember");
 
 exports.getWorkspaces = async (req, res) => {
   const userId = req.userData.userId;
@@ -152,9 +155,27 @@ exports.deleteWorkspace = async (req, res) => {
       return res.status(403).json({ message: "Not authorized!" });
     }
 
-    await WorkspaceMember.deleteMany({ workspace: workspaceId });
+    const boardIds = (
+      await Board.find({
+        workspace: workspaceId,
+      }).select("_id")
+    ).map((b) => b._id);
 
-    await Board.deleteMany({ workspace: workspaceId });
+    const columnIds = (
+      await Column.find({
+        boardId: { $in: boardIds },
+      }).select("_id")
+    ).map((c) => c._id);
+
+    await Card.deleteMany({ columnId: { $in: columnIds } });
+
+    await Column.deleteMany({ boardId: { $in: boardIds } });
+
+    await BoardMember.deleteMany({ board: { $in: boardIds } });
+
+    await Board.deleteMany({ _id: { $in: boardIds } });
+
+    await WorkspaceMember.deleteMany({ workspace: workspaceId });
 
     await User.updateMany(
       { workspaces: workspaceId },

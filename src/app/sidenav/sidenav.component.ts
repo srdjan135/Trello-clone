@@ -15,7 +15,7 @@ import { MatDivider } from '@angular/material/divider';
 import { templates } from './templates';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Workspace } from '../models/workspace';
-import { filter, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, filter, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorkspaceService } from '../shared/services/workspace.service';
 import { ApiService } from '../shared/services/api.service';
@@ -59,7 +59,7 @@ export class SidenavComponent implements OnInit {
       .pipe(
         filter((id): id is string => !!id),
         tap((id) => (this.workspaceId = id)),
-        switchMap((id) => this.api.getMyRole(id)),
+        switchMap((id) => this.api.getMyRole(id).pipe(catchError(() => EMPTY))),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((res) => {

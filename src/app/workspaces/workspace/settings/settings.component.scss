@@ -83,27 +83,14 @@
     width: 100%;
   }
 
-  button[mat-raised-button] {
+  button[mat-flat-button] {
     width: 100%;
     border-radius: 8px;
-    background-color: $error;
+    background-color: $error !important;
   }
 
-  button[mat-raised-button]:disabled {
-    pointer-events: auto !important;
-    cursor: not-allowed !important;
-    background-color: rgb(235, 185, 185);
-  }
-
-  button[mat-raised-button].mat-mdc-button-disabled:hover {
+  button[mat-flat-button]:disabled {
     background-color: rgb(235, 185, 185) !important;
-    box-shadow: none !important;
-  }
-
-  button[mat-raised-button].mat-mdc-button-disabled
-    .mat-mdc-button-persistent-ripple,
-  button[mat-raised-button].mat-mdc-button-disabled .mdc-button__ripple {
-    display: none !important;
   }
 }
 

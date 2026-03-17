@@ -1,0 +1,47 @@
+@use "src/variables" as *;
+
+.wrapper {
+  margin-top: 1rem;
+  padding-left: 2rem;
+
+  h6 {
+    margin-top: 1rem;
+  }
+
+  a {
+    color: $error;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.deleteAccountMenu {
+  padding: 1rem;
+
+  h5 {
+    text-align: center;
+    font-size: 16px;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+
+    li {
+      font-weight: 400;
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    background-color: $error !important;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  button:disabled {
+    background-color: rgb(235, 185, 185) !important;
+  }
+}

@@ -59,6 +59,10 @@ export class ApiService {
     });
   }
 
+  deleteAccount() {
+    return this.http.delete(`${this.API_URL}/users/user/delete`);
+  }
+
   getNotifications() {
     return this.http.get<{ notifications: Notification[] }>(
       `${this.API_URL}/notifications`,

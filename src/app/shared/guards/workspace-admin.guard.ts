@@ -1,16 +1,25 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { catchError, EMPTY, map, of, switchMap, take } from 'rxjs';
 import { ApiService } from '../services/api.service';
+import { WorkspaceService } from '../services/workspace.service';
 
-export const WorkspaceAdminGuard: CanActivateFn = (route, status) => {
+export const WorkspaceAdminGuard: CanActivateFn = () => {
   const api = inject(ApiService);
   const router = inject(Router);
+  const workspaceService = inject(WorkspaceService);
 
-  const workspaceId = route.paramMap.get('workspaceId')!;
+  return workspaceService.workspaceId.pipe(
+    take(1),
+    switchMap((workspaceId) => {
+      if (!workspaceId) {
+        router.navigate(['/']);
+        return EMPTY;
+      }
 
-  return api.getMyRole(workspaceId).pipe(
+      return api.getMyRole(workspaceId);
+    }),
     map((res) => {
       if (res.role === 'admin') {
         return true;
@@ -18,6 +27,10 @@ export const WorkspaceAdminGuard: CanActivateFn = (route, status) => {
         router.navigate(['/']);
         return false;
       }
+    }),
+    catchError(() => {
+      router.navigate(['/']);
+      return of(false);
     }),
   );
 };

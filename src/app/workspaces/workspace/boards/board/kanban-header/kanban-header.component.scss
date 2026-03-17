@@ -450,6 +450,7 @@
 
   button {
     border-radius: 8px;
+    width: 100%;
   }
 }
 
@@ -484,5 +485,6 @@
     margin-top: 0.5rem;
     border-radius: 8px;
     background-color: $error !important;
+    width: 100%;
   }
 }

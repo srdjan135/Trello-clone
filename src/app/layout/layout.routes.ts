@@ -63,6 +63,14 @@ export const layoutRoutes: Routes = [
           ),
         canActivate: [AuthGuard],
       },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('../account-settings/account-settings.component').then(
+            (m) => m.AccountSettingsComponent,
+          ),
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

@@ -89,7 +89,8 @@ button[mat-flat-button]:not(:disabled) {
 }
 
 button[mat-button] > span,
-button[mat-raised-button] > span {
+button[mat-raised-button] > span,
+button[mat-stroked-button] > span {
   color: $primary;
 }
 
