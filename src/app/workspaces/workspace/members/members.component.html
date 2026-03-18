@@ -10,117 +10,97 @@
       </button>
     }
   </div>
-  <div class="content-wrapper">
-    <mat-list>
-      <mat-list-item
-        [routerLink]="['/', workspaceId, 'members']"
-        routerLinkActive="active"
-      >
-        <span matListItemTitle
-          >Workspace members ({{ workspace.members.length }})</span
-        >
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item
-        [routerLink]="['/', workspaceId, 'members/requests']"
-        routerLinkActive="active"
-      >
-        <span matListItemTitle>Join requests (0)</span>
-      </mat-list-item>
-    </mat-list>
-    <div class="wrapper">
-      <div>
-        <h5>Workspace members ({{ workspace.members.length }})</h5>
-        <p>
-          Workspace members can view and join all Workspace visible boards and
-          create new boards in the Workspace.
-        </p>
-      </div>
-      <div>
-        <h5>Workspace will be deleted</h5>
-        <p>
-          The workspace will be deleted if the last admin leaves the workspace.
-        </p>
-      </div>
-      @if (isAdmin) {
-        <div>
-          <h5>Invite members to join you</h5>
-          <div class="inner-wrapper">
-            <p>
-              Anyone with an invite link can join this free Workspace. You can
-              also disable and create a new invite link for this Workspace at
-              any time. Pending invitations count toward the 10 collaborator
-              limit.
-            </p>
-            <button mat-button (click)="copyInviteLink()">
-              <mat-icon>link</mat-icon>
-              Invite with link
-            </button>
-          </div>
-        </div>
-      }
-      <div>
-        <mat-form-field appearance="outline">
-          <mat-label>Search by name</mat-label>
-          <input
-            type="search"
-            matInput
-            [formControl]="searchWorkspaceMembersByName"
-          />
-        </mat-form-field>
-      </div>
-
-      @for (member of filteredWorkspaceMembers; track member._id) {
-        <div class="members">
-          <div>
-            @if (member.user) {
-              <div class="avatar">
-                {{ member.user.username.charAt(0).toUpperCase() || "" }}
-              </div>
-              <div class="member-info">
-                <h5>{{ member.user.username }}</h5>
-                <p>{{ member.user.email }}</p>
-              </div>
-            }
-          </div>
-          <div class="actions">
-            <button
-              mat-button
-              [matMenuTriggerFor]="viewBoardsMenu"
-              [matMenuTriggerData]="{ member }"
-            >
-              View boards ({{ memberBoardsMap.get(member.user._id)?.length }})
-            </button>
-            <button
-              mat-button
-              [matMenuTriggerFor]="roleMenu"
-              [matMenuTriggerData]="{ member }"
-              [disabled]="!isAdmin"
-            >
-              {{ member.role }}
-            </button>
-
-            @if (isAdmin) {
-              <button mat-button (click)="removeMemberFromWorkspace(member)">
-                <mat-icon>close</mat-icon>
-                {{
-                  member.role === "admin" && member.user._id === currentUser._id
-                    ? "Leave Workspace"
-                    : "Remove from workspace"
-                }}
-              </button>
-            }
-
-            @if (!isAdmin && member.user._id === currentUser._id) {
-              <button mat-button (click)="removeMemberFromWorkspace(member)">
-                <mat-icon>close</mat-icon>
-                Leave Workspace
-              </button>
-            }
-          </div>
-        </div>
-      }
+  <div class="wrapper">
+    <div>
+      <h5>Workspace members ({{ workspace.members.length }})</h5>
+      <p>
+        Workspace members can view and join all Workspace visible boards and
+        create new boards in the Workspace.
+      </p>
     </div>
+    <div>
+      <h5>Workspace will be deleted</h5>
+      <p>
+        The workspace will be deleted if the last admin leaves the workspace.
+      </p>
+    </div>
+    @if (isAdmin) {
+      <div>
+        <h5>Invite members to join you</h5>
+        <div class="inner-wrapper">
+          <p>
+            Anyone with an invite link can join this free Workspace. You can
+            also disable and create a new invite link for this Workspace at any
+            time. Pending invitations count toward the 10 collaborator limit.
+          </p>
+          <button mat-button (click)="copyInviteLink()">
+            <mat-icon>link</mat-icon>
+            Invite with link
+          </button>
+        </div>
+      </div>
+    }
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Search by name</mat-label>
+        <input
+          type="search"
+          matInput
+          [formControl]="searchWorkspaceMembersByName"
+        />
+      </mat-form-field>
+    </div>
+
+    @for (member of filteredWorkspaceMembers; track member._id) {
+      <div class="members">
+        <div>
+          @if (member.user) {
+            <div class="avatar">
+              {{ member.user.username.charAt(0).toUpperCase() || "" }}
+            </div>
+            <div class="member-info">
+              <h5>{{ member.user.username }}</h5>
+              <p>{{ member.user.email }}</p>
+            </div>
+          }
+        </div>
+        <div class="actions">
+          <button
+            mat-button
+            [matMenuTriggerFor]="viewBoardsMenu"
+            [matMenuTriggerData]="{ member }"
+          >
+            View boards ({{ memberBoardsMap.get(member.user._id)?.length }})
+          </button>
+          <button
+            mat-button
+            [matMenuTriggerFor]="roleMenu"
+            [matMenuTriggerData]="{ member }"
+            [disabled]="!isAdmin"
+          >
+            {{ member.role }}
+          </button>
+
+          @if (isAdmin) {
+            <button mat-button (click)="removeMemberFromWorkspace(member)">
+              <mat-icon>close</mat-icon>
+              {{
+                member.role === "admin" && member.user._id === currentUser._id
+                  ? "Leave Workspace"
+                  : "Remove from workspace"
+              }}
+            </button>
+          }
+
+          @if (!isAdmin && member.user._id === currentUser._id) {
+            <button mat-button (click)="removeMemberFromWorkspace(member)">
+              <mat-icon>close</mat-icon>
+              Leave Workspace
+            </button>
+          }
+        </div>
+      </div>
+    }
   </div>
 }
 

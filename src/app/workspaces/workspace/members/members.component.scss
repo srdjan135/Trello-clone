@@ -11,6 +11,9 @@
     margin-bottom: 2rem;
 
     h5 {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
       margin: 0;
 
       span:last-child {
@@ -33,130 +36,101 @@
     }
   }
 
-  .content-wrapper {
-    display: flex;
-    gap: 3rem;
+  .wrapper {
+    width: 100%;
 
-    mat-list {
-      width: 25%;
+    div {
+      border-bottom: 1px solid var(--text-main);
+      margin-bottom: 1rem;
 
-      mat-list-item {
-        width: 100%;
+      .inner-wrapper {
+        border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-        &:hover,
-        &.active {
-          cursor: pointer;
-          color: var(--primary);
-          background-color: $primary-hover;
-          border-radius: 12px;
-
-          span {
-            color: var(--primary);
-          }
+        p {
+          width: 60%;
         }
-      }
 
-      mat-divider {
-        margin: 0.5rem 0;
+        button {
+          border-radius: 8px;
+        }
       }
     }
 
-    .wrapper {
-      width: 75%;
+    .members {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      padding-bottom: 1rem;
 
-      div {
-        border-bottom: 1px solid var(--text-main);
-        margin-bottom: 1rem;
+      div:first-of-type {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: none;
+        margin: 0;
+      }
 
-        .inner-wrapper {
-          border-bottom: none;
-          display: flex;
-          justify-content: space-between;
+      .avatar,
+      .member-info,
+      .actions {
+        border-bottom: none;
+        margin: 0;
+      }
+
+      .avatar,
+      .member-info p,
+      .member-info h5 {
+        margin: 0;
+      }
+
+      .actions {
+        width: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+
+        button {
+          border-radius: 8px;
+          max-width: 150px;
+          display: inline-flex;
           align-items: center;
+          gap: 0.5rem;
+          white-space: nowrap;
+          overflow: hidden;
 
-          p {
-            width: 60%;
+          &:first-child {
+            width: 40%;
           }
 
-          button {
-            border-radius: 8px;
+          &:nth-child(2) {
+            width: 15%;
           }
+
+          &:last-child {
+            width: 45%;
+          }
+        }
+
+        button ::ng-deep span,
+        button ::ng-deep .mat-button-wrapper {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        button ::ng-deep mat-icon {
+          margin: 0;
+          width: 30%;
         }
       }
 
-      .members {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        box-sizing: border-box;
-        padding-bottom: 1rem;
-
-        div:first-of-type {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          border-bottom: none;
-          margin: 0;
-        }
-
-        .avatar,
-        .member-info,
-        .actions {
-          border-bottom: none;
-          margin: 0;
-        }
-
-        .avatar,
-        .member-info p,
-        .member-info h5 {
-          margin: 0;
-        }
-
-        .actions {
-          width: 60%;
-          display: flex;
-          align-items: center;
-          justify-content: end;
-
-          button {
-            border-radius: 8px;
-            max-width: 150px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-            overflow: hidden;
-
-            &:first-child {
-              width: 40%;
-            }
-
-            &:nth-child(2) {
-              width: 15%;
-            }
-
-            &:last-child {
-              width: 45%;
-            }
-          }
-
-          button ::ng-deep span,
-          button ::ng-deep .mat-button-wrapper {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          button ::ng-deep mat-icon {
-            margin: 0;
-            width: 30%;
-          }
-        }
-
-        .member-info h5 {
-          font-size: 18px;
-          font-weight: 500;
-          line-height: normal;
-        }
+      .member-info h5 {
+        font-size: 18px;
+        font-weight: 500;
+        line-height: normal;
       }
     }
   }
