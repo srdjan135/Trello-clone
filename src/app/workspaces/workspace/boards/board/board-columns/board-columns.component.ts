@@ -17,6 +17,8 @@ import {
   CdkDropListGroup,
 } from '@angular/cdk/drag-drop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { User } from '../../../../../models/user.model';
+import { Board } from '../../../../../models/board.model';
 
 @Component({
   selector: 'app-board-columns',
@@ -35,9 +37,11 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 })
 export class BoardColumnsComponent implements OnInit {
   boardId!: string;
+  board!: Board;
   boardColumns: Column[] = [];
   connectedDropLists: string[] = [];
   isLoading!: boolean;
+  currentUser!: User;
 
   constructor(
     private api: ApiService,
@@ -47,8 +51,18 @@ export class BoardColumnsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.api.getUser().subscribe((res) => {
+      this.currentUser = res.user;
+      this.cdr.markForCheck();
+    });
     this.route.paramMap.subscribe((params) => {
       this.boardId = params.get('boardId')!;
+
+      this.api.getBoard(this.boardId).subscribe((res) => {
+        this.board = res.board;
+        this.cdr.markForCheck();
+      });
+
       this.api.getColumns(this.boardId).subscribe((res) => {
         this.boardColumns = res.columns;
         this.isLoading = false;
@@ -56,6 +70,14 @@ export class BoardColumnsComponent implements OnInit {
         this.cdr.markForCheck();
       });
     });
+  }
+
+  isBoardMember(): boolean {
+    if (!this.board || !this.currentUser) return false;
+
+    return this.board.members.some(
+      (member) => (member as unknown as string) === this.currentUser._id,
+    );
   }
 
   addColumn(column: Column) {

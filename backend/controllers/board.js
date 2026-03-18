@@ -146,7 +146,7 @@ exports.updateBoard = async (req, res) => {
       return res.status(404).json({ message: "Board not found" });
     }
 
-    if (board.visibility === "workspace") {
+    if (board.visibility === "workspace" || board.visibility === "public") {
       const workspaceMembers = await WorkspaceMember.find({
         workspace: board.workspace._id,
       });

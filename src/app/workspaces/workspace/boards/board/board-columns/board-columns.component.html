@@ -19,8 +19,9 @@
       ></app-board-column>
     }
   </div>
-
-  <app-create-column (newColumn)="addColumn($event)"></app-create-column>
+  @if (isBoardMember()) {
+    <app-create-column (newColumn)="addColumn($event)"></app-create-column>
+  }
 } @else {
   <div class="spinner-wrapper">
     <mat-spinner></mat-spinner>

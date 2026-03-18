@@ -6,7 +6,7 @@
         #boardTitleButton
         (click)="editBoardTitle()"
         clickStopPropagation
-        [disabled]="isMember"
+        [disabled]="isMember || !isBoardMember()"
       >
         <h5>{{ boardTitle.value }}</h5>
       </button>
@@ -28,30 +28,32 @@
         [matMenuTriggerFor]="profileMenu"
       ></app-avatar>
     }
-    <button
-      mat-icon-button
-      matTooltip="Filter Cards"
-      [matMenuTriggerFor]="filterMenu"
-    >
-      <mat-icon>filter_list</mat-icon>
-    </button>
-    @if (!isMember) {
+    @if (isBoardMember()) {
       <button
         mat-icon-button
-        matTooltip="Board visibility"
-        [matMenuTriggerFor]="visibilityMenu"
+        matTooltip="Filter Cards"
+        [matMenuTriggerFor]="filterMenu"
       >
-        <mat-icon>{{ visibilityIcon }}</mat-icon>
+        <mat-icon>filter_list</mat-icon>
       </button>
-      <button mat-flat-button (click)="openInviteModal()">
-        <mat-icon>person_outline</mat-icon>
-        <mat-icon>add</mat-icon>
-        Share
+      @if (!isMember) {
+        <button
+          mat-icon-button
+          matTooltip="Board visibility"
+          [matMenuTriggerFor]="visibilityMenu"
+        >
+          <mat-icon>{{ visibilityIcon }}</mat-icon>
+        </button>
+        <button mat-flat-button (click)="openInviteModal()">
+          <mat-icon>person_outline</mat-icon>
+          <mat-icon>add</mat-icon>
+          Share
+        </button>
+      }
+      <button mat-icon-button matTooltip="More" [matMenuTriggerFor]="moreMenu">
+        <mat-icon>more_horiz</mat-icon>
       </button>
     }
-    <button mat-icon-button matTooltip="More" [matMenuTriggerFor]="moreMenu">
-      <mat-icon>more_horiz</mat-icon>
-    </button>
   </div>
 </div>
 

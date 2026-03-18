@@ -38,6 +38,7 @@ import { Card } from '../../../../../../models/card.model';
 import { CardService } from '../../../../../../shared/services/card.service';
 import { AsyncPipe } from '@angular/common';
 import { MatInput } from '@angular/material/input';
+import { User } from '../../../../../../models/user.model';
 
 @Component({
   selector: 'app-board-column',
@@ -80,9 +81,10 @@ export class BoardColumnComponent implements OnInit {
   moveToBoardCtrl = new FormControl();
   moveToPositionCtrl = new FormControl();
   positions: number[] = [];
-  selectedBoard!: Board;
   boardId!: string;
   cards$!: Observable<Card[]>;
+  currentUser!: User;
+  board!: Board;
 
   constructor(
     private api: ApiService,
@@ -104,11 +106,19 @@ export class BoardColumnComponent implements OnInit {
     const count = this.columns.length;
     this.positions = Array.from({ length: count }, (_, i) => i + 1);
     this.moveToPositionCtrl.setValue(columnPosition);
-
+    this.api.getUser().subscribe((res) => {
+      this.currentUser = res.user;
+      this.cdr.markForCheck();
+    });
     this.cdr.markForCheck();
     this.route.paramMap.subscribe((params) => {
       this.boardId = params.get('boardId')!;
       this.moveToBoardCtrl.setValue(this.boardId);
+
+      this.api.getBoard(this.boardId).subscribe((res) => {
+        this.board = res.board;
+        this.cdr.markForCheck();
+      });
     });
     this.api.gePopulateWorkspaces().subscribe((res) => {
       this.workspaces = res.workspaces;
@@ -128,6 +138,14 @@ export class BoardColumnComponent implements OnInit {
         this.columnTitle.setValue(res.column.title, { emitEvent: false });
         this.cdr.markForCheck();
       });
+  }
+
+  isBoardMember(): boolean {
+    if (!this.board || !this.currentUser) return false;
+
+    return this.board.members.some(
+      (member) => (member as unknown as string) === this.currentUser._id,
+    );
   }
 
   onBoardChange(boardId: string) {

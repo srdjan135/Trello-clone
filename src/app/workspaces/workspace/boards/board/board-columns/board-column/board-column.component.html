@@ -2,16 +2,22 @@
   <div class="column-header">
     <div class="column-title" (clickOutside)="isEditingColumnTitle = false">
       @if (!isEditingColumnTitle) {
-        <div (click)="isEditingColumnTitle = true">
+        <button
+          (click)="isEditingColumnTitle = true"
+          [disabled]="!isBoardMember()"
+        >
           {{ columnTitle.value }}
-        </div>
+        </button>
       } @else {
         <input type="text" [formControl]="columnTitle" required minlength="2" />
       }
     </div>
-    <button mat-icon-button [matMenuTriggerFor]="columnActions">
+    @if (isBoardMember()) {
+<button mat-icon-button [matMenuTriggerFor]="columnActions">
       <mat-icon>more_horiz</mat-icon>
     </button>
+    }
+    
   </div>
   <div
     class="column-body"
@@ -24,11 +30,13 @@
     <app-cards [column]="column"></app-cards>
   </div>
   @if (!isAddingCard) {
+    @if (isBoardMember()) {
     <div class="column-footer">
       <button mat-button (click)="isAddingCard = true">
         <mat-icon>add</mat-icon> Add Card
       </button>
     </div>
+  }
   } @else {
     <app-create-card
       [column]="column"

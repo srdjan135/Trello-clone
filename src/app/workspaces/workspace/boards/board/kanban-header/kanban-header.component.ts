@@ -34,6 +34,7 @@ import { ClickStopPropagationDirective } from '../../../../../shared/directives/
 import { MatInput } from '@angular/material/input';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { WorkspaceMember } from '../../../../../models/workspaceMember';
 
 @Component({
   selector: 'app-kanban-header',
@@ -70,6 +71,7 @@ export class KanbanHeaderComponent {
   user!: User;
   workspaceId!: string;
   workspaces!: Workspace[];
+  workspaceMembers!: WorkspaceMember[];
   boardId!: string;
   board!: Board;
   boardMembers!: BoardMember[];
@@ -133,6 +135,11 @@ export class KanbanHeaderComponent {
       this.api.getBoardMembers(this.boardId).subscribe((res) => {
         this.boardMembers = res.boardMembers;
         this.isLoading = false;
+        this.cdr.markForCheck();
+      });
+
+      this.api.getWorkspaceMembers(this.workspaceId).subscribe((res) => {
+        this.workspaceMembers = res;
         this.cdr.markForCheck();
       });
 
@@ -227,8 +234,25 @@ export class KanbanHeaderComponent {
     );
   }
 
-  getIsRemovableMember() {
-    return this.board.visibility !== 'workspace';
+  isBoardMember(): boolean {
+    if (!this.board || !this.user) return false;
+
+    return this.board.members.some(
+      (member) => (member as unknown as string) === this.user._id,
+    );
+  }
+
+  getIsRemovableMember(): boolean {
+    if (!this.board) return false;
+
+    if (
+      this.board.visibility === 'workspace' ||
+      this.board.visibility === 'public'
+    ) {
+      return false;
+    }
+
+    return true;
   }
 
   editBoardTitle() {
