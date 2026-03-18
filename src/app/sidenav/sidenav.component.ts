@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorkspaceService } from '../shared/services/workspace.service';
 import { ApiService } from '../shared/services/api.service';
 import { SharedService } from '../shared/services/shared.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
@@ -34,6 +35,7 @@ import { SharedService } from '../shared/services/shared.service';
     MatDivider,
     RouterLink,
     RouterLinkActive,
+    MatProgressSpinner,
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
@@ -44,6 +46,7 @@ export class SidenavComponent implements OnInit {
   workspaces: Workspace[] = [];
   workspaceId!: string;
   isAdmin!: boolean;
+  isLoading!: boolean;
 
   constructor(
     private workspaceService: WorkspaceService,
@@ -55,6 +58,7 @@ export class SidenavComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.workspaceService.workspaceId
       .pipe(
         filter((id): id is string => !!id),
@@ -75,6 +79,7 @@ export class SidenavComponent implements OnInit {
       )
       .subscribe((res) => {
         this.workspaces = res;
+        this.isLoading = false;
         this.cdr.markForCheck();
       });
   }

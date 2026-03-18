@@ -67,47 +67,53 @@
     <h1>Notifications</h1>
     <mat-divider></mat-divider>
 
-    @for (notification of notifications; track notification._id) {
-      <div class="notification-message">
-        <span>{{ notification.message }}</span>
+    @if (!isLoading) {
+      @for (notification of notifications; track notification._id) {
+        <div class="notification-message">
+          <span>{{ notification.message }}</span>
 
-        @if (
-          notification.type === "WORKSPACE_INVITE" ||
-          notification.type === "BOARD_INVITE"
-        ) {
-          <div>
-            <button
-              mat-icon-button
-              matTooltip="Decline"
-              (click)="declineInvite(notification._id)"
-              clickStopPropagation
-            >
-              <mat-icon>close</mat-icon>
-            </button>
+          @if (
+            notification.type === "WORKSPACE_INVITE" ||
+            notification.type === "BOARD_INVITE"
+          ) {
+            <div>
+              <button
+                mat-icon-button
+                matTooltip="Decline"
+                (click)="declineInvite(notification._id)"
+                clickStopPropagation
+              >
+                <mat-icon>close</mat-icon>
+              </button>
 
-            <button
-              mat-icon-button
-              matTooltip="Accept"
-              (click)="acceptInvite(notification._id)"
-              clickStopPropagation
-            >
-              <mat-icon>check</mat-icon>
-            </button>
-          </div>
-        }
+              <button
+                mat-icon-button
+                matTooltip="Accept"
+                (click)="acceptInvite(notification._id)"
+                clickStopPropagation
+              >
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+          }
 
-        <button
-          mat-icon-button
-          matTooltip="Actions"
-          [matMenuTriggerFor]="actionsMenu"
-          [matMenuTriggerData]="{ notification: notification }"
-          clickStopPropagation
-        >
-          <mat-icon>more_vert</mat-icon>
-        </button>
+          <button
+            mat-icon-button
+            matTooltip="Actions"
+            [matMenuTriggerFor]="actionsMenu"
+            [matMenuTriggerData]="{ notification: notification }"
+            clickStopPropagation
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+      } @empty {
+        <p>No notifications yet!</p>
+      }
+    } @else {
+      <div class="spinner-wrapper">
+        <mat-spinner></mat-spinner>
       </div>
-    } @empty {
-      <p>No notifications yet!</p>
     }
   </ng-template>
 </mat-menu>

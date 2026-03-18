@@ -178,6 +178,12 @@
       background-size: cover;
     }
   }
+
+  .spinner-wrapper {
+    mat-spinner {
+      width: 65px !important;
+    }
+  }
 }
 
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.roleMenu {

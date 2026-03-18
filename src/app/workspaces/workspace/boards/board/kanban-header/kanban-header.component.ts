@@ -33,6 +33,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { MatInput } from '@angular/material/input';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-kanban-header',
@@ -57,6 +58,7 @@ import { ClickOutsideDirective } from '../../../../../shared/directives/click-ou
     ClickStopPropagationDirective,
     RouterLink,
     ClickOutsideDirective,
+    MatProgressSpinner,
   ],
   templateUrl: './kanban-header.component.html',
   styleUrl: './kanban-header.component.scss',
@@ -85,6 +87,7 @@ export class KanbanHeaderComponent {
   bgColorImages: string[] = bgColorImages;
   bgImages: string[] = bgImages;
   selectedBg!: string;
+  isLoading!: boolean;
 
   sectionTitles: Record<keyof Filters, string> = {
     members: 'Members',
@@ -102,6 +105,7 @@ export class KanbanHeaderComponent {
   ) {}
 
   ngOnInit() {
+    this.isLoading = true;
     this.route.paramMap.subscribe((params) => {
       this.boardId = params.get('boardId')!;
       this.workspaceId = params.get('workspaceId')!;
@@ -128,6 +132,7 @@ export class KanbanHeaderComponent {
 
       this.api.getBoardMembers(this.boardId).subscribe((res) => {
         this.boardMembers = res.boardMembers;
+        this.isLoading = false;
         this.cdr.markForCheck();
       });
 

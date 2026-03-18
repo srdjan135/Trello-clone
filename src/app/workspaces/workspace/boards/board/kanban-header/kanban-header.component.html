@@ -200,17 +200,23 @@
         <mat-icon>person_outline</mat-icon>
         <p>Board admins</p>
       </div>
-      @for (admin of admins; track admin._id) {
-        <div class="about-content">
-          <div class="avatar">
-            {{ admin.user.username.charAt(0).toUpperCase() }}
-          </div>
-          <div class="about-user-info">
-            <div>
-              <p>{{ admin.user.username }}</p>
-              <p>{{ admin.user.email }}</p>
+      @if (!isLoading) {
+        @for (admin of admins; track admin._id) {
+          <div class="about-content">
+            <div class="avatar">
+              {{ admin.user.username.charAt(0).toUpperCase() }}
+            </div>
+            <div class="about-user-info">
+              <div>
+                <p>{{ admin.user.username }}</p>
+                <p>{{ admin.user.email }}</p>
+              </div>
             </div>
           </div>
+        }
+      } @else {
+        <div class="spinner-wrapper">
+          <mat-spinner></mat-spinner>
         </div>
       }
 
@@ -218,33 +224,40 @@
         <mat-icon>person_outline</mat-icon>
         <p>Board members</p>
       </div>
-      @for (member of members; track member._id) {
-        <div class="about-content">
-          <div class="avatar">
-            {{ member.user.username.charAt(0).toUpperCase() }}
-          </div>
-          <div class="about-user-info">
-            <div>
-              <p>{{ member.user.username }}</p>
-              <p>{{ member.user.email }}</p>
+      @if (!isLoading) {
+        @for (member of members; track member._id) {
+          <div class="about-content">
+            <div class="avatar">
+              {{ member.user.username.charAt(0).toUpperCase() }}
             </div>
-            @if (getIsRemovableMember()) {
-              @if (!isMember) {
-                <button
-                  mat-icon-button
-                  matTooltip="Remove member"
-                  clickStopPropagation
-                  (click)="removeMember(member._id)"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
+            <div class="about-user-info">
+              <div>
+                <p>{{ member.user.username }}</p>
+                <p>{{ member.user.email }}</p>
+              </div>
+              @if (getIsRemovableMember()) {
+                @if (!isMember) {
+                  <button
+                    mat-icon-button
+                    matTooltip="Remove member"
+                    clickStopPropagation
+                    (click)="removeMember(member._id)"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
               }
-            }
+            </div>
           </div>
+        } @empty {
+          <p class="empty">There are currently no members!</p>
+        }
+      } @else {
+        <div class="spinner-wrapper">
+          <mat-spinner></mat-spinner>
         </div>
-      } @empty {
-        <p class="empty">There are currently no members!</p>
       }
+
       @if (!isMember) {
         <mat-divider></mat-divider>
         <mat-form-field appearance="outline" clickStopPropagation>

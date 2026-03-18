@@ -8,7 +8,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatLabel } from '@angular/material/form-field';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -34,6 +34,7 @@ import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
 import { AvatarComponent } from '../shared/components/avatar/avatar.component';
 import { Workspace } from '../models/workspace';
 import { WorkspaceService } from '../shared/services/workspace.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-header',
@@ -43,7 +44,6 @@ import { WorkspaceService } from '../shared/services/workspace.service';
     MatFormField,
     MatLabel,
     MatPrefix,
-    MatButton,
     MatIconButton,
     MatInput,
     MatToolbar,
@@ -61,6 +61,7 @@ import { WorkspaceService } from '../shared/services/workspace.service';
     MatOption,
     MatAutocompleteTrigger,
     AvatarComponent,
+    MatProgressSpinner,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -74,6 +75,7 @@ export class HeaderComponent implements OnInit {
   searchControl = new FormControl('');
   filteredBoards: Board[] = [];
   workspaces!: Workspace[];
+  isLoading!: boolean;
 
   @ViewChild(MatAutocompleteTrigger) autoTrigger!: MatAutocompleteTrigger;
 
@@ -87,6 +89,7 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     const savedTheme = localStorage.getItem('Theme') || 'light';
     this.selectedTheme = savedTheme;
     this.applyTheme(savedTheme);
@@ -97,6 +100,7 @@ export class HeaderComponent implements OnInit {
     });
     this.api.getNotifications().subscribe((res) => {
       this.notifications = res.notifications;
+      this.isLoading = false;
       this.cdr.markForCheck();
     });
     this.searchControl.valueChanges

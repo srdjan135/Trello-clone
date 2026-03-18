@@ -16,6 +16,7 @@ import {
   moveItemInArray,
   CdkDropListGroup,
 } from '@angular/cdk/drag-drop';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-board-columns',
@@ -26,6 +27,7 @@ import {
     CdkDrag,
     CdkDropList,
     CdkDropListGroup,
+    MatProgressSpinner,
   ],
   templateUrl: './board-columns.component.html',
   styleUrl: './board-columns.component.scss',
@@ -35,6 +37,7 @@ export class BoardColumnsComponent implements OnInit {
   boardId!: string;
   boardColumns: Column[] = [];
   connectedDropLists: string[] = [];
+  isLoading!: boolean;
 
   constructor(
     private api: ApiService,
@@ -43,10 +46,12 @@ export class BoardColumnsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.route.paramMap.subscribe((params) => {
       this.boardId = params.get('boardId')!;
       this.api.getColumns(this.boardId).subscribe((res) => {
         this.boardColumns = res.columns;
+        this.isLoading = false;
         this.updateConnectedLists();
         this.cdr.markForCheck();
       });

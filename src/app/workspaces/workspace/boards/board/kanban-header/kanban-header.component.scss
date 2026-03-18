@@ -282,6 +282,12 @@
       }
     }
 
+    .spinner-wrapper {
+      mat-spinner {
+        width: 65px !important;
+      }
+    }
+
     .about-header {
       mat-icon {
         color: var(--text-main);

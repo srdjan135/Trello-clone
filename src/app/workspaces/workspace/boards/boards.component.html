@@ -1,23 +1,29 @@
-@for (board of visibleBoards; track board._id) {
-  <div
-    class="board-card"
-    [routerLink]="['/', workspace._id, 'boards', board._id]"
-  >
+@if (!isLoading) {
+  @for (board of visibleBoards; track board._id) {
     <div
-      class="bg"
-      [style.backgroundImage]="'url(' + board.background + ')'"
-    ></div>
-    <p>{{ board.title }}</p>
-  </div>
-} @empty {
-  @if (!isAdmin) {
-    <p>You are not currently on any board.</p>
+      class="board-card"
+      [routerLink]="['/', workspace._id, 'boards', board._id]"
+    >
+      <div
+        class="bg"
+        [style.backgroundImage]="'url(' + board.background + ')'"
+      ></div>
+      <p>{{ board.title }}</p>
+    </div>
+  } @empty {
+    @if (!isAdmin) {
+      <p>You are not currently on any board.</p>
+    }
   }
-}
 
-@if (isAdmin) {
-  <app-create-board
-    [workspace]="workspace"
-    (newBoard)="updateBoardsList($event)"
-  ></app-create-board>
+  @if (isAdmin) {
+    <app-create-board
+      [workspace]="workspace"
+      (newBoard)="updateBoardsList($event)"
+    ></app-create-board>
+  }
+} @else {
+  <div class="spinner-wrapper">
+    <mat-spinner></mat-spinner>
+  </div>
 }

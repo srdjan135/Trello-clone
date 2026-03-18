@@ -18,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../../../models/workspace';
 import { map, switchMap } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { WorkspaceService } from '../../../shared/services/workspace.service';
 
 @Component({
   selector: 'app-workspace-boards',
@@ -47,6 +48,7 @@ export class WorkspaceBoardsComponent implements OnInit {
     private api: ApiService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
+    private workspaceService: WorkspaceService,
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +62,7 @@ export class WorkspaceBoardsComponent implements OnInit {
       )
       .subscribe((workspace) => {
         this.workspace = workspace!;
+        this.workspaceService.setWorkspaceId(this.workspaceId);
         this.cdr.markForCheck();
       });
   }

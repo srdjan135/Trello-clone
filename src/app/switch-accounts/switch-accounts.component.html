@@ -1,33 +1,39 @@
 <div class="accounts-wrapper">
   <h3>Switch Account</h3>
 
-  @for (account of accounts; track account.userId) {
-    <div class="account-card">
-      <div class="account">
-        @if (account) {
-          <div class="avatar">
-            {{ account.username.charAt(0).toUpperCase() || "" }}
+  @if (!isLoading) {
+    @for (account of accounts; track account.userId) {
+      <div class="account-card">
+        <div class="account">
+          @if (account) {
+            <div class="avatar">
+              {{ account.username.charAt(0).toUpperCase() || "" }}
+            </div>
+          }
+          <div>
+            <span>{{ account.username }}</span>
+            <p>{{ account.email }}</p>
           </div>
-        }
-        <div>
-          <span>{{ account.username }}</span>
-          <p>{{ account.email }}</p>
+        </div>
+
+        <div class="actions">
+          <button mat-button (click)="switch(account)">Switch</button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="remove(account)"
+            matTooltip="Remove user"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
         </div>
       </div>
+    }
 
-      <div class="actions">
-        <button mat-button (click)="switch(account)">Switch</button>
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="remove(account)"
-          matTooltip="Remove user"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
+    <button mat-flat-button routerLink="/signin">Add account</button>
+  } @else {
+    <div class="spinner-wrapper">
+      <mat-spinner></mat-spinner>
     </div>
   }
-
-  <button mat-flat-button routerLink="/signin">Add account</button>
 </div>

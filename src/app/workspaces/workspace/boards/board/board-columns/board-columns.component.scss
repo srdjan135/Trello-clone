@@ -1,3 +1,5 @@
+@use "src/variables" as *;
+
 :host {
   display: flex;
   gap: 1rem;
@@ -37,4 +39,10 @@ div:last-child {
 app-board-column.cdk-drop-list-dragging
   .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.spinner-wrapper {
+  mat-spinner ::ng-deep div svg {
+    stroke: $white !important;
+  }
 }

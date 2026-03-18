@@ -1,22 +1,28 @@
-<div
-  cdkDropListGroup
-  cdkDropList
-  cdkDropListOrientation="horizontal"
-  [cdkDropListData]="boardColumns"
-  (cdkDropListDropped)="drop($event)"
->
-  @for (column of boardColumns; track column._id) {
-    <app-board-column
-      [column]="column"
-      [columns]="boardColumns"
-      (columnsChanged)="updateColumns($event)"
-      (addCopiedColumn)="addColumn($event)"
-      (deletedColumn)="deleteColumn($event)"
-      cdkDrag
-      [cdkDragData]="column"
-      [connectedDropLists]="connectedDropLists"
-    ></app-board-column>
-  }
-</div>
+@if (!isLoading) {
+  <div
+    cdkDropListGroup
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    [cdkDropListData]="boardColumns"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (column of boardColumns; track column._id) {
+      <app-board-column
+        [column]="column"
+        [columns]="boardColumns"
+        (columnsChanged)="updateColumns($event)"
+        (addCopiedColumn)="addColumn($event)"
+        (deletedColumn)="deleteColumn($event)"
+        cdkDrag
+        [cdkDragData]="column"
+        [connectedDropLists]="connectedDropLists"
+      ></app-board-column>
+    }
+  </div>
 
-<app-create-column (newColumn)="addColumn($event)"></app-create-column>
+  <app-create-column (newColumn)="addColumn($event)"></app-create-column>
+} @else {
+  <div class="spinner-wrapper">
+    <mat-spinner></mat-spinner>
+  </div>
+}

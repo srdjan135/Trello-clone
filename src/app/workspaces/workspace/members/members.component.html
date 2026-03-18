@@ -51,54 +51,60 @@
       </mat-form-field>
     </div>
 
-    @for (member of filteredWorkspaceMembers; track member._id) {
-      <div class="members">
-        <div>
-          @if (member.user) {
-            <div class="avatar">
-              {{ member.user.username.charAt(0).toUpperCase() || "" }}
-            </div>
-            <div class="member-info">
-              <h5>{{ member.user.username }}</h5>
-              <p>{{ member.user.email }}</p>
-            </div>
-          }
-        </div>
-        <div class="actions">
-          <button
-            mat-button
-            [matMenuTriggerFor]="viewBoardsMenu"
-            [matMenuTriggerData]="{ member }"
-          >
-            View boards ({{ memberBoardsMap.get(member.user._id)?.length }})
-          </button>
-          <button
-            mat-button
-            [matMenuTriggerFor]="roleMenu"
-            [matMenuTriggerData]="{ member }"
-            [disabled]="!isAdmin"
-          >
-            {{ member.role }}
-          </button>
-
-          @if (isAdmin) {
-            <button mat-button (click)="removeMemberFromWorkspace(member)">
-              <mat-icon>close</mat-icon>
-              {{
-                member.role === "admin" && member.user._id === currentUser._id
-                  ? "Leave Workspace"
-                  : "Remove from workspace"
-              }}
+    @if (!isLoadingMembers) {
+      @for (member of filteredWorkspaceMembers; track member._id) {
+        <div class="members">
+          <div>
+            @if (member.user) {
+              <div class="avatar">
+                {{ member.user.username.charAt(0).toUpperCase() || "" }}
+              </div>
+              <div class="member-info">
+                <h5>{{ member.user.username }}</h5>
+                <p>{{ member.user.email }}</p>
+              </div>
+            }
+          </div>
+          <div class="actions">
+            <button
+              mat-button
+              [matMenuTriggerFor]="viewBoardsMenu"
+              [matMenuTriggerData]="{ member }"
+            >
+              View boards ({{ memberBoardsMap.get(member.user._id)?.length }})
             </button>
-          }
-
-          @if (!isAdmin && member.user._id === currentUser._id) {
-            <button mat-button (click)="removeMemberFromWorkspace(member)">
-              <mat-icon>close</mat-icon>
-              Leave Workspace
+            <button
+              mat-button
+              [matMenuTriggerFor]="roleMenu"
+              [matMenuTriggerData]="{ member }"
+              [disabled]="!isAdmin"
+            >
+              {{ member.role }}
             </button>
-          }
+
+            @if (isAdmin) {
+              <button mat-button (click)="removeMemberFromWorkspace(member)">
+                <mat-icon>close</mat-icon>
+                {{
+                  member.role === "admin" && member.user._id === currentUser._id
+                    ? "Leave Workspace"
+                    : "Remove from workspace"
+                }}
+              </button>
+            }
+
+            @if (!isAdmin && member.user._id === currentUser._id) {
+              <button mat-button (click)="removeMemberFromWorkspace(member)">
+                <mat-icon>close</mat-icon>
+                Leave Workspace
+              </button>
+            }
+          </div>
         </div>
+      }
+    } @else {
+      <div class="spinner-wrapper">
+        <mat-spinner></mat-spinner>
       </div>
     }
   </div>
@@ -110,19 +116,25 @@
     <button mat-icon-button matTooltip="Close">
       <mat-icon>close</mat-icon>
     </button>
-    @for (
-      board of memberBoardsMap.get(member.user._id) ?? [];
-      track board._id
-    ) {
-      <div class="wrapper">
-        <div
-          class="bg"
-          [style.backgroundImage]="'url(' + board.background + ')'"
-        ></div>
-        <p>{{ board.title }}</p>
+    @if (!isLoadingMemberBoards) {
+      @for (
+        board of memberBoardsMap.get(member.user._id) ?? [];
+        track board._id
+      ) {
+        <div class="wrapper">
+          <div
+            class="bg"
+            [style.backgroundImage]="'url(' + board.background + ')'"
+          ></div>
+          <p>{{ board.title }}</p>
+        </div>
+      } @empty {
+        <p>There are currently no boards</p>
+      }
+    } @else {
+      <div class="spinner-wrapper">
+        <mat-spinner></mat-spinner>
       </div>
-    } @empty {
-      <p>There are currently no boards</p>
     }
   </ng-template>
 </mat-menu>

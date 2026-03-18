@@ -13,11 +13,12 @@ import { Board } from '../../../models/board.model';
 import { ApiService } from '../../../shared/services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-boards',
   standalone: true,
-  imports: [CreateBoardComponent, RouterLink],
+  imports: [CreateBoardComponent, RouterLink, MatProgressSpinner],
   templateUrl: './boards.component.html',
   styleUrl: './boards.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +31,7 @@ export class BoardsComponent implements OnChanges, OnInit {
   sortedBoards: Board[] = [];
   isAdmin!: boolean;
   currentUserId!: string;
+  isLoading!: boolean;
 
   constructor(
     private api: ApiService,
@@ -38,9 +40,11 @@ export class BoardsComponent implements OnChanges, OnInit {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.isLoading = true;
     if (changes['workspace'] && this.workspace?._id) {
       this.api.getBoards(this.workspace._id).subscribe((res) => {
         this.boards = res.boards;
+        this.isLoading = false;
         this.applySortAndSearch();
       });
     }

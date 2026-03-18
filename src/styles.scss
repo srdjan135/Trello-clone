@@ -107,3 +107,8 @@ button[mat-stroked-button] > span {
   cursor: pointer;
   margin: 5px;
 }
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+}

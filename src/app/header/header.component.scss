@@ -67,8 +67,8 @@ mat-toolbar {
 }
 
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.notifications {
-  width: 400px;
-  height: 400px;
+  width: 350px;
+  min-height: 200px;
   max-width: none;
   overflow: hidden;
 
@@ -100,6 +100,18 @@ mat-toolbar {
       & > div button:last-of-type mat-icon {
         color: $success;
       }
+    }
+  }
+
+  p {
+    text-align: center;
+    margin: 0;
+    margin-top: 3rem;
+  }
+
+  .spinner-wrapper {
+    mat-spinner {
+      width: 65px !important;
     }
   }
 }

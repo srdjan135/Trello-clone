@@ -1,12 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Workspace } from '../../../models/workspace';
 import { ApiService } from '../../../shared/services/api.service';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   combineLatest,
   debounceTime,
@@ -17,8 +12,6 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { MatList, MatListItem, MatListItemTitle } from '@angular/material/list';
-import { MatDivider } from '@angular/material/divider';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
@@ -34,28 +27,24 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Board } from '../../../models/board.model';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-members',
   standalone: true,
   imports: [
-    MatList,
-    MatListItem,
-    MatListItemTitle,
-    MatDivider,
     MatFormField,
     MatLabel,
     MatInput,
     MatIcon,
     MatButton,
-    RouterLink,
-    RouterLinkActive,
     CommonModule,
     MatMenuModule,
     MatIconButton,
     MatTooltip,
     ReactiveFormsModule,
     ClickStopPropagationDirective,
+    MatProgressSpinner,
   ],
   templateUrl: './members.component.html',
   styleUrl: './members.component.scss',
@@ -70,6 +59,8 @@ export class MembersComponent implements OnInit {
   boards!: Board[];
   searchWorkspaceMembersByName = new FormControl('');
   memberBoardsMap = new Map<string, Board[]>();
+  isLoadingMembers!: boolean;
+  isLoadingMemberBoards!: boolean;
 
   constructor(
     private api: ApiService,
@@ -82,6 +73,8 @@ export class MembersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoadingMembers = true;
+    this.isLoadingMemberBoards = true;
     const workspaceId$ = this.route.paramMap.pipe(
       map((params) => params.get('workspaceId')!),
       tap((id) => (this.workspaceId = id)),
@@ -130,7 +123,8 @@ export class MembersComponent implements OnInit {
         this.filteredWorkspaceMembers = data.members.filter((m) =>
           m.user.username.toLowerCase().includes(data.search.toLowerCase()),
         );
-
+        this.isLoadingMembers = false;
+        this.isLoadingMemberBoards = false;
         this.workspaceService.setWorkspaceId(this.workspaceId);
         this.workspaceService.workspaceMembersRemainingNumber = of(
           10 - this.workspace.members.length,
