@@ -4,18 +4,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
   background-color: var(--board-kanban-header);
   padding: 0.5rem;
   border-radius: 1rem 1rem 0 0;
 
+  & > div:first-child {
+    min-width: 100px;
+    overflow: hidden;
+  }
+
   div {
+    display: flex;
     margin-left: 0.5rem;
+    padding: 0.3rem;
 
     .board-title {
+      display: flex;
+      min-width: 0;
+      flex: 1;
       border: 0;
       padding: 0.5rem;
       transition: 0.5s ease;
       border-radius: 8px;
+      overflow: hidden;
 
       &:hover {
         cursor: pointer;
@@ -28,16 +40,27 @@
       }
 
       h5 {
+        flex: 1;
+        min-width: 0;
         font-size: 18px;
         margin: 0;
         line-height: normal;
         color: #3c4858 !important;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 100%;
+        max-width: 500px;
       }
     }
+
     input {
-      padding: 0.4rem 0;
+      padding: 0.4rem 0.5rem;
       font-size: 18px;
       outline: 1px solid $primary;
+      min-width: 100px;
+      border: 0;
+      border-radius: 2px;
     }
   }
 
@@ -45,6 +68,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
 
     button[mat-flat-button] {
       border-radius: 4px;
@@ -282,6 +306,18 @@
       }
     }
 
+    .about-user-info {
+      div {
+        overflow: hidden;
+
+        p:first-of-type {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+    }
+
     .spinner-wrapper {
       mat-spinner {
         width: 65px !important;
@@ -492,5 +528,12 @@
     border-radius: 8px;
     background-color: $error !important;
     width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .kanban-header {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

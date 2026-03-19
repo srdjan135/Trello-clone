@@ -18,6 +18,7 @@
 
   @if (isAdmin) {
     <app-create-board
+      class="board-card"
       [workspace]="workspace"
       (newBoard)="updateBoardsList($event)"
     ></app-create-board>

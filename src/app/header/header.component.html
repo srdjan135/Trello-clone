@@ -1,14 +1,22 @@
 <mat-toolbar>
-  <div
-    class="logo"
-    routerLink="/boards"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    <mat-icon>assessment</mat-icon>
-    <h1>Trello</h1>
-  </div>
-  <div class="search">
+  @if (!isSearchOpen) {
+    <div
+      class="logo"
+      routerLink="/boards"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <mat-icon>assessment</mat-icon>
+      <h1>Trello</h1>
+    </div>
+  }
+
+  <div class="search" [class.open]="isSearchOpen">
+    @if (isSearchOpen) {
+      <button mat-icon-button (click)="closeSearch()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    }
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Search</mat-label>
 
@@ -37,29 +45,36 @@
         }
       </mat-autocomplete>
     </mat-form-field>
+    @if (!isSearchOpen) {
+      <button mat-icon-button class="mobile-search-btn" (click)="openSearch()">
+        <mat-icon>search</mat-icon>
+      </button>
+    }
   </div>
-  <div class="header-end">
-    <button
-      mat-icon-button
-      matTooltip="Notifications"
-      [matMenuTriggerFor]="notificationsMenu"
-      (click)="readNotifications()"
-    >
-      <mat-icon
-        [matBadge]="unreadNotifications"
-        [matBadgeHidden]="unreadNotifications === 0"
-        aria-hidden="false"
-        >notifications_none</mat-icon
+  @if (!isSearchOpen) {
+    <div class="header-end">
+      <button
+        mat-icon-button
+        matTooltip="Notifications"
+        [matMenuTriggerFor]="notificationsMenu"
+        (click)="readNotifications()"
       >
-    </button>
-    <button mat-icon-button matTooltip="Help" [matMenuTriggerFor]="helpMenu">
-      <mat-icon>help_outline</mat-icon>
-    </button>
-    <app-avatar
-      matTooltip="Account"
-      [matMenuTriggerFor]="accountMenu"
-    ></app-avatar>
-  </div>
+        <mat-icon
+          [matBadge]="unreadNotifications"
+          [matBadgeHidden]="unreadNotifications === 0"
+          aria-hidden="false"
+          >notifications_none</mat-icon
+        >
+      </button>
+      <button mat-icon-button matTooltip="Help" [matMenuTriggerFor]="helpMenu">
+        <mat-icon>help_outline</mat-icon>
+      </button>
+      <app-avatar
+        matTooltip="Account"
+        [matMenuTriggerFor]="accountMenu"
+      ></app-avatar>
+    </div>
+  }
 </mat-toolbar>
 
 <mat-menu #notificationsMenu="matMenu" class="notifications">

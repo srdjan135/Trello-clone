@@ -20,3 +20,15 @@
     opacity: 0.7;
   }
 }
+
+@media (max-width: 576px) {
+  .not-found {
+    h1 {
+      font-size: 4rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+}

@@ -36,3 +36,24 @@ mat-sidenav-container {
     }
   }
 }
+
+@media (max-width: 768px) {
+  mat-sidenav-container {
+    mat-sidenav-content {
+      main:has(.settings-title),
+      main:has(.manage),
+      main:has(.support-container),
+      main:has(.account-settings) {
+        padding: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  mat-sidenav-container {
+    mat-sidenav {
+      display: none;
+    }
+  }
+}

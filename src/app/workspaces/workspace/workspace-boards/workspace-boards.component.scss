@@ -1,6 +1,12 @@
 :host {
   width: 85%;
 
+  h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   div {
     display: flex;
     gap: 1rem;
@@ -8,5 +14,16 @@
     input[type="search"]::-webkit-search-cancel-button {
       cursor: pointer;
     }
+  }
+}
+
+@media (max-width: 567px) {
+  h5 {
+    font-size: 24px;
+  }
+
+  div {
+    flex-direction: column;
+    gap: 0 !important;
   }
 }

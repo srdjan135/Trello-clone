@@ -9,9 +9,15 @@
 
     h3 {
       margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 40%;
     }
 
     div {
+      display: block;
+
       button {
         border-radius: 8px;
         margin: 0 0.5rem;
@@ -20,6 +26,45 @@
           color: var(--primary);
         }
       }
+    }
+  }
+}
+
+@media (max-width: 567px) {
+  .wrapper {
+    h3 {
+      font-size: 24px;
+    }
+
+    div {
+      display: flex !important;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      button {
+        margin: 0 !important;
+      }
+
+      button:first-child,
+      button:nth-child(2) {
+        flex-grow: 1;
+      }
+
+      button:last-child {
+        flex-grow: 2;
+      }
+    }
+  }
+}
+
+@media (max-width: 1280px) {
+  .wrapper {
+    flex-direction: column;
+    align-items: start !important;
+    gap: 0.5rem;
+
+    h3 {
+      width: 100% !important;
     }
   }
 }

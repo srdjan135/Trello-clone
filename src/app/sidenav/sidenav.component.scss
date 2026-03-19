@@ -44,6 +44,12 @@ aside {
     padding: 0 24px 0 16px;
     font-weight: 400;
 
+    & ::ng-deep .title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     mat-icon {
       color: var(--text-main);
     }

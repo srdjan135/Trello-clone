@@ -3,3 +3,21 @@ form {
   flex-direction: column;
   width: 70%;
 }
+
+@media (max-width: 768px) {
+  form {
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    width: 100%;
+
+    div {
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

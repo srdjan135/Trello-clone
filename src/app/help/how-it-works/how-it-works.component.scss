@@ -1,3 +1,18 @@
-mat-accordion {
-  margin-top: 1rem;
+:host {
+  margin: 1rem;
+
+  mat-accordion {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 500px) {
+  mat-accordion {
+    mat-expansion-panel {
+      & ::ng-deep .mat-expansion-panel-body > p,
+      & ::ng-deep .mat-expansion-panel-body > ul {
+        font-size: 14px;
+      }
+    }
+  }
 }

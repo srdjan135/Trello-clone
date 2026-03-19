@@ -92,9 +92,11 @@
         display: flex;
         align-items: center;
         justify-content: end;
+        gap: 0.3rem;
 
         button {
           border-radius: 8px;
+          width: 110px;
           max-width: 150px;
           display: inline-flex;
           align-items: center;
@@ -102,16 +104,8 @@
           white-space: nowrap;
           overflow: hidden;
 
-          &:first-child {
-            width: 40%;
-          }
-
-          &:nth-child(2) {
-            width: 15%;
-          }
-
-          &:last-child {
-            width: 45%;
+          & > ::ng-deep * {
+            flex-shrink: 0 !important;
           }
         }
 
@@ -131,6 +125,18 @@
         font-size: 18px;
         font-weight: 500;
         line-height: normal;
+        width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .member-info p {
+        font-size: 14px;
+        width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -177,6 +183,15 @@
       background-position: center center;
       background-size: cover;
     }
+
+    p {
+      font-size: 14px;
+      text-align: left;
+      width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   .spinner-wrapper {
@@ -193,5 +208,49 @@
   button.selected {
     border-left-color: var(--primary);
     background-color: $primary-hover;
+  }
+}
+
+@media (max-width: 600px) {
+  :host {
+    .header-wrapper {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .wrapper {
+      .inner-wrapper {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 650px) {
+  .wrapper {
+    .actions {
+      flex-wrap: wrap;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  :host {
+    h5 {
+      font-size: 24px !important;
+    }
+
+    .wrapper {
+      p {
+        font-size: 14px !important;
+      }
+
+      .member-info h5 {
+        font-size: 16px !important;
+      }
+    }
   }
 }

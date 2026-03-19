@@ -15,6 +15,7 @@
     }
 
     .account-card {
+      box-sizing: border-box;
       width: 100%;
       background-color: $primary-hover;
       padding: 0.5rem;
@@ -29,8 +30,15 @@
         gap: 1rem;
 
         div:last-of-type {
+          width: 200px;
+          overflow: hidden;
+
           span {
+            display: block;
             font-weight: 500;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
           }
         }
       }
@@ -42,6 +50,36 @@
       .actions {
         display: flex;
         align-items: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 1245px) {
+  .accounts-wrapper {
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .accounts-wrapper {
+    width: 70% !important;
+  }
+}
+
+@media (max-width: 567px) {
+  .accounts-wrapper {
+    width: 90% !important;
+  }
+}
+
+@media (max-width: 450px) {
+  .accounts-wrapper {
+    .account-card {
+      .account {
+        div:last-of-type {
+          width: 140px !important;
+        }
       }
     }
   }

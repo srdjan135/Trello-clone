@@ -23,3 +23,11 @@
     }
   }
 }
+
+@media (max-width: 500px) {
+  :host {
+    .board-kanban {
+      margin-bottom: 5rem;
+    }
+  }
+}

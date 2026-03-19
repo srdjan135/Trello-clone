@@ -67,14 +67,14 @@
           </div>
           <div class="actions">
             <button
-              mat-button
+              mat-raised-button
               [matMenuTriggerFor]="viewBoardsMenu"
               [matMenuTriggerData]="{ member }"
             >
               View boards ({{ memberBoardsMap.get(member.user._id)?.length }})
             </button>
             <button
-              mat-button
+              mat-raised-button
               [matMenuTriggerFor]="roleMenu"
               [matMenuTriggerData]="{ member }"
               [disabled]="!isAdmin"
@@ -83,20 +83,26 @@
             </button>
 
             @if (isAdmin) {
-              <button mat-button (click)="removeMemberFromWorkspace(member)">
+              <button
+                mat-raised-button
+                (click)="removeMemberFromWorkspace(member)"
+              >
                 <mat-icon>close</mat-icon>
                 {{
                   member.role === "admin" && member.user._id === currentUser._id
-                    ? "Leave Workspace"
-                    : "Remove from workspace"
+                    ? "Leave"
+                    : "Remove"
                 }}
               </button>
             }
 
             @if (!isAdmin && member.user._id === currentUser._id) {
-              <button mat-button (click)="removeMemberFromWorkspace(member)">
+              <button
+                mat-raised-button
+                (click)="removeMemberFromWorkspace(member)"
+              >
                 <mat-icon>close</mat-icon>
-                Leave Workspace
+                Leave
               </button>
             }
           </div>

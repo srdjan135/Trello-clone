@@ -17,3 +17,22 @@
     }
   }
 }
+
+@media (max-width: 1350px) {
+  :host {
+    width: 60%;
+  }
+}
+
+@media (max-width: 1100px) {
+  :host {
+    width: 75%;
+  }
+}
+
+@media (max-width: 567px) {
+  :host {
+    width: 90%;
+  }
+}
+

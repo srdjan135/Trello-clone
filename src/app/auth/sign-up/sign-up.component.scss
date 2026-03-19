@@ -22,3 +22,19 @@
     }
   }
 }
+
+@media (max-width: 1300px) {
+  form {
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  form {
+    width: 80% !important;
+
+    h2 {
+      font-size: 38px;
+    }
+  }
+}

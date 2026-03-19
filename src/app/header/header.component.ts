@@ -76,6 +76,7 @@ export class HeaderComponent implements OnInit {
   filteredBoards: Board[] = [];
   workspaces!: Workspace[];
   isLoading!: boolean;
+  isSearchOpen = false;
 
   @ViewChild(MatAutocompleteTrigger) autoTrigger!: MatAutocompleteTrigger;
 
@@ -124,6 +125,14 @@ export class HeaderComponent implements OnInit {
       this.workspaces = res.workspaces;
       this.cdr.markForCheck();
     });
+  }
+
+  openSearch() {
+    this.isSearchOpen = true;
+  }
+
+  closeSearch() {
+    this.isSearchOpen = false;
   }
 
   getWorkspaceName(board: Board): string {

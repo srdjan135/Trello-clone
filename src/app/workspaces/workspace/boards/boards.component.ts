@@ -40,8 +40,8 @@ export class BoardsComponent implements OnChanges, OnInit {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.isLoading = true;
     if (changes['workspace'] && this.workspace?._id) {
+      this.isLoading = true;
       this.api.getBoards(this.workspace._id).subscribe((res) => {
         this.boards = res.boards;
         this.isLoading = false;
