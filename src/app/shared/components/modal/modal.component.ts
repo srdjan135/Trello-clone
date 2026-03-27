@@ -7,6 +7,7 @@ import {
 } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { EditCardComponent } from '../../../workspaces/workspace/boards/board/board-columns/board-column/cards/card/edit-card/edit-card.component';
 
 export interface DynamicModalData {
   title?: string;
@@ -23,6 +24,7 @@ export interface DynamicModalData {
   imports: [CommonModule, MatDialogContent, MatIcon, MatIconButton],
 })
 export class ModalComponent {
+  EditCardComponent = EditCardComponent;
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: DynamicModalData,

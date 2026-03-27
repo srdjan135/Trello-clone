@@ -39,5 +39,14 @@ export class CardsComponent implements OnInit {
       this.isLoading = false;
       this.cdr.markForCheck();
     });
+
+    this.api.cardUpdated.subscribe((updatedCard) => {
+      const index = this.cards.findIndex((c) => c._id === updatedCard._id);
+
+      if (index !== -1) {
+        this.cards[index] = updatedCard;
+        this.cdr.markForCheck();
+      }
+    });
   }
 }

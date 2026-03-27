@@ -16,17 +16,23 @@
           </div>
         </div>
 
-        <div class="actions">
-          <button mat-button (click)="switch(account)">Switch</button>
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="remove(account)"
-            matTooltip="Remove user"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
+        @if (currentUser) {
+          @if (currentUser._id !== account.userId) {
+            <div class="actions">
+              <button mat-button (click)="switch(account)">Switch</button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="remove(account)"
+                matTooltip="Remove user"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <p class="status">Current</p>
+          }
+        }
       </div>
     }
 

@@ -5,10 +5,16 @@
   <p>{{ dialogData.subtitle }}</p>
 
   <mat-dialog-content>
-    <ng-container *ngComponentOutlet="dialogData.component"> </ng-container>
+    <ng-container
+      *ngComponentOutlet="dialogData.component; inputs: dialogData.data"
+    >
+    </ng-container>
   </mat-dialog-content>
 </div>
-<div class="ws-bg">
-  <img src="/assets/create-workspace-img.svg" alt="create-board" />
-</div>
+@if (dialogData.component !== EditCardComponent) {
+  <div class="ws-bg">
+    <img src="/assets/create-workspace-img.svg" alt="create-board" />
+  </div>
+}
+
 <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>

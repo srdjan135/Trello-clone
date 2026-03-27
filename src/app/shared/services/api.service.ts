@@ -9,12 +9,16 @@ import { WorkspaceMember } from '../../models/workspaceMember';
 import { BoardMember } from '../../models/boardMember';
 import { Column } from '../../models/column.model';
 import { Card } from '../../models/card.model';
+import { Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private API_URL = environment.apiUrl;
+
+  private cardUpdated$ = new Subject<Card>();
+  cardUpdated = this.cardUpdated$.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -310,6 +314,32 @@ export class ApiService {
     );
   }
 
+  updateCard(cardId: string, data: Partial<Card>) {
+    return this.http
+      .patch<{ card: Card }>(`${this.API_URL}/cards/${cardId}`, data)
+      .pipe(
+        tap((res) => {
+          this.cardUpdated$.next(res.card);
+        }),
+      );
+  }
+
+  copyCard(
+    cardId: string,
+    data: {
+      boardId: string;
+      columnId: string;
+      position: number;
+      title: string;
+      keepLabels?: boolean;
+    },
+  ) {
+    return this.http.post<{ card: Card }>(
+      `${this.API_URL}/${cardId}/copy`,
+      data,
+    );
+  }
+
   moveCard(columnId: string, cardId: string, order: number) {
     return this.http.patch<{ cards: Card[] }>(
       `${this.API_URL}/${cardId}/move`,
@@ -322,6 +352,10 @@ export class ApiService {
 
   sortCards(cards: Card[]) {
     return this.http.patch(`${this.API_URL}/cards/sort`, { cards });
+  }
+
+  deleteCard(cardId: string) {
+    return this.http.delete<{ card: Card }>(`${this.API_URL}/${cardId}/delete`);
   }
 
   contactSupport(data: { category: string; subject: string; message: string }) {

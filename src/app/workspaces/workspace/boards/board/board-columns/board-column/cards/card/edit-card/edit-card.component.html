@@ -1,0 +1,231 @@
+<mat-drawer-container [hasBackdrop]="false">
+  <mat-drawer #drawer mode="side" position="end" opened>
+    <app-comments></app-comments>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="card-title">
+      <mat-checkbox
+        disableRipple
+        matTooltip="Mark as complete"
+        [checked]="card.isComplete"
+        (change)="markAsComplete($event)"
+      ></mat-checkbox>
+      <textarea
+        [formControl]="cardTitleCtrl"
+        required
+        rows="1"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="10"
+      >
+      </textarea>
+      <button
+        mat-icon-button
+        [matTooltip]="!drawer.opened ? 'Show comments' : 'Hide comments'"
+        (click)="toggleDrawer(drawer)"
+      >
+        <mat-icon [class.rotated]="isDrawerOpen">arrow_right_alt</mat-icon>
+      </button>
+    </div>
+    <div class="card-additions-actions">
+      @if ((card.labels || []).length < 1) {
+        <button
+          mat-stroked-button
+          [matMenuTriggerFor]="labelsMenu"
+          class="label-button"
+        >
+          <mat-icon>local_offer_outline</mat-icon> Labels
+        </button>
+      }
+      @if (!card.dueDate) {
+        <button mat-stroked-button [matMenuTriggerFor]="datesMenu">
+          <mat-icon>query_builder</mat-icon> Dates
+        </button>
+      }
+      @if ((card.members || []).length < 1) {
+        <button mat-stroked-button [matMenuTriggerFor]="cardMembersMenu">
+          <mat-icon>person_outline</mat-icon><mat-icon>add</mat-icon> Members
+        </button>
+      }
+    </div>
+    <div class="card-additions">
+      @if ((card.labels || []).length > 0) {
+        <div class="labels">
+          <p>Labels</p>
+          <div>
+            @for (label of card.labels; track label.name) {
+              <div
+                class="card-label"
+                [matTooltip]="label.name"
+                [matMenuTriggerFor]="labelsMenu"
+                [style.backgroundColor]="label.color"
+              ></div>
+            }
+            <button mat-icon-button [matMenuTriggerFor]="labelsMenu">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+      @if (card.dueDate) {
+        <div class="card-dates">
+          <p>Dates</p>
+          @if (card.startDate) {
+            <div [matMenuTriggerFor]="datesMenu">
+              {{ card.startDate | date: "MMM d" }} -
+              {{ card.dueDate | date: "MMM d" }}
+              @if (isDueSoon(card)) {
+                <span class="soon">Due soon</span>
+              }
+              @if (isOverdue(card)) {
+                <span class="overdue">Overdue</span>
+              }
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </div>
+          } @else {
+            <div [matMenuTriggerFor]="datesMenu">
+              {{ card.dueDate | date: "MMM d" }}
+              @if (isDueSoon(card)) {
+                <span class="soon">Due soon</span>
+              }
+              @if (isOverdue(card)) {
+                <span class="overdue">Overdue</span>
+              }
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </div>
+          }
+        </div>
+      }
+      @if ((card.members || []).length > 0) {
+        <div class="card-members">
+          <p>Members</p>
+          <div class="wrapper">
+            @for (member of card.members; track member._id) {
+              <div class="avatar">{{ member.user?.username?.charAt(0) }}</div>
+            }
+            <button mat-icon-button [matMenuTriggerFor]="cardMembersMenu">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Card Description</mat-label>
+      <textarea
+        rows="5"
+        matInput
+        placeholder="Add a more detailed description..."
+        [formControl]="descCtrl"
+      ></textarea>
+    </mat-form-field>
+  </mat-drawer-content>
+</mat-drawer-container>
+
+<mat-menu #labelsMenu="matMenu" class="labelsMenu">
+  <h5>Labels</h5>
+  <div class="wrapper">
+    @for (label of labels; track label.name) {
+      <mat-checkbox
+        [checked]="isLabelSelected(label)"
+        (change)="toggleLabel(label)"
+        clickStopPropagation
+      >
+        <div
+          class="label"
+          [style.backgroundColor]="label.color"
+          [matTooltip]="label.name"
+        ></div>
+      </mat-checkbox>
+    }
+  </div>
+</mat-menu>
+
+<mat-menu #datesMenu="matMenu" class="datesMenu">
+  <h5>Dates</h5>
+  <form (ngSubmit)="updateCardDates(form)" #form="ngForm">
+    <div class="wrapper">
+      <mat-checkbox
+        [checked]="!isDisabledStartDate"
+        (change)="toggleStartDate()"
+        clickStopPropagation
+      ></mat-checkbox>
+      <mat-form-field appearance="outline" clickStopPropagation>
+        <mat-label>Start date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="startPicker"
+          [disabled]="isDisabledStartDate"
+          [ngModel]="startDate"
+          name="startDate"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="startPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #startPicker
+          [calendarHeaderComponent]="exampleHeader"
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="wrapper">
+      <mat-checkbox
+        [checked]="!isDisabledDueDate"
+        (change)="isDisabledDueDate = !isDisabledDueDate"
+        clickStopPropagation
+      ></mat-checkbox>
+      <mat-form-field appearance="outline" clickStopPropagation>
+        <mat-label>Due date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [disabled]="isDisabledDueDate"
+          [ngModel]="dueDate"
+          name="dueDate"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #picker
+          [calendarHeaderComponent]="exampleHeader"
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <button mat-flat-button type="submit">Save</button>
+    <button mat-raised-button type="button" (click)="resetDates(form)">
+      Remove
+    </button>
+  </form>
+</mat-menu>
+
+<mat-menu #cardMembersMenu="matMenu" class="cardMembersMenu">
+  @if ((card.members || []).length > 0) {
+    <h5>Card Members</h5>
+    @for (cardMember of card.members; track cardMember._id) {
+      <button mat-menu-item clickStopPropagation>
+        {{ cardMember.user?.username }}
+        <mat-icon clickStopPropagation (click)="removeCardMember(cardMember)"
+          >close</mat-icon
+        >
+      </button>
+    }
+  }
+  @if ((boardMembers || []).length > 0) {
+    <h5>Board Members</h5>
+    @for (boardMember of boardMembers; track boardMember._id) {
+      <button
+        mat-menu-item
+        clickStopPropagation
+        (click)="updateCardMembers(boardMember)"
+      >
+        {{ boardMember.user.username }}
+      </button>
+    }
+  }
+</mat-menu>

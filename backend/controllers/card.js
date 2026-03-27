@@ -1,5 +1,6 @@
 const Card = require("../models/card");
 const Column = require("../models/column");
+const Board = require("../models/board");
 
 exports.createCard = async (req, res) => {
   const { cardTitle } = req.body;
@@ -41,7 +42,14 @@ exports.getCards = async (req, res) => {
   const { columnId } = req.params;
 
   try {
-    const cards = await Card.find({ columnId }).sort({ order: 1 });
+    const cards = await Card.find({ columnId })
+      .populate({
+        path: "members",
+        populate: {
+          path: "user",
+        },
+      })
+      .sort({ order: 1 });
 
     if (!cards) {
       res.status(404).json({ message: "Cards not found!" });
@@ -50,6 +58,75 @@ exports.getCards = async (req, res) => {
     res.status(200).json({ cards });
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch card!" });
+  }
+};
+
+exports.copyCard = async (req, res) => {
+  const { cardId } = req.params;
+  const { boardId, columnId, position, title, keepLabels } = req.body;
+
+  try {
+    const originalCard = await Card.findById(cardId);
+
+    if (!originalCard) {
+      res.status(404).json({ message: "Card not found!" });
+    }
+
+    const copyCard = await Card.create({
+      title,
+      columnId,
+      order: position,
+    });
+
+    if (keepLabels === true) {
+      await Card.findByIdAndUpdate(copyCard._id, {
+        $set: { labels: originalCard.labels },
+      });
+    }
+
+    await Column.findByIdAndUpdate(columnId, {
+      $push: { cards: copyCard._id },
+    });
+
+    await Card.updateMany(
+      {
+        columnId,
+        order: { $gte: position },
+      },
+      {
+        $inc: { order: 1 },
+      },
+    );
+
+    res.status(200).json({ card: copyCard });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to copy card!" });
+  }
+};
+
+exports.updateCard = async (req, res) => {
+  const { cardId } = req.params;
+  const data = req.body;
+
+  try {
+    const updatedCard = await Card.findByIdAndUpdate(
+      cardId,
+      { $set: data },
+      { new: true, runValidators: true },
+    ).populate({
+      path: "members",
+      populate: {
+        path: "user",
+      },
+    });
+
+    if (!updatedCard) {
+      return res.status(404).json({ message: "Card not found!" });
+    }
+
+    res.status(200).json({ card: updatedCard });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update card!" });
   }
 };
 
@@ -101,5 +178,27 @@ exports.sortCards = async (req, res) => {
     res.status(200).json({ message: "Orders updated" });
   } catch (err) {
     res.status(500).json({ message: "Failed to sort cards" });
+  }
+};
+
+exports.deleteCard = async (req, res) => {
+  const { cardId } = req.params;
+
+  try {
+    const card = await Card.findById(cardId);
+
+    if (!card) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+
+    await Card.deleteOne({ _id: cardId });
+
+    await Column.findByIdAndUpdate(card.columnId, {
+      $pull: { cards: cardId },
+    });
+
+    res.status(200).json({ card });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete card" });
   }
 };

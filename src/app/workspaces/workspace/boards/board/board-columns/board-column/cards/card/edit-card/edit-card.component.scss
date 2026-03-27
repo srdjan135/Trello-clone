@@ -1,0 +1,287 @@
+@use "src/variables" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid var(--text-main);
+  box-sizing: border-box;
+
+  mat-drawer-container:has(mat-drawer.mat-drawer-opened) mat-drawer-content {
+    width: 55%;
+  }
+
+  mat-drawer-container {
+    width: 100%;
+    height: 100%;
+
+    mat-drawer {
+      width: 45%;
+      border-radius: 0;
+      border-left: 1px solid var(--text-main);
+    }
+
+    mat-drawer-content {
+      width: 100%;
+      padding: 1rem 2rem;
+      box-sizing: border-box;
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        mat-checkbox {
+          display: inline-flex;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+
+          & ::ng-deep .mdc-checkbox__background {
+            border-radius: 50%;
+          }
+
+          & ::ng-deep .mdc-checkbox__ripple {
+            display: none;
+          }
+        }
+
+        textarea {
+          width: 80%;
+          font-size: 20px;
+          font-family: Roboto, "Helvetica Neue", sans-serif;
+          background-color: transparent;
+          border: 1px solid transparent;
+          word-wrap: break-word;
+          outline: none;
+          overflow-y: hidden;
+          height: auto;
+          margin-bottom: 4px;
+          padding: 5px;
+          color: var(--text-main);
+        }
+
+        textarea:focus {
+          border-color: $primary;
+        }
+
+        button {
+          mat-icon {
+            transition: transform 0.5s ease;
+          }
+
+          mat-icon.rotated {
+            transform: rotate(180deg);
+          }
+        }
+      }
+
+      .card-additions-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.5rem;
+
+        .label-button {
+          mat-icon {
+            transform: rotate(90deg);
+            color: transparent;
+            -webkit-text-stroke: 1px $primary;
+          }
+        }
+
+        button:last-child {
+          mat-icon:first-of-type {
+            margin-right: 4px;
+          }
+
+          mat-icon:last-of-type {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+        }
+
+        button {
+          border-radius: 4px;
+        }
+      }
+
+      .card-additions {
+        margin: 1rem 0;
+        min-height: 3rem;
+        display: flex;
+        gap: 1rem 2rem;
+        flex-wrap: wrap;
+
+        .labels {
+          p {
+            margin: 0;
+          }
+
+          div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .card-label {
+              width: 30px;
+              height: 25px;
+              border-radius: 4px;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .card-dates {
+          p {
+            margin: 0;
+          }
+
+          div {
+            display: flex;
+            align-items: center;
+            padding: 5px 0.5rem;
+            line-height: normal;
+            box-shadow: 0 0 1px 0 var(--text-main);
+            cursor: pointer;
+
+            span {
+              line-height: normal;
+              padding: 1px 5px;
+              border-radius: 2px;
+              margin: 0 0.5rem;
+            }
+
+            .soon {
+              background-color: rgb(255, 255, 0);
+              color: #000;
+            }
+
+            .overdue {
+              background-color: red;
+              color: rgb(244, 172, 172);
+            }
+          }
+        }
+
+        .card-members {
+          p {
+            margin: 0;
+          }
+
+          .wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .avatar {
+              margin: 0 !important;
+            }
+          }
+        }
+      }
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.labelsMenu {
+  overflow: hidden;
+  padding: 1rem;
+  width: 250px;
+
+  h5 {
+    font-size: 14px;
+  }
+
+  .wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    mat-checkbox {
+      & ::ng-deep .mdc-form-field,
+      & ::ng-deep .mdc-form-field .mdc-label {
+        width: 100%;
+
+        .label {
+          width: 100%;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.datesMenu {
+  min-width: 320px;
+  padding: 1rem;
+  overflow: hidden;
+
+  h5 {
+    font-size: 16px;
+    text-align: center;
+  }
+  form {
+    .wrapper {
+      display: flex;
+      gap: 0.5rem;
+
+      mat-checkbox {
+        margin-top: 0.6rem;
+      }
+
+      mat-form-field {
+        margin-bottom: 1rem;
+
+        mat-hint {
+          color: var(--text-main);
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+      margin-top: 0.5rem;
+      border-radius: 4px;
+    }
+  }
+}
+
+::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.cardMembersMenu {
+  .mat-mdc-menu-content {
+    padding: 1rem 0;
+  }
+
+  h5 {
+    font-size: 14px;
+    margin: 0 0 0.5rem 0.5rem;
+    line-height: normal;
+  }
+
+  h5:last-of-type {
+    margin: 0.5rem 0 0.5rem 0.5rem;
+  }
+
+  button {
+    justify-content: space-between;
+
+    & ::ng-deep .mat-mdc-menu-item-text {
+      max-width: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    mat-icon {
+      order: 1;
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      margin: 0;
+    }
+  }
+}

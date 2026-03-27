@@ -1,13 +1,126 @@
-<div></div>
-<div class="card-body">
+<div class="labels" (click)="openEditCardModal()">
+  @for (label of card.labels; track label.name) {
+    <div [style.backgroundColor]="label.color"></div>
+  }
+</div>
+<div class="card-body" (click)="openEditCardModal()">
   @if (isBoardMember()) {
-    <mat-checkbox disableRipple></mat-checkbox>
+    <mat-checkbox
+      disableRipple
+      clickStopPropagation
+      [checked]="card.isComplete"
+      (change)="markAsComplete($event)"
+    ></mat-checkbox>
   }
   <p>{{ card.title }}</p>
   @if (isBoardMember()) {
-    <button mat-icon-button matTooltip="Edit Card">
-      <mat-icon>edit</mat-icon>
+    <button
+      mat-icon-button
+      matTooltip="Card Actions"
+      clickStopPropagation
+      [matMenuTriggerFor]="cardActionsMenu"
+    >
+      <mat-icon>more_horiz</mat-icon>
     </button>
   }
 </div>
-<div></div>
+<div class="card-wrapper" (click)="openEditCardModal()">
+  <div class="inner-card-wrapper">
+    @if (card.startDate) {
+      <div [class.soon]="isDueSoon()" [class.overdue]="isOverdue()">
+        <mat-icon>query_builder</mat-icon>
+        {{ card.startDate | date: "MMM d" }} -
+        {{ card.dueDate | date: "MMM d" }}
+      </div>
+    } @else if (card.dueDate) {
+      <div [class.soon]="isDueSoon()" [class.overdue]="isOverdue()">
+        <mat-icon>query_builder</mat-icon>
+        {{ card.dueDate | date: "MMM d" }}
+      </div>
+    }
+    @if (card.description) {
+      <mat-icon>notes</mat-icon>
+    }
+  </div>
+  <div class="members">
+    @for (member of card.members; track member._id) {
+      <div class="avatar">{{ member.user?.username?.charAt(0) }}</div>
+    }
+  </div>
+</div>
+
+<mat-menu #cardActionsMenu="matMenu" class="cardActionsMenu">
+  @if (isAlreadyJoined()) {
+    <button mat-menu-item (click)="leaveFromCard()">
+      <mat-icon>person_outline</mat-icon><mat-icon>remove</mat-icon> Leave
+    </button>
+  } @else {
+    <button mat-menu-item (click)="joinToCard()">
+      <mat-icon>person_outline</mat-icon><mat-icon>add</mat-icon> Join
+    </button>
+  }
+  <button mat-menu-item [matMenuTriggerFor]="moveCardMenu">
+    <mat-icon>filter_none</mat-icon> Copy
+  </button>
+  <button mat-menu-item (click)="deleteCard()">
+    <mat-icon>delete_outline</mat-icon> Delete
+  </button>
+</mat-menu>
+
+<mat-menu #moveCardMenu="matMenu" class="moveCardMenu">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline" clickStopPropagation>
+      <mat-label>Title</mat-label>
+      <input type="text" matInput required formControlName="title" />
+    </mat-form-field>
+    <p>Keep...</p>
+    <mat-checkbox clickStopPropagation formControlName="keepLabels"
+      >Labels ({{ card.labels?.length }})</mat-checkbox
+    >
+
+    <mat-form-field appearance="outline" clickStopPropagation>
+      <mat-label>Board</mat-label>
+      <mat-select formControlName="boardId">
+        @for (workspace of workspaces; track workspace._id) {
+          <p>{{ workspace.name }}</p>
+          @for (board of workspace?.boards; track board._id) {
+            <mat-option [value]="board._id" clickStopPropagation>{{
+              board.title
+            }}</mat-option>
+          } @empty {
+            <p>There are currently no boards</p>
+          }
+        } @empty {
+          <p>There are currently no workspaces</p>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="move-card-wrapper">
+      <mat-form-field appearance="outline" clickStopPropagation>
+        <mat-label>Column</mat-label>
+        <mat-select formControlName="columnId">
+          @for (column of selectedBoardColumns; track column._id) {
+            <mat-option [value]="column._id" clickStopPropagation>{{
+              column.title
+            }}</mat-option>
+          } @empty {
+            <p>There are currently no columns</p>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" clickStopPropagation>
+        <mat-label>Position</mat-label>
+        <mat-select formControlName="position">
+          @for (position of positions; track position) {
+            <mat-option [value]="position" clickStopPropagation>{{
+              position
+            }}</mat-option>
+          } @empty {
+            <p>There are currently no positions</p>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button mat-flat-button type="submit">Create</button>
+  </form>
+</mat-menu>
