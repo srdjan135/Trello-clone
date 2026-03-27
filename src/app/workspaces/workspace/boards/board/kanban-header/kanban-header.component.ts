@@ -35,6 +35,7 @@ import { MatInput } from '@angular/material/input';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { WorkspaceMember } from '../../../../../models/workspaceMember';
+import { FilterService } from '../../../../../shared/services/filter.service';
 
 @Component({
   selector: 'app-kanban-header',
@@ -90,6 +91,7 @@ export class KanbanHeaderComponent {
   bgImages: string[] = bgImages;
   selectedBg!: string;
   isLoading!: boolean;
+  selectedFilters: any = {};
 
   sectionTitles: Record<keyof Filters, string> = {
     members: 'Members',
@@ -104,6 +106,7 @@ export class KanbanHeaderComponent {
     private cdr: ChangeDetectorRef,
     private api: ApiService,
     private dialog: MatDialog,
+    private filterService: FilterService,
   ) {}
 
   ngOnInit() {
@@ -183,6 +186,25 @@ export class KanbanHeaderComponent {
       this.workspaces = res.workspaces;
       this.cdr.markForCheck();
     });
+  }
+
+  onFilterChange(key: string, option: any, checked: boolean) {
+    if (!this.selectedFilters[key]) {
+      this.selectedFilters[key] = [];
+    }
+
+    if (checked) {
+      this.selectedFilters[key].push({
+        value: option.filterValue,
+        color: option.labelColor,
+      });
+    } else {
+      this.selectedFilters[key] = this.selectedFilters[key].filter(
+        (o: any) => o.value !== option.filterValue,
+      );
+    }
+
+    this.filterService.setFilters(this.selectedFilters);
   }
 
   setVisibility(value: 'private' | 'workspace' | 'public') {

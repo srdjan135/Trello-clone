@@ -1,6 +1,10 @@
 @if (!isLoading) {
-  @for (card of cards; track card._id) {
-    <app-card [card]="card" cdkDrag [cdkDragData]="card"></app-card>
+  @if (filteredCards.length) {
+    @for (card of filteredCards; track card._id) {
+      <app-card [card]="card" cdkDrag [cdkDragData]="card"> </app-card>
+    }
+  } @else if (hasActiveFilters) {
+    <div class="empty-state">No cards match your filters</div>
   }
 } @else {
   <div class="spinner-wrapper">

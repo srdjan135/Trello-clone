@@ -79,7 +79,10 @@
       </h4>
 
       @for (option of filters[key]; track option) {
-        <mat-checkbox>
+        <mat-checkbox
+          (change)="onFilterChange(key, option, $event.checked)"
+          clickStopPropagation
+        >
           @if (option.labelColor) {
             <span class="label-color" [style.background]="option.labelColor">
             </span>
