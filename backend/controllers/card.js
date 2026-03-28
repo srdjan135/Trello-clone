@@ -1,6 +1,7 @@
 const Card = require("../models/card");
 const Column = require("../models/column");
 const Board = require("../models/board");
+const Comment = require("../models/comment");
 
 exports.createCard = async (req, res) => {
   const { cardTitle } = req.body;
@@ -190,6 +191,8 @@ exports.deleteCard = async (req, res) => {
     if (!card) {
       return res.status(404).json({ message: "Card not found" });
     }
+
+    await Comment.deleteMany({ _id: { $in: card.comments } });
 
     await Card.deleteOne({ _id: cardId });
 

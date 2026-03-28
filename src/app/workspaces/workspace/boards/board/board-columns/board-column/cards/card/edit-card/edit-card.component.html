@@ -1,6 +1,6 @@
 <mat-drawer-container [hasBackdrop]="false">
   <mat-drawer #drawer mode="side" position="end" opened>
-    <app-comments></app-comments>
+    <app-comments [cardId]="card._id"></app-comments>
   </mat-drawer>
   <mat-drawer-content>
     <div class="card-title">
@@ -19,12 +19,15 @@
         cdkAutosizeMaxRows="10"
       >
       </textarea>
+
       <button
         mat-icon-button
         [matTooltip]="!drawer.opened ? 'Show comments' : 'Hide comments'"
         (click)="toggleDrawer(drawer)"
       >
-        <mat-icon [class.rotated]="isDrawerOpen">arrow_right_alt</mat-icon>
+        <mat-icon>{{
+          drawer.opened ? "keyboard_arrow_right" : "keyboard_arrow_left"
+        }}</mat-icon>
       </button>
     </div>
     <div class="card-additions-actions">

@@ -1,1 +1,66 @@
-<p>comments works!</p>
+<div class="header">
+  <mat-icon>chat</mat-icon>
+  <h5>Card comments</h5>
+</div>
+<mat-form-field appearance="outline">
+  <mat-label>Write Comment</mat-label>
+  <input type="text" matInput [formControl]="commentCtrl" />
+  <button
+    matSuffix
+    mat-icon-button
+    clickStopPropagation
+    (click)="createComment()"
+  >
+    <mat-icon>send</mat-icon>
+  </button>
+</mat-form-field>
+<div class="comments">
+  @for (comment of comments; track comment._id) {
+    <div class="comment">
+      <div class="avatar">{{ comment.user.username.charAt(0) }}</div>
+      <div class="inner-comment">
+        <p class="comment-header">
+          <span class="username">{{ comment.user.username }}</span>
+          <span class="createdAt">{{
+            comment.createdAt | date: "MMM d, y, h:mm a"
+          }}</span>
+        </p>
+        @if (editingCommentId !== comment._id) {
+          <p class="content">{{ comment.content }}</p>
+        } @else {
+          <div class="edit">
+            <input type="text" [formControl]="contentCtrl" #editInput />
+            <div>
+              <button mat-flat-button (click)="updateComment(comment._id)">
+                Save
+              </button>
+              <button mat-raised-button (click)="cancelEditing()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        }
+        @if (editingCommentId !== comment._id) {
+          <div class="actions">
+            <span (click)="editingComment(comment._id)">Edit</span>
+            <span
+              [matMenuTriggerFor]="deleteCommentMenu"
+              [matMenuTriggerData]="{ commentId: comment._id }"
+              >Delete</span
+            >
+          </div>
+        }
+      </div>
+    </div>
+  } @empty {
+    <p>There are no comments</p>
+  }
+</div>
+
+<mat-menu #deleteCommentMenu="matMenu" class="deleteCommentMenu">
+  <ng-template matMenuContent let-commentId="commentId">
+    <h5>Delete Comment?</h5>
+    <p>Deleting a comment is forever. There is no undo.</p>
+    <button mat-flat-button (click)="deleteComment(commentId)">Delete</button>
+  </ng-template>
+</mat-menu>

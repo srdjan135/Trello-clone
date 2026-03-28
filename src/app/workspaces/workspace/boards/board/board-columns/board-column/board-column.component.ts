@@ -17,6 +17,7 @@ import { ClickStopPropagationDirective } from '../../../../../../shared/directiv
 import {
   debounceTime,
   distinctUntilChanged,
+  map,
   Observable,
   switchMap,
 } from 'rxjs';
@@ -129,14 +130,18 @@ export class BoardColumnComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((value) =>
-          this.api.updateColumn(this.column._id, {
-            title: value as string,
-          }),
+          this.api
+            .updateColumn(this.column._id, {
+              title: value as string,
+            })
+            .pipe(map((res) => ({ res, value }))),
         ),
       )
-      .subscribe((res) => {
-        this.columnTitle.setValue(res.column.title, { emitEvent: false });
-        this.cdr.markForCheck();
+      .subscribe(({ res, value }) => {
+        if (this.columnTitle.value === value) {
+          this.column.title = res.column.title;
+          this.cdr.markForCheck();
+        }
       });
   }
 

@@ -1,4 +1,5 @@
 import { BoardMember } from './boardMember';
+import { Comment } from './comment.model';
 import { Label } from './label.model';
 export interface Card {
   _id: string;
@@ -11,5 +12,6 @@ export interface Card {
   startDate?: Date | null;
   dueDate?: Date | null;
   members?: BoardMember[];
+  comments?: Comment[];
   createdAt?: string;
 }

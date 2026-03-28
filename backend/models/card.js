@@ -20,6 +20,7 @@ const cardSchema = mongoose.Schema(
     startDate: { type: Date },
     dueDate: { type: Date },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "BoardMember" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comments" }],
   },
   { timestamps: true },
 );

@@ -13,11 +13,10 @@
       }
     </div>
     @if (isBoardMember()) {
-<button mat-icon-button [matMenuTriggerFor]="columnActions">
-      <mat-icon>more_horiz</mat-icon>
-    </button>
+      <button mat-icon-button [matMenuTriggerFor]="columnActions">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
     }
-    
   </div>
   <div
     class="column-body"
@@ -31,12 +30,12 @@
   </div>
   @if (!isAddingCard) {
     @if (isBoardMember()) {
-    <div class="column-footer">
-      <button mat-button (click)="isAddingCard = true">
-        <mat-icon>add</mat-icon> Add Card
-      </button>
-    </div>
-  }
+      <div class="column-footer">
+        <button mat-button (click)="isAddingCard = true">
+          <mat-icon>add</mat-icon> Add Card
+        </button>
+      </div>
+    }
   } @else {
     <app-create-card
       [column]="column"

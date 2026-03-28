@@ -20,7 +20,7 @@ import { filters, Filters } from '../filters';
 import { User } from '../../../../../models/user.model';
 import { BoardMember } from '../../../../../models/boardMember';
 import { Workspace } from '../../../../../models/workspace';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { Board } from '../../../../../models/board.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -120,7 +120,7 @@ export class KanbanHeaderComponent {
         this.selectedVisibility = res.board.visibility;
         this.selectedBg = res.board.background;
         this.selectedBgChange.emit(res.board.background);
-        this.boardTitle.setValue(this.board.title);
+        this.boardTitle.setValue(this.board.title, { emitEvent: false });
         this.descriptionCtrl.setValue(this.board.description ?? '', {
           emitEvent: false,
         });
@@ -151,16 +151,18 @@ export class KanbanHeaderComponent {
           debounceTime(300),
           distinctUntilChanged(),
           switchMap((value) =>
-            this.api.updateBoard(this.boardId, {
-              description: value as string,
-            }),
+            this.api
+              .updateBoard(this.boardId, {
+                description: value as string,
+              })
+              .pipe(map((res) => ({ res, value }))),
           ),
         )
-        .subscribe((res) => {
-          this.descriptionCtrl.setValue(res.board.description ?? '', {
-            emitEvent: false,
-          });
-          this.cdr.markForCheck();
+        .subscribe(({ res, value }) => {
+          if (this.descriptionCtrl.value === value) {
+            this.board.description = res.board.description;
+            this.cdr.markForCheck();
+          }
         });
 
       this.boardTitle.valueChanges
@@ -168,14 +170,16 @@ export class KanbanHeaderComponent {
           debounceTime(300),
           distinctUntilChanged(),
           switchMap((value) =>
-            this.api.updateBoard(this.boardId, { title: value as string }),
+            this.api
+              .updateBoard(this.boardId, { title: value as string })
+              .pipe(map((res) => ({ res, value }))),
           ),
         )
-        .subscribe((res) => {
-          this.boardTitle.setValue(res.board.title ?? '', {
-            emitEvent: false,
-          });
-          this.cdr.markForCheck();
+        .subscribe(({ res, value }) => {
+          if (this.boardTitle.value === value) {
+            this.board.title = res.board.title;
+            this.cdr.markForCheck();
+          }
         });
     });
     this.api.getUser().subscribe((res) => {

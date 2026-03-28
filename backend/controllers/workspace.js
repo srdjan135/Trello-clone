@@ -6,6 +6,7 @@ const Board = require("../models/board");
 const Column = require("../models/column");
 const Card = require("../models/card");
 const BoardMember = require("../models/boardMember");
+const Comment = require("../models/comment");
 
 exports.getWorkspaces = async (req, res) => {
   const userId = req.userData.userId;
@@ -166,6 +167,12 @@ exports.deleteWorkspace = async (req, res) => {
         boardId: { $in: boardIds },
       }).select("_id")
     ).map((c) => c._id);
+
+    const cardIds = (
+      await Card.find({ columnId: { $in: columnIds } }).select("_id")
+    ).map((c) => c._id);
+
+    await Comment.deleteMany({ cardId: { $in: cardIds } });
 
     await Card.deleteMany({ columnId: { $in: columnIds } });
 

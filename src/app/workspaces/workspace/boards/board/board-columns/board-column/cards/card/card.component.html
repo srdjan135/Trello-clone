@@ -41,6 +41,10 @@
     @if (card.description) {
       <mat-icon>notes</mat-icon>
     }
+    @if (card.comments?.length) {
+      <mat-icon class="comment-icon">chat</mat-icon>
+      <span class="comments-number">{{ card.comments?.length }}</span>
+    }
   </div>
   <div class="members">
     @for (member of card.members; track member._id) {

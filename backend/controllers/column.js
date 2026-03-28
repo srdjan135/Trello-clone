@@ -1,6 +1,7 @@
 const Board = require("../models/board");
 const Column = require("../models/column");
 const Card = require("../models/card");
+const Comment = require("../models/comment");
 
 exports.createColumn = async (req, res) => {
   const { columnTitle } = req.body;
@@ -233,9 +234,11 @@ exports.deleteColumn = async (req, res) => {
       return res.status(404).json({ message: "Column not found" });
     }
 
-    await Column.deleteOne({ _id: columnId });
+    await Comment.deleteMany({ cardId: { $in: column.cards } });
 
     await Card.deleteMany({ _id: { $in: column.cards } });
+
+    await Column.deleteOne({ _id: columnId });
 
     await Board.findByIdAndUpdate(column.boardId, {
       $pull: { columns: columnId },

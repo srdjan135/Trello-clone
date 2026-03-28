@@ -38,7 +38,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { BoardMember } from '../../../../../../../../../models/boardMember';
 import { ApiService } from '../../../../../../../../../shared/services/api.service';
 import { DatePipe } from '@angular/common';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-card',
@@ -118,14 +118,16 @@ export class EditCardComponent implements OnInit {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((value) =>
-          this.api.updateCard(this.card._id, {
-            title: value as string,
-          }),
+          this.api
+            .updateCard(this.card._id, { title: value! })
+            .pipe(map((res) => ({ res, value }))),
         ),
       )
-      .subscribe((res) => {
-        this.cardTitleCtrl.setValue(res.card.title, { emitEvent: false });
-        this.cdr.markForCheck();
+      .subscribe(({ res, value }) => {
+        if (this.cardTitleCtrl.value === value) {
+          this.card.title = res.card.title;
+          this.cdr.markForCheck();
+        }
       });
 
     this.descCtrl.valueChanges
@@ -133,14 +135,18 @@ export class EditCardComponent implements OnInit {
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((value) =>
-          this.api.updateCard(this.card._id, {
-            description: value as string,
-          }),
+          this.api
+            .updateCard(this.card._id, {
+              description: value as string,
+            })
+            .pipe(map((res) => ({ res, value }))),
         ),
       )
-      .subscribe((res) => {
-        this.descCtrl.setValue(res.card.description!);
-        this.cdr.markForCheck();
+      .subscribe(({ res, value }) => {
+        if (this.descCtrl.value === value) {
+          this.card.description = res.card.description;
+          this.cdr.markForCheck();
+        }
       });
   }
 

@@ -10,6 +10,7 @@ import { BoardMember } from '../../models/boardMember';
 import { Column } from '../../models/column.model';
 import { Card } from '../../models/card.model';
 import { Subject, tap } from 'rxjs';
+import { Comment } from '../../models/comment.model';
 
 @Injectable({
   providedIn: 'root',
@@ -356,6 +357,32 @@ export class ApiService {
 
   deleteCard(cardId: string) {
     return this.http.delete<{ card: Card }>(`${this.API_URL}/${cardId}/delete`);
+  }
+
+  createComment(commentContent: string, cardId: string) {
+    return this.http.post<{ comment: Comment }>(
+      `${this.API_URL}/${cardId}/comments`,
+      {
+        commentContent,
+      },
+    );
+  }
+
+  getComments(cardId: string) {
+    return this.http.get<{ comments: Comment[] }>(
+      `${this.API_URL}/${cardId}/comments/`,
+    );
+  }
+
+  updateComment(commentId: string, content: string) {
+    return this.http.patch<{ comment: Comment }>(
+      `${this.API_URL}/comments/${commentId}`,
+      { content },
+    );
+  }
+
+  deleteComment(commendId: string) {
+    return this.http.delete(`${this.API_URL}/comments/${commendId}/delete`);
   }
 
   contactSupport(data: { category: string; subject: string; message: string }) {

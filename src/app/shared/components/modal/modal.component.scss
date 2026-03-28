@@ -76,6 +76,10 @@
   transition: width 0.3s ease;
 }
 
+::ng-deep .cdk-overlay-pane:has(app-edit-card) {
+  width: auto !important;
+}
+
 ::ng-deep .cdk-overlay-container mat-dialog-container .mat-mdc-dialog-surface {
   overflow: hidden;
   border-radius: 8px;
@@ -95,6 +99,10 @@
 }
 
 @media (max-width: 1150px) {
+  ::ng-deep .cdk-overlay-container .cdk-overlay-pane:has(app-edit-card) {
+    width: 100% !important;
+  }
+
   ::ng-deep .cdk-overlay-container .cdk-overlay-pane {
     height: 80% !important;
   }
@@ -104,6 +112,11 @@
     mat-dialog-container
     .mat-mdc-dialog-surface {
     width: 80%;
+  }
+
+  ::ng-deep .cdk-overlay-container .cdk-overlay-pane:has(.mat-mdc-tooltip) {
+    width: fit-content !important;
+    height: fit-content !important;
   }
 
   :host {

@@ -25,6 +25,7 @@
       width: 100%;
       padding: 1rem 2rem;
       box-sizing: border-box;
+      transition-property: transform, margin-left, margin-right, width;
 
       .card-title {
         display: flex;
@@ -252,6 +253,8 @@
 }
 
 ::ng-deep .cdk-overlay-container .mat-mdc-menu-panel.cardMembersMenu {
+  width: 200px;
+
   .mat-mdc-menu-content {
     padding: 1rem 0;
   }
@@ -282,6 +285,23 @@
       width: 16px;
       height: 16px;
       margin: 0;
+    }
+  }
+}
+
+@media (max-width: 950px) {
+  mat-drawer-container {
+    display: flex;
+    flex-direction: column;
+
+    mat-drawer-content {
+      margin: 0 !important;
+      width: 100% !important;
+    }
+
+    mat-drawer {
+      position: static;
+      width: 100% !important;
     }
   }
 }

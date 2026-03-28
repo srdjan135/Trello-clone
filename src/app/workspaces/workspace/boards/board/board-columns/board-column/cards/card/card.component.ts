@@ -288,7 +288,7 @@ export class CardComponent implements OnInit {
 
   openEditCardModal() {
     this.dialog.open(ModalComponent, {
-      width: '70%',
+      width: 'auto',
       maxWidth: '100vw',
       height: '65%',
       data: {

@@ -6,6 +6,7 @@ const WorkspaceMember = require("../models/workspaceMember");
 const BoardMember = require("../models/boardMember");
 const Column = require("../models/column");
 const Card = require("../models/card");
+const Comment = require("../models/comment");
 
 exports.getUser = async (req, res) => {
   const userId = req.userData.userId;
@@ -170,6 +171,8 @@ exports.deleteAccount = async (req, res) => {
     await WorkspaceMember.deleteMany({ user: userId });
 
     await BoardMember.deleteMany({ user: userId });
+
+    await Comment.deleteMany({ user: userId });
 
     await User.findByIdAndDelete(userId);
 

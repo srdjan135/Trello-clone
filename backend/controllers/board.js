@@ -6,6 +6,7 @@ const User = require("../models/user");
 const BoardMember = require("../models/boardMember");
 const Column = require("../models/column");
 const Card = require("../models/card");
+const Comment = require("../models/comment");
 
 exports.getBoards = async (req, res) => {
   const workspaceId = req.params.workspaceId;
@@ -335,6 +336,12 @@ exports.deleteBoard = async (req, res) => {
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
     }
+
+    const cardIds = (
+      await Card.find({ columnId: { $in: board.columns } }).select("_id")
+    ).map((c) => c._id);
+
+    await Comment.deleteMany({ cardId: { $in: cardIds } });
 
     await Card.deleteMany({ columnId: { $in: board.columns } });
 
