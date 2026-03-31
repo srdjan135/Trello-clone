@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostListener,
@@ -20,7 +21,16 @@ import { filters, Filters } from '../filters';
 import { User } from '../../../../../models/user.model';
 import { BoardMember } from '../../../../../models/boardMember';
 import { Workspace } from '../../../../../models/workspace';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { Board } from '../../../../../models/board.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -36,6 +46,7 @@ import { ClickOutsideDirective } from '../../../../../shared/directives/click-ou
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { WorkspaceMember } from '../../../../../models/workspaceMember';
 import { FilterService } from '../../../../../shared/services/filter.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-kanban-header',
@@ -107,89 +118,124 @@ export class KanbanHeaderComponent {
     private api: ApiService,
     private dialog: MatDialog,
     private filterService: FilterService,
+    private destroyRef: DestroyRef,
   ) {}
 
   ngOnInit() {
     this.isLoading = true;
-    this.route.paramMap.subscribe((params) => {
-      this.boardId = params.get('boardId')!;
-      this.workspaceId = params.get('workspaceId')!;
 
-      this.api.getBoard(this.boardId).subscribe((res) => {
-        this.board = res.board;
-        this.selectedVisibility = res.board.visibility;
-        this.selectedBg = res.board.background;
-        this.selectedBgChange.emit(res.board.background);
-        this.boardTitle.setValue(this.board.title, { emitEvent: false });
-        this.descriptionCtrl.setValue(this.board.description ?? '', {
-          emitEvent: false,
-        });
-        if (typeof this.board.workspace !== 'string') {
-          this.boardWorkspaceCtrl.setValue(this.board.workspace.name, {
-            emitEvent: false,
-          });
-          this.copyBoardWorkspaceCtrl.setValue(this.board.workspace.name, {
-            emitEvent: false,
-          });
+    const route$ = this.route.paramMap.pipe(
+      map((params) => ({
+        boardId: params.get('boardId')!,
+        workspaceId: params.get('workspaceId')!,
+      })),
+    );
+
+    route$
+      .pipe(
+        tap(({ boardId, workspaceId }) => {
+          this.boardId = boardId;
+          this.workspaceId = workspaceId;
+        }),
+        switchMap(({ boardId, workspaceId }) =>
+          combineLatest({
+            board: this.api.getBoard(boardId).pipe(catchError(() => of(null))),
+            boardMembers: this.api
+              .getBoardMembers(boardId)
+              .pipe(
+                catchError(() =>
+                  of({ boardMembers: [] } as { boardMembers: BoardMember[] }),
+                ),
+              ),
+            workspaceMembers: this.api
+              .getWorkspaceMembers(workspaceId)
+              .pipe(catchError(() => of([]))),
+          }),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(
+        ({ board, boardMembers: boardMembersObj, workspaceMembers }) => {
+          if (board) {
+            this.board = board.board;
+            this.selectedVisibility = board.board.visibility;
+            this.selectedBg = board.board.background;
+            this.selectedBgChange.emit(board.board.background);
+            this.boardTitle.setValue(board.board.title, { emitEvent: false });
+            this.descriptionCtrl.setValue(board.board.description ?? '', {
+              emitEvent: false,
+            });
+
+            if (typeof board.board.workspace !== 'string') {
+              this.boardWorkspaceCtrl.setValue(board.board.workspace.name, {
+                emitEvent: false,
+              });
+              this.copyBoardWorkspaceCtrl.setValue(board.board.workspace.name, {
+                emitEvent: false,
+              });
+            }
+          }
+
+          this.boardMembers = boardMembersObj?.boardMembers || [];
+          this.workspaceMembers = workspaceMembers || [];
+
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+      );
+
+    this.descriptionCtrl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((value) =>
+          this.api
+            .updateBoard(this.boardId, { description: value as string })
+            .pipe(map((res) => ({ res, value }))),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({ res, value }) => {
+        if (this.descriptionCtrl.value === value) {
+          this.board.description = res.board.description;
+          this.cdr.markForCheck();
         }
-        this.cdr.markForCheck();
       });
 
-      this.api.getBoardMembers(this.boardId).subscribe((res) => {
-        this.boardMembers = res.boardMembers;
-        this.isLoading = false;
-        this.cdr.markForCheck();
+    this.boardTitle.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((value) =>
+          this.api
+            .updateBoard(this.boardId, { title: value as string })
+            .pipe(map((res) => ({ res, value }))),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({ res, value }) => {
+        if (this.boardTitle.value === value) {
+          this.board.title = res.board.title;
+          this.cdr.markForCheck();
+        }
       });
 
-      this.api.getWorkspaceMembers(this.workspaceId).subscribe((res) => {
-        this.workspaceMembers = res;
-        this.cdr.markForCheck();
-      });
-
-      this.descriptionCtrl.valueChanges
+    combineLatest({
+      user: this.api.getUser().pipe(catchError(() => of(null))),
+      workspaces: this.api
+        .getWorkspaces()
         .pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          switchMap((value) =>
-            this.api
-              .updateBoard(this.boardId, {
-                description: value as string,
-              })
-              .pipe(map((res) => ({ res, value }))),
+          catchError(() =>
+            of({ workspaces: [] } as { workspaces: Workspace[] }),
           ),
-        )
-        .subscribe(({ res, value }) => {
-          if (this.descriptionCtrl.value === value) {
-            this.board.description = res.board.description;
-            this.cdr.markForCheck();
-          }
-        });
-
-      this.boardTitle.valueChanges
-        .pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          switchMap((value) =>
-            this.api
-              .updateBoard(this.boardId, { title: value as string })
-              .pipe(map((res) => ({ res, value }))),
-          ),
-        )
-        .subscribe(({ res, value }) => {
-          if (this.boardTitle.value === value) {
-            this.board.title = res.board.title;
-            this.cdr.markForCheck();
-          }
-        });
-    });
-    this.api.getUser().subscribe((res) => {
-      this.user = res.user;
-      this.cdr.markForCheck();
-    });
-    this.api.getWorkspaces().subscribe((res) => {
-      this.workspaces = res.workspaces;
-      this.cdr.markForCheck();
-    });
+        ),
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ user, workspaces }) => {
+        this.user = user?.user!;
+        this.workspaces = workspaces?.workspaces || [];
+        this.cdr.markForCheck();
+      });
   }
 
   onFilterChange(key: string, option: any, checked: boolean) {

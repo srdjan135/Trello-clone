@@ -30,7 +30,13 @@ import {
   MatAutocompleteTrigger,
   MatOption,
 } from '@angular/material/autocomplete';
-import { debounceTime, switchMap, of, distinctUntilChanged } from 'rxjs';
+import {
+  debounceTime,
+  switchMap,
+  of,
+  distinctUntilChanged,
+  forkJoin,
+} from 'rxjs';
 import { AvatarComponent } from '../shared/components/avatar/avatar.component';
 import { Workspace } from '../models/workspace';
 import { WorkspaceService } from '../shared/services/workspace.service';
@@ -91,40 +97,50 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+
     const savedTheme = localStorage.getItem('Theme') || 'light';
     this.selectedTheme = savedTheme;
     this.applyTheme(savedTheme);
-    this.api.getUser().subscribe((res) => {
-      this.user = res.user;
-      this.userInitial = this.user.username.split('')[0];
-      this.cdr.markForCheck();
+
+    forkJoin({
+      userResponse: this.api.getUser(),
+      notificationsResponse: this.api.getNotifications(),
+      workspacesResponse: this.api.getWorkspaces(),
+    }).subscribe({
+      next: ({ userResponse, notificationsResponse, workspacesResponse }) => {
+        this.user = userResponse.user;
+        this.userInitial = this.user.username?.charAt(0) || '';
+
+        this.notifications = notificationsResponse.notifications;
+
+        this.workspaces = workspacesResponse.workspaces;
+
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
     });
-    this.api.getNotifications().subscribe((res) => {
-      this.notifications = res.notifications;
-      this.isLoading = false;
-      this.cdr.markForCheck();
-    });
+
     this.searchControl.valueChanges
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap((value) => {
-          if (!value || value.length < 1) {
-            return of({ boards: [] });
-          }
-          return this.api.searchBoards(value || '');
-        }),
+        switchMap((value) =>
+          !value || value.length < 1
+            ? of({ boards: [] })
+            : this.api.searchBoards(value),
+        ),
       )
       .subscribe((res) => {
         this.filteredBoards = res.boards;
         if (!this.autoTrigger.panelOpen) {
           this.autoTrigger.openPanel();
         }
+        this.cdr.markForCheck();
       });
-    this.api.getWorkspaces().subscribe((res) => {
-      this.workspaces = res.workspaces;
-      this.cdr.markForCheck();
-    });
   }
 
   openSearch() {

@@ -17,6 +17,7 @@ import { ClickStopPropagationDirective } from '../../../../../../shared/directiv
 import {
   debounceTime,
   distinctUntilChanged,
+  forkJoin,
   map,
   Observable,
   switchMap,
@@ -95,45 +96,47 @@ export class BoardColumnComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.cards$ = this.cardService.getCards(this.column._id);
-    this.api.getCards(this.column._id).subscribe((res) => {
-      this.cardService.setCards(this.column._id, res.cards);
-      this.cdr.markForCheck();
-    });
     this.columnTitle.setValue(this.column.title, { emitEvent: false });
-    this.copyColumnTitle.setValue(this.columnTitle.value, { emitEvent: false });
+    this.copyColumnTitle.setValue(this.column.title, { emitEvent: false });
+
     const columnPosition =
       this.columns.findIndex((c) => c._id === this.column._id) + 1;
     const count = this.columns.length;
     this.positions = Array.from({ length: count }, (_, i) => i + 1);
     this.moveToPositionCtrl.setValue(columnPosition);
-    this.api.getUser().subscribe((res) => {
-      this.currentUser = res.user;
-      this.cdr.markForCheck();
-    });
-    this.cdr.markForCheck();
-    this.route.paramMap.subscribe((params) => {
-      this.boardId = params.get('boardId')!;
-      this.moveToBoardCtrl.setValue(this.boardId);
 
-      this.api.getBoard(this.boardId).subscribe((res) => {
-        this.board = res.board;
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          this.boardId = params.get('boardId')!;
+          this.moveToBoardCtrl.setValue(this.boardId);
+
+          return forkJoin({
+            userRes: this.api.getUser(),
+            boardRes: this.api.getBoard(this.boardId),
+            cardsRes: this.api.getCards(this.column._id),
+            workspacesRes: this.api.gePopulateWorkspaces(),
+          });
+        }),
+      )
+      .subscribe(({ userRes, boardRes, cardsRes, workspacesRes }) => {
+        this.currentUser = userRes.user;
+        this.board = boardRes.board;
+        this.cards$ = this.cardService.getCards(this.column._id);
+
+        this.cardService.setCards(this.column._id, cardsRes.cards);
+
+        this.workspaces = workspacesRes.workspaces;
         this.cdr.markForCheck();
       });
-    });
-    this.api.gePopulateWorkspaces().subscribe((res) => {
-      this.workspaces = res.workspaces;
-      this.cdr.markForCheck();
-    });
+
     this.columnTitle.valueChanges
       .pipe(
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((value) =>
           this.api
-            .updateColumn(this.column._id, {
-              title: value as string,
-            })
+            .updateColumn(this.column._id, { title: value as string })
             .pipe(map((res) => ({ res, value }))),
         ),
       )

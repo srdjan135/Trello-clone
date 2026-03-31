@@ -12,6 +12,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../shared/services/auth.service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthFormBaseComponent } from '../auth-form-base.component';
 
 @Component({
   selector: 'app-sign-up',
@@ -33,40 +34,22 @@ import { CommonModule } from '@angular/common';
   styleUrl: './sign-up.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignUpComponent {
-  hide = signal(true);
-  clickEvent(event: MouseEvent) {
-    this.hide.set(!this.hide());
-    event.stopPropagation();
+export class SignUpComponent extends AuthFormBaseComponent {
+  constructor(private authService: AuthService) {
+    super();
   }
 
-  constructor(private authService: AuthService) {}
-
   onSubmit(form: NgForm) {
-    if (form.invalid) {
-      return;
-    }
-
-    const username = form.value.username;
-    const email = form.value.email;
-    const password = form.value.password;
+    if (form.invalid) return;
 
     const userData = new FormData();
-    userData.append('username', username);
-    userData.append('email', email);
-    userData.append('password', password);
+    userData.append('username', form.value.username);
+    userData.append('email', form.value.email);
+    userData.append('password', form.value.password);
 
     this.authService.signUp(userData).subscribe({
       next: () => {},
-      error: (error) => {
-        if (error.error?.errors) {
-          error.error.errors.forEach((err: any) => {
-            form.controls[err.field]?.setErrors({
-              backend: err.message,
-            });
-          });
-        }
-      },
+      error: (error) => this.handleFormErrors(form, error),
     });
   }
 }

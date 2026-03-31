@@ -35,6 +35,7 @@ import { MatSelect, MatOption } from '@angular/material/select';
 import { Workspace } from '../../../../../../../../models/workspace';
 import { Column } from '../../../../../../../../models/column.model';
 import { CardService } from '../../../../../../../../shared/services/card.service';
+import { forkJoin, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-card',
@@ -85,77 +86,76 @@ export class CardComponent implements OnInit {
   ngOnInit(): void {
     this.isCompleteCtrl.setValue(this.card.isComplete!, { emitEvent: false });
 
-    this.api.getUser().subscribe((res) => {
-      this.currentUser = res.user;
+    forkJoin({
+      user: this.api.getUser(),
+      workspaces: this.api.gePopulateWorkspaces(),
+    }).subscribe(({ user, workspaces }) => {
+      this.currentUser = user.user;
+      this.workspaces = workspaces.workspaces;
       this.cdr.markForCheck();
     });
 
-    this.api.gePopulateWorkspaces().subscribe((res) => {
-      this.workspaces = res.workspaces;
-      this.cdr.markForCheck();
-    });
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          this.boardId = params.get('boardId')!;
 
-    this.route.paramMap.subscribe((params) => {
-      this.boardId = params.get('boardId')!;
-
-      this.form = new FormGroup({
-        title: new FormControl(this.card.title, Validators.required),
-        keepLabels: new FormControl(true),
-        boardId: new FormControl(this.boardId, Validators.required),
-        columnId: new FormControl(this.card.columnId, Validators.required),
-        position: new FormControl(1, Validators.required),
-      });
-
-      this.api.getColumns(this.boardId).subscribe((res) => {
-        this.selectedBoardColumns = res.columns;
-        this.cdr.markForCheck();
-      });
-
-      this.form.get('boardId')?.valueChanges.subscribe((boardId) => {
-        this.api.getColumns(boardId).subscribe((res) => {
-          this.selectedBoardColumns = res.columns;
-
-          this.form.patchValue({
-            column: null,
-            position: null,
+          this.form = new FormGroup({
+            title: new FormControl(this.card.title, Validators.required),
+            keepLabels: new FormControl(true),
+            boardId: new FormControl(this.boardId, Validators.required),
+            columnId: new FormControl(this.card.columnId, Validators.required),
+            position: new FormControl(1, Validators.required),
           });
 
-          this.positions = [];
+          const initialPositions$ = this.card.columnId
+            ? this.api.getCards(this.card.columnId)
+            : of({ cards: [] });
 
-          this.cdr.markForCheck();
-        });
-      });
+          return forkJoin({
+            board: this.api.getBoard(this.boardId),
+            columns: this.api.getColumns(this.boardId),
+            boardMembers: this.api.getBoardMembers(this.boardId),
+            initialPositions: initialPositions$,
+          });
+        }),
+      )
+      .subscribe(({ board, columns, boardMembers, initialPositions }) => {
+        this.board = board.board;
+        this.selectedBoardColumns = columns.columns;
+        this.boardMembers = boardMembers.boardMembers;
 
-      if (this.card.columnId) {
-        this.api.getCards(this.card.columnId).subscribe((res) => {
-          const count = res.cards.length;
-          this.positions = Array.from({ length: count + 1 }, (_, i) => i + 1);
-          this.cdr.markForCheck();
-        });
-      }
+        const count = initialPositions.cards.length;
+        this.positions = Array.from({ length: count + 1 }, (_, i) => i + 1);
 
-      this.form.get('columnId')?.valueChanges.subscribe((columnId) => {
-        if (!columnId) return;
-
-        this.api.getCards(columnId).subscribe((res) => {
-          const count = res.cards.length;
-
-          this.positions = Array.from({ length: count + 1 }, (_, i) => i + 1);
-
-          this.cdr.markForCheck();
-        });
-      });
-
-      this.api.getBoard(this.boardId).subscribe((res) => {
-        this.board = res.board;
         this.cdr.markForCheck();
       });
 
-      this.api.getBoardMembers(this.boardId).subscribe((res) => {
-        this.boardMembers = res.boardMembers;
+    this.form
+      .get('boardId')
+      ?.valueChanges.pipe(switchMap((boardId) => this.api.getColumns(boardId)))
+      .subscribe((res) => {
+        this.selectedBoardColumns = res.columns;
+        this.form.patchValue(
+          { columnId: null, position: null },
+          { emitEvent: false },
+        );
+        this.positions = [];
         this.cdr.markForCheck();
       });
-    });
+
+    this.form
+      .get('columnId')
+      ?.valueChanges.pipe(
+        switchMap((columnId) =>
+          columnId ? this.api.getCards(columnId) : of({ cards: [] }),
+        ),
+      )
+      .subscribe((res) => {
+        const count = res.cards.length;
+        this.positions = Array.from({ length: count + 1 }, (_, i) => i + 1);
+        this.cdr.markForCheck();
+      });
   }
 
   isBoardMember(): boolean {

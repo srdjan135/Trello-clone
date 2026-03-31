@@ -95,59 +95,45 @@ export class EditCardComponent implements OnInit {
 
   ngOnInit() {
     this.cardTitleCtrl.setValue(this.card.title, { emitEvent: false });
-    this.descCtrl.setValue(this.card.description!, { emitEvent: false });
+    this.descCtrl.setValue(this.card.description ?? '', { emitEvent: false });
+
     this.isDisabledStartDate = !this.card.startDate;
-    if (this.card.startDate) {
-      this.startDate = this.card.startDate!;
-    }
+    this.startDate = this.card.startDate ?? null;
 
     this.setDefaultDueDate();
 
     this.api.getBoardMembers(this.boardId).subscribe((res) => {
       const cardMemberIds = (this.card.members || []).map((m) => m._id);
-
       this.boardMembers = res.boardMembers.filter(
         (bm) => !cardMemberIds.includes(bm._id),
       );
-
       this.cdr.markForCheck();
     });
 
-    this.cardTitleCtrl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((value) =>
-          this.api
-            .updateCard(this.card._id, { title: value! })
-            .pipe(map((res) => ({ res, value }))),
-        ),
-      )
-      .subscribe(({ res, value }) => {
-        if (this.cardTitleCtrl.value === value) {
-          this.card.title = res.card.title;
-          this.cdr.markForCheck();
-        }
-      });
+    const updateCardField = (
+      control: FormControl,
+      field: keyof typeof this.card,
+    ) => {
+      control.valueChanges
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap((value) =>
+            this.api
+              .updateCard(this.card._id, { [field]: value })
+              .pipe(map((res) => ({ res, value }))),
+          ),
+        )
+        .subscribe(({ res, value }) => {
+          if (control.value === value) {
+            (this.card as any)[field] = res.card[field];
+            this.cdr.markForCheck();
+          }
+        });
+    };
 
-    this.descCtrl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((value) =>
-          this.api
-            .updateCard(this.card._id, {
-              description: value as string,
-            })
-            .pipe(map((res) => ({ res, value }))),
-        ),
-      )
-      .subscribe(({ res, value }) => {
-        if (this.descCtrl.value === value) {
-          this.card.description = res.card.description;
-          this.cdr.markForCheck();
-        }
-      });
+    updateCardField(this.cardTitleCtrl, 'title');
+    updateCardField(this.descCtrl, 'description');
   }
 
   toggleDrawer(drawer: MatDrawer) {

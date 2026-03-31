@@ -19,6 +19,7 @@ import {
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { User } from '../../../../../models/user.model';
 import { Board } from '../../../../../models/board.model';
+import { tap, switchMap, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-board-columns',
@@ -51,25 +52,27 @@ export class BoardColumnsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.api.getUser().subscribe((res) => {
-      this.currentUser = res.user;
-      this.cdr.markForCheck();
-    });
-    this.route.paramMap.subscribe((params) => {
-      this.boardId = params.get('boardId')!;
 
-      this.api.getBoard(this.boardId).subscribe((res) => {
-        this.board = res.board;
-        this.cdr.markForCheck();
-      });
-
-      this.api.getColumns(this.boardId).subscribe((res) => {
-        this.boardColumns = res.columns;
-        this.isLoading = false;
+    this.api
+      .getUser()
+      .pipe(
+        tap((res) => (this.currentUser = res.user)),
+        switchMap(() => this.route.paramMap),
+        switchMap((params) => {
+          this.boardId = params.get('boardId')!;
+          return forkJoin({
+            boardRes: this.api.getBoard(this.boardId),
+            columnsRes: this.api.getColumns(this.boardId),
+          });
+        }),
+      )
+      .subscribe(({ boardRes, columnsRes }) => {
+        this.board = boardRes.board;
+        this.boardColumns = columnsRes.columns;
         this.updateConnectedLists();
+        this.isLoading = false;
         this.cdr.markForCheck();
       });
-    });
   }
 
   isBoardMember(): boolean {

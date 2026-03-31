@@ -14,6 +14,7 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FilterService } from '../../../../../../../shared/services/filter.service';
 import { User } from '../../../../../../../models/user.model';
+import { combineLatest, forkJoin, merge, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-cards',
@@ -39,37 +40,43 @@ export class CardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.cardService.getCards(this.column._id).subscribe((cards) => {
-      this.cards = cards;
 
-      this.applyFilters(this.filterService.getFilters());
-
-      this.isLoading = false;
-      this.cdr.markForCheck();
-    });
-
-    this.api.getUser().subscribe((res) => {
-      this.currentUser = res.user;
-      this.cdr.markForCheck();
-    });
-
-    this.filterService.filters$.subscribe((filters) => {
-      this.applyFilters(filters);
-      this.cdr.markForCheck();
-    });
-
-    this.api.cardUpdated.subscribe((updatedCard) => {
-      const index = this.cards.findIndex((c) => c._id === updatedCard._id);
-
-      if (index !== -1) {
-        this.cards[index] = updatedCard;
-        this.applyFilters(this.filterService.getFilters());
-
-        this.cdr.markForCheck();
-      }
-    });
+    combineLatest([
+      this.api.getUser(),
+      this.cardService.getCards(this.column._id),
+    ])
+      .pipe(
+        tap(([userRes, cards]) => {
+          this.currentUser = userRes.user;
+          this.cards = cards;
+          this.applyFilters(this.filterService.getFilters());
+        }),
+        switchMap(() =>
+          merge(
+            this.filterService.filters$.pipe(
+              tap((filters) => this.applyFilters(filters)),
+            ),
+            this.api.cardUpdated.pipe(
+              tap((updatedCard) => {
+                const index = this.cards.findIndex(
+                  (c) => c._id === updatedCard._id,
+                );
+                if (index !== -1) {
+                  this.cards[index] = updatedCard;
+                  this.applyFilters(this.filterService.getFilters());
+                }
+              }),
+            ),
+          ),
+        ),
+      )
+      .subscribe({
+        next: () => {
+          this.cdr.markForCheck();
+          this.isLoading = false;
+        },
+      });
   }
-
   get hasActiveFilters(): boolean {
     const filters = this.filterService.getFilters();
     return Object.values(filters || {}).some((arr: any) => arr?.length);
