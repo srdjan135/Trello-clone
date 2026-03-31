@@ -1,29 +1,25 @@
-import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { AuthService } from './shared/services/auth.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  let authServiceMock: jasmine.SpyObj<AuthService>;
+
+  beforeEach(() => {
+    authServiceMock = jasmine.createSpyObj('AuthService', ['autoAuthUser']);
+
+    TestBed.configureTestingModule({
       imports: [AppComponent],
-    }).compileComponents();
+      providers: [{ provide: AuthService, useValue: authServiceMock }],
+    });
   });
 
-  it('should create the app', () => {
+  it('should call autoAuthUser on init', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    const component = fixture.componentInstance;
 
-  it(`should have the 'trello-clone' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('trello-clone');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, trello-clone');
+
+    expect(authServiceMock.autoAuthUser).toHaveBeenCalled();
   });
 });
