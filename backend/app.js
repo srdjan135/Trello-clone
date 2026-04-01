@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
+const path = require("path");
+
 //import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
@@ -20,6 +22,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
+const angularDistPath = path.join(__dirname, "angular", "browser");
+
 //CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -33,10 +37,10 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self';");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Content-Security-Policy", "default-src 'self';");
+//   next();
+// });
 
 //ROUTES
 app.use("/api", authRoutes);
@@ -50,6 +54,12 @@ app.use("/api", boardMemberRoutes);
 app.use("/api", columnRoutes);
 app.use("/api", cardRoutes);
 app.use("/api", commentRoutes);
+
+app.use(express.static(angularDistPath));
+
+app.use((req, res) => {
+  res.sendFile(path.join(angularDistPath, "index.html"));
+});
 
 const PORT = 3000;
 mongoose
